@@ -1,7 +1,5 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import { GamePage } from "@/game/page";
-
-export default function Game() {
-  return <GamePage />;
+export default function Home() {
+  redirect("/game");
 }
