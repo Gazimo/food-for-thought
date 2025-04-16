@@ -50,7 +50,7 @@ function calculateDirection(
   return directions[Math.round(direction / 45)];
 }
 
-export const GamePage = () => {
+export default function GamePage() {
   const {
     currentDish,
     gamePhase,
@@ -171,4 +171,4 @@ export const GamePage = () => {
       <ResultModal />
     </main>
   );
-};
+}
