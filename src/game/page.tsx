@@ -1,6 +1,9 @@
 "use client";
 
-import { CountryGuessFeedback } from "@/components/CountryGuessFeedback";
+import {
+  CountryGuessFeedback,
+  CountryGuessResult,
+} from "@/components/CountryGuessFeedback";
 import { DishImage } from "@/components/DishImage";
 import { GuessFeedback } from "@/components/GuessFeedback";
 import { GuessInput } from "@/components/GuessInput";
@@ -57,7 +60,9 @@ export const GamePage = () => {
     startNewGame,
   } = useGameStore();
 
-  const [countryGuessResults, setCountryGuessResults] = useState<any[]>([]);
+  const [countryGuessResults, setCountryGuessResults] = useState<
+    CountryGuessResult[]
+  >([]);
 
   // Country coordinates database (simplified)
   const countryCoords: Record<string, { lat: number; lng: number }> = {
@@ -127,7 +132,7 @@ export const GamePage = () => {
     <main className="p-6 max-w-xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">🍽️ Food for Thought</h1>
       <p className="text-lg text-gray-700 mb-8">
-        Guess the dish based on ingredients. Then guess where it's from!
+        Guess the dish based on ingredients. Then guess where it&apos;s from!
       </p>
 
       <DishImage />

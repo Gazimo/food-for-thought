@@ -1,6 +1,6 @@
 import React from "react";
 
-interface CountryGuessResult {
+export interface CountryGuessResult {
   country: string;
   distance: number;
   direction: string;
