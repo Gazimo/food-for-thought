@@ -17,12 +17,12 @@ export const DishImage = () => {
 
   return (
     <div className="relative w-full h-64 rounded-lg overflow-hidden">
-      <Image
+      {/* <Image
         src={currentDish.imageUrl}
         alt={currentDish.name}
         fill
         className="object-cover"
-      />
+      /> */}
     </div>
   );
 };
