@@ -1,5 +1,11 @@
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Home() {
-  redirect("/play");
+  const router = useRouter();
+  useEffect(() => {
+    router.push("/play");
+  }, [router]);
+
+  return <div>Redirecting...</div>;
 }

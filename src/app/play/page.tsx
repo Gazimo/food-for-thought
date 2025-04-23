@@ -1,15 +1,16 @@
-'use client';
+"use client";
 
 import {
   CountryGuessFeedback,
   CountryGuessResult,
 } from "@/components/CountryGuessFeedback";
-import { DishImage } from "@/components/DishImage";
 import { GuessFeedback } from "@/components/GuessFeedback";
 import { GuessInput } from "@/components/GuessInput";
 import { ResultModal } from "@/components/ResultModal";
 import { useGameStore } from "@/store/gameStore";
+import confetti from "canvas-confetti";
 import { useEffect, useState } from "react";
+import { TileGrid } from "../../components/dish-image/TileGrid";
 
 // Helper function to calculate distance between coordinates
 function calculateDistance(
@@ -58,6 +59,9 @@ export default function GamePage() {
     moveToCountryPhase,
     completeGame,
     startNewGame,
+    revealRandomTile,
+    revealAllTiles,
+    revealedTiles,
   } = useGameStore();
 
   const [countryGuessResults, setCountryGuessResults] = useState<
@@ -83,10 +87,25 @@ export default function GamePage() {
   }, [currentDish, startNewGame]);
 
   const handleDishGuessResult = (isCorrect: boolean) => {
+    const { dishGuesses, revealedIngredients, currentDish } =
+      useGameStore.getState();
+    const ingredientsLength = currentDish?.ingredients.length || 0;
+
     if (isCorrect) {
+      confetti();
+      revealAllTiles();
       moveToCountryPhase();
     } else {
-      revealNextIngredient();
+      if (dishGuesses === 6) {
+        revealAllTiles();
+        moveToCountryPhase();
+      } else {
+        revealRandomTile();
+
+        if (revealedIngredients < ingredientsLength) {
+          revealNextIngredient();
+        }
+      }
     }
   };
 
@@ -135,7 +154,12 @@ export default function GamePage() {
         Guess the dish based on ingredients. Then guess where it&apos;s from!
       </p>
 
-      <DishImage />
+      {currentDish?.imageUrl && (
+        <TileGrid
+          imageUrl={currentDish.imageUrl}
+          revealedTiles={revealedTiles}
+        />
+      )}
 
       <div className="mt-6">
         {gamePhase === "dish" && (

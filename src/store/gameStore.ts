@@ -14,6 +14,9 @@ interface GameState {
   revealNextIngredient: () => void;
   moveToCountryPhase: () => void;
   completeGame: () => void;
+  revealedTiles: boolean[];
+  revealRandomTile: () => void;
+  revealAllTiles: () => void;
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
@@ -22,6 +25,26 @@ export const useGameStore = create<GameState>((set, get) => ({
   revealedIngredients: 1,
   dishGuesses: 0,
   countryGuesses: 0,
+  revealedTiles: [false, false, false, false, false, false],
+
+  revealRandomTile: () => {
+    const { revealedTiles } = get();
+    const unrevealed = revealedTiles
+      .map((val, idx) => (!val ? idx : null))
+      .filter((v) => v !== null) as number[];
+
+    if (unrevealed.length === 0) return;
+
+    const index = unrevealed[Math.floor(Math.random() * unrevealed.length)];
+    const newTiles = [...revealedTiles];
+    newTiles[index] = true;
+
+    set({ revealedTiles: newTiles });
+  },
+
+  revealAllTiles: () => {
+    set({ revealedTiles: [true, true, true, true, true, true] });
+  },
 
   startNewGame: () => {
     const dish = getRandomDish();
@@ -31,6 +54,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       revealedIngredients: 1,
       dishGuesses: 0,
       countryGuesses: 0,
+      revealedTiles: [false, false, false, false, false, false],
     });
   },
 
