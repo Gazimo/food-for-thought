@@ -7,49 +7,16 @@ import {
 import { GuessFeedback } from "@/components/GuessFeedback";
 import { GuessInput } from "@/components/GuessInput";
 import { ResultModal } from "@/components/ResultModal";
+import { TileGrid } from "@/components/dish-image/TileGrid";
 import { useGameStore } from "@/store/gameStore";
+import {
+  calculateDirection,
+  calculateDistance,
+  isDishGuessCorrect,
+  normalizeString,
+} from "@/utils/gameHelpers";
 import confetti from "canvas-confetti";
 import { useEffect, useState } from "react";
-import { TileGrid } from "../../components/dish-image/TileGrid";
-
-// Helper function to calculate distance between coordinates
-function calculateDistance(
-  lat1: number,
-  lon1: number,
-  lat2: number,
-  lon2: number
-) {
-  const R = 6371; // Earth's radius in km
-  const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  const dLon = ((lon2 - lon1) * Math.PI) / 180;
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
-}
-
-// Helper function to calculate direction
-function calculateDirection(
-  lat1: number,
-  lon1: number,
-  lat2: number,
-  lon2: number
-) {
-  const y = Math.sin(lon2 - lon1) * Math.cos(lat2);
-  const x =
-    Math.cos(lat1) * Math.sin(lat2) -
-    Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
-  const bearing = (Math.atan2(y, x) * 180) / Math.PI;
-  const direction = (bearing + 360) % 360;
-
-  // Convert bearing to cardinal direction
-  const directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW", "N"];
-  return directions[Math.round(direction / 45)];
-}
 
 export default function GamePage() {
   const {
@@ -68,40 +35,37 @@ export default function GamePage() {
     CountryGuessResult[]
   >([]);
 
-  // Country coordinates database (simplified)
   const countryCoords: Record<string, { lat: number; lng: number }> = {
-    Italy: { lat: 41.9028, lng: 12.4964 },
-    France: { lat: 46.2276, lng: 2.2137 },
-    Japan: { lat: 36.2048, lng: 138.2529 },
-    Mexico: { lat: 23.6345, lng: -102.5528 },
-    India: { lat: 20.5937, lng: 78.9629 },
-    Israel: { lat: 31.7683, lng: 35.2137 },
-    // Add more countries as needed
+    italy: { lat: 41.9028, lng: 12.4964 },
+    israel: { lat: 31.7683, lng: 35.2137 },
+    france: { lat: 46.2276, lng: 2.2137 },
+    japan: { lat: 36.2048, lng: 138.2529 },
+    mexico: { lat: 23.6345, lng: -102.5528 },
+    india: { lat: 20.5937, lng: 78.9629 },
   };
 
-  // Initialize game on first render
   useEffect(() => {
     if (!currentDish) {
       startNewGame();
     }
   }, [currentDish, startNewGame]);
 
-  const handleDishGuessResult = (isCorrect: boolean) => {
-    const { dishGuesses, revealedIngredients, currentDish } =
-      useGameStore.getState();
-    const ingredientsLength = currentDish?.ingredients.length || 0;
+  const handleDishGuess = (guess: string) => {
+    if (!currentDish) return;
 
-    if (isCorrect) {
+    if (isDishGuessCorrect(guess, currentDish)) {
       confetti();
       revealAllTiles();
       moveToCountryPhase();
     } else {
-      if (dishGuesses === 6) {
+      const { dishGuesses, revealedIngredients } = useGameStore.getState();
+      const ingredientsLength = currentDish.ingredients.length || 0;
+
+      if (dishGuesses >= 6) {
         revealAllTiles();
         moveToCountryPhase();
       } else {
         revealRandomTile();
-
         if (revealedIngredients < ingredientsLength) {
           revealNextIngredient();
         }
@@ -109,41 +73,52 @@ export default function GamePage() {
     }
   };
 
-  const handleCountryGuessResult = (guess: string) => {
+  const handleCountryGuess = (guess: string) => {
     if (!currentDish || !currentDish.coordinates) return;
 
-    const isCorrect = guess.toLowerCase() === currentDish.country.toLowerCase();
+    const normalizedGuess = normalizeString(guess);
+    const normalizedAnswer = normalizeString(currentDish.country);
 
-    if (isCorrect) {
+    if (normalizedGuess === normalizedAnswer) {
       setCountryGuessResults([
         ...countryGuessResults,
         { country: guess, isCorrect: true, distance: 0, direction: "N/A" },
       ]);
       completeGame();
+      confetti();
     } else {
-      // Get coordinates for the guessed country
-      const guessedCoords = countryCoords[guess];
-
-      if (guessedCoords) {
-        const distance = calculateDistance(
-          guessedCoords.lat,
-          guessedCoords.lng,
-          currentDish.coordinates.lat,
-          currentDish.coordinates.lng
-        );
-
-        const direction = calculateDirection(
-          guessedCoords.lat,
-          guessedCoords.lng,
-          currentDish.coordinates.lat,
-          currentDish.coordinates.lng
-        );
-
+      const guessedCoords = countryCoords[normalizedGuess];
+      if (!guessedCoords) {
         setCountryGuessResults([
           ...countryGuessResults,
-          { country: guess, isCorrect: false, distance, direction },
+          {
+            country: guess,
+            isCorrect: false,
+            distance: NaN,
+            direction: "Invalid",
+          },
         ]);
+        return;
       }
+
+      const distance = calculateDistance(
+        guessedCoords.lat,
+        guessedCoords.lng,
+        currentDish.coordinates.lat,
+        currentDish.coordinates.lng
+      );
+
+      const direction = calculateDirection(
+        guessedCoords.lat,
+        guessedCoords.lng,
+        currentDish.coordinates.lat,
+        currentDish.coordinates.lng
+      );
+
+      setCountryGuessResults([
+        ...countryGuessResults,
+        { country: guess, isCorrect: false, distance, direction },
+      ]);
     }
   };
 
@@ -169,8 +144,7 @@ export default function GamePage() {
             </h2>
             <GuessInput
               placeholder="Enter a dish name..."
-              onCorrectGuess={() => handleDishGuessResult(true)}
-              onIncorrectGuess={() => handleDishGuessResult(false)}
+              onGuess={handleDishGuess}
             />
           </>
         )}
@@ -182,8 +156,7 @@ export default function GamePage() {
             </h2>
             <GuessInput
               placeholder="Enter a country name..."
-              onCorrectGuess={() => {}}
-              onIncorrectGuess={(guess) => handleCountryGuessResult(guess)}
+              onGuess={handleCountryGuess}
             />
             <CountryGuessFeedback guessResults={countryGuessResults} />
           </>

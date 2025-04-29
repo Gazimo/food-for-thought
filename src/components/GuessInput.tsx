@@ -1,33 +1,21 @@
-import { useGameStore } from "@/store/gameStore";
 import React, { useState } from "react";
 
 interface GuessInputProps {
   placeholder: string;
-  onCorrectGuess: () => void;
-  onIncorrectGuess: (guess: string) => void;
+  onGuess: (guess: string) => void;
 }
 
 export const GuessInput: React.FC<GuessInputProps> = ({
   placeholder,
-  onCorrectGuess,
-  onIncorrectGuess,
+  onGuess,
 }) => {
   const [guess, setGuess] = useState("");
-  const makeGuess = useGameStore((state) => state.makeGuess);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!guess.trim()) return;
 
-    const isCorrect = makeGuess(guess);
-
-    if (isCorrect) {
-      onCorrectGuess();
-    } else {
-      onIncorrectGuess(guess);
-    }
-
+    onGuess(guess);
     setGuess("");
   };
 
