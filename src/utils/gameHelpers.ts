@@ -1,3 +1,5 @@
+import { Dish } from "../../public/data/dishes";
+
 export function calculateDistance(
   lat1: number,
   lon1: number,
@@ -47,4 +49,20 @@ export function isDishGuessCorrect(
     ...(dish.acceptableGuesses?.map(normalizeString) || []),
   ];
   return possibleAnswers.includes(normalizedGuess);
+}
+
+export async function loadCountryCoords() {
+  const response = await fetch("/data/countries.json");
+  const data = await response.json();
+  return data;
+}
+
+export function capitalizeFirst(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export async function loadDishes(): Promise<Dish[]> {
+  const res = await fetch("/data/sample_dishes.json");
+  if (!res.ok) throw new Error("Failed to load dishes");
+  return res.json();
 }

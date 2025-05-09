@@ -1,0 +1,401 @@
+[
+  {
+    "name": "Khachapuri",
+    "acceptableGuesses": ["khachapuri", "georgian cheese bread"],
+    "country": "Georgia",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Adjarian_Khachapuri.jpg",
+    "ingredients": ["flour", "yeast", "milk", "eggs", "cheese", "butter"],
+    "blurb": "A warm, boat-shaped bread filled with melted cheese and topped with a runny egg.",
+    "recipe": {
+      "ingredients": [
+        "3 cups flour",
+        "1 packet (2 1/4 tsp) active dry yeast",
+        "1 cup warm milk",
+        "2 large eggs (1 for dough, 1 for topping)",
+        "2 cups shredded cheese (mozzarella, feta, or sulguni)",
+        "2 tbsp butter (plus more for serving)"
+      ],
+      "instructions": [
+        "In a large bowl, combine flour and yeast. Stir in warm milk and 1 egg to form a soft dough.",
+        "Knead the dough for 5-7 minutes, then cover and let rise in a warm place for 1 hour until doubled in size.",
+        "Preheat oven to 220°C (425°F). Divide dough in half and shape each into a boat shape on a parchment-lined baking sheet.",
+        "Fill the center of each boat with shredded cheese, leaving a border.",
+        "Bake for 15 minutes until golden. Remove, make a well in the cheese, and crack an egg into each. Return to oven for 3-4 minutes until egg white is just set.",
+        "Top with a pat of butter and serve hot."
+      ]
+    },
+    "tags": ["vegetarian", "bread", "main"]
+  },
+  {
+    "name": "Injera with Stew",
+    "acceptableGuesses": ["injera", "injera with stew"],
+    "country": "Ethiopia",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/2/28/Injera_with_various_wot.JPG",
+    "ingredients": [
+      "teff flour",
+      "water",
+      "salt",
+      "lentils",
+      "onions",
+      "berbere spice"
+    ],
+    "blurb": "A spongy flatbread used to scoop up richly spiced lentils and stew.",
+    "recipe": {
+      "ingredients": [
+        "2 cups teff flour",
+        "2 1/2 cups water",
+        "1/2 tsp salt",
+        "1 cup dried lentils",
+        "1 large onion, chopped",
+        "2 tbsp berbere spice mix"
+      ],
+      "instructions": [
+        "In a bowl, mix teff flour and water. Cover and let ferment at room temperature for 2 days.",
+        "Stir in salt. Heat a nonstick pan over medium heat and pour a thin layer of batter. Cook until holes form and surface is set. Remove and repeat for all batter.",
+        "Rinse lentils and cook in boiling water until tender, about 20 minutes. Drain.",
+        "In a pan, sauté onion in oil until soft. Add berbere spice and cooked lentils, stir to combine and heat through.",
+        "Serve lentil stew over injera flatbreads."
+      ]
+    },
+    "tags": ["vegan", "main", "fermented"]
+  },
+  {
+    "name": "Okonomiyaki",
+    "acceptableGuesses": ["okonomiyaki", "japanese pancake"],
+    "country": "Japan",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/12/Okonomiyaki_001.jpg",
+    "ingredients": [
+      "cabbage",
+      "flour",
+      "egg",
+      "pork belly",
+      "mayonnaise",
+      "okonomiyaki sauce"
+    ],
+    "blurb": "A savory pancake layered with cabbage and toppings, grilled to crispy perfection.",
+    "recipe": {
+      "ingredients": [
+        "2 cups shredded cabbage",
+        "1 cup all-purpose flour",
+        "2 large eggs",
+        "100g pork belly, thinly sliced",
+        "2 tbsp mayonnaise",
+        "2 tbsp okonomiyaki sauce"
+      ],
+      "instructions": [
+        "In a bowl, mix flour, eggs, and 1/2 cup water until smooth. Fold in shredded cabbage.",
+        "Heat a nonstick skillet over medium heat and pour in half the batter, shaping into a round pancake.",
+        "Top with half the pork belly slices. Cook for 4-5 minutes, then flip and cook another 4 minutes until golden and pork is cooked.",
+        "Repeat for second pancake. Drizzle with okonomiyaki sauce and mayonnaise before serving."
+      ]
+    },
+    "tags": ["meat", "main", "grilled"]
+  },
+  {
+    "name": "Feijoada",
+    "acceptableGuesses": ["feijoada"],
+    "country": "Brazil",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Feijoada.jpg",
+    "ingredients": [
+      "black beans",
+      "pork",
+      "beef",
+      "onion",
+      "garlic",
+      "bay leaves"
+    ],
+    "blurb": "A hearty stew of black beans simmered with various cuts of meat and aromatic spices.",
+    "recipe": {
+      "ingredients": [
+        "2 cups dried black beans",
+        "300g pork shoulder, cubed",
+        "200g beef stew meat, cubed",
+        "1 large onion, chopped",
+        "3 cloves garlic, minced",
+        "2 bay leaves"
+      ],
+      "instructions": [
+        "Rinse and soak black beans overnight in plenty of water.",
+        "Drain beans. In a large pot, brown pork and beef with onion and garlic over medium heat.",
+        "Add soaked beans, bay leaves, and enough water to cover. Bring to a boil, then reduce heat and simmer for 2 hours, stirring occasionally.",
+        "Season with salt and pepper. Serve hot with rice and orange slices if desired."
+      ]
+    },
+    "tags": ["meat", "main", "stew"]
+  },
+  {
+    "name": "Mansaf",
+    "acceptableGuesses": ["mansaf"],
+    "country": "Jordan",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/11/Mansaf_2.jpg",
+    "ingredients": ["lamb", "jameed", "rice", "almonds", "parsley"],
+    "blurb": "A rich, comforting rice and lamb dish with a tangy fermented yogurt sauce.",
+    "recipe": {
+      "ingredients": [
+        "1 kg lamb, cut into chunks",
+        "200g jameed (dried yogurt), soaked and blended with 4 cups water",
+        "2 cups basmati rice",
+        "1/2 cup slivered almonds",
+        "1/4 cup chopped parsley"
+      ],
+      "instructions": [
+        "Soak jameed in water overnight, then blend until smooth.",
+        "In a large pot, cook lamb in jameed liquid over medium heat until tender (about 1.5 hours).",
+        "Meanwhile, cook rice according to package instructions.",
+        "Toast almonds in a dry pan until golden.",
+        "To serve, spread rice on a platter, top with lamb and sauce, and garnish with almonds and parsley."
+      ]
+    },
+    "tags": ["meat", "main", "fermented"]
+  },
+  {
+    "name": "Gado-Gado",
+    "acceptableGuesses": ["gado-gado", "indonesian salad"],
+    "country": "Indonesia",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e6/Gado_gado_Jakarta.jpg",
+    "ingredients": [
+      "potatoes",
+      "green beans",
+      "tofu",
+      "boiled eggs",
+      "peanut sauce"
+    ],
+    "blurb": "A colorful platter of cooked vegetables, tofu, and eggs served with a rich peanut dressing.",
+    "recipe": {
+      "ingredients": [
+        "2 medium potatoes, peeled and cubed",
+        "1 cup green beans, trimmed",
+        "200g firm tofu, cubed",
+        "2 boiled eggs, sliced",
+        "1/2 cup peanut sauce"
+      ],
+      "instructions": [
+        "Boil potatoes and green beans in salted water until just tender, then drain.",
+        "Fry tofu cubes in a little oil until golden on all sides.",
+        "Arrange potatoes, green beans, tofu, and sliced eggs on a serving plate.",
+        "Drizzle generously with peanut sauce and serve."
+      ]
+    },
+    "tags": ["vegetarian", "salad", "main"]
+  },
+  {
+    "name": "Shakshuka",
+    "acceptableGuesses": ["shakshuka"],
+    "country": "Tunisia",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/31/Shakshouka.jpg",
+    "ingredients": [
+      "eggs",
+      "tomatoes",
+      "bell pepper",
+      "onion",
+      "paprika",
+      "cumin"
+    ],
+    "blurb": "Poached eggs nestle in a simmering sauce of tomatoes, peppers, and spices.",
+    "recipe": {
+      "ingredients": [
+        "4 large eggs",
+        "4 ripe tomatoes, chopped",
+        "1 red bell pepper, chopped",
+        "1 medium onion, chopped",
+        "1 tsp paprika",
+        "1/2 tsp ground cumin"
+      ],
+      "instructions": [
+        "Heat 2 tbsp olive oil in a skillet over medium heat. Sauté onion and bell pepper until soft, about 5 minutes.",
+        "Add chopped tomatoes, paprika, and cumin. Simmer for 10 minutes, stirring occasionally, until sauce thickens.",
+        "Make 4 wells in the sauce and crack an egg into each. Cover and cook for 5-7 minutes until eggs are just set.",
+        "Serve hot with crusty bread."
+      ]
+    },
+    "tags": ["vegetarian", "breakfast", "one-pan"]
+  },
+  {
+    "name": "Poutine",
+    "acceptableGuesses": ["poutine"],
+    "country": "Canada",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/43/Poutine_Burger_Bar_Crescent.jpg",
+    "ingredients": ["french fries", "cheese curds", "gravy"],
+    "blurb": "Crispy fries smothered in savory brown gravy and squeaky cheese curds.",
+    "recipe": {
+      "ingredients": [
+        "500g frozen french fries (or homemade)",
+        "1 cup cheese curds",
+        "1 cup hot brown gravy"
+      ],
+      "instructions": [
+        "Fry or bake french fries until crispy and golden.",
+        "Heat gravy in a saucepan until hot.",
+        "Place fries on a plate, top with cheese curds, and pour hot gravy over to melt the curds. Serve immediately."
+      ]
+    },
+    "tags": ["vegetarian", "snack", "comfort"]
+  },
+  {
+    "name": "Schnitzel",
+    "acceptableGuesses": ["schnitzel", "wiener schnitzel"],
+    "country": "Austria",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Wiener_Schnitzel02.jpg",
+    "ingredients": ["veal", "breadcrumbs", "flour", "egg", "lemon"],
+    "blurb": "A thin cutlet breaded and fried until golden, served with a squeeze of lemon.",
+    "recipe": {
+      "ingredients": [
+        "4 veal cutlets (about 120g each)",
+        "1 cup breadcrumbs",
+        "1/2 cup all-purpose flour",
+        "2 large eggs, beaten",
+        "1 lemon, cut into wedges"
+      ],
+      "instructions": [
+        "Pound veal cutlets to 1/4-inch thickness and season with salt and pepper.",
+        "Dredge each cutlet in flour, dip in beaten eggs, then coat in breadcrumbs.",
+        "Heat oil in a large skillet over medium-high heat. Fry cutlets 2-3 minutes per side until golden and crisp.",
+        "Drain on paper towels and serve with lemon wedges."
+      ]
+    },
+    "tags": ["meat", "main", "fried"]
+  },
+  {
+    "name": "Koshari",
+    "acceptableGuesses": ["koshari", "kushari"],
+    "country": "Egypt",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Koshari_egyptian_dish.jpg",
+    "ingredients": [
+      "lentils",
+      "rice",
+      "macaroni",
+      "chickpeas",
+      "tomato sauce",
+      "fried onions"
+    ],
+    "blurb": "A layered bowl of lentils, rice, pasta, and chickpeas topped with spicy tomato sauce and crispy onions.",
+    "recipe": {
+      "ingredients": [
+        "1 cup brown lentils",
+        "1 cup long-grain rice",
+        "1 cup elbow macaroni",
+        "1 cup canned chickpeas, drained",
+        "1 cup tomato sauce",
+        "1 cup fried onions"
+      ],
+      "instructions": [
+        "Cook lentils in boiling water until tender, about 20 minutes. Drain.",
+        "Cook rice and macaroni separately according to package instructions.",
+        "Layer lentils, rice, macaroni, and chickpeas in a bowl.",
+        "Top with warm tomato sauce and a generous handful of fried onions."
+      ]
+    },
+    "tags": ["vegan", "main", "hearty"]
+  },
+  {
+    "name": "Kimchi Jjigae",
+    "acceptableGuesses": ["kimchi jjigae", "kimchi stew"],
+    "country": "South Korea",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Kimchi_stew_01.jpg",
+    "ingredients": ["kimchi", "pork", "tofu", "onion", "gochujang"],
+    "blurb": "A fiery stew of aged kimchi, pork slices, and soft tofu in a bold broth.",
+    "recipe": {
+      "ingredients": [
+        "1 1/2 cups kimchi, chopped",
+        "150g pork belly, sliced",
+        "200g firm tofu, cubed",
+        "1 small onion, sliced",
+        "1 tbsp gochujang (Korean chili paste)",
+        "2 cups water"
+      ],
+      "instructions": [
+        "In a pot, sauté kimchi and pork belly over medium heat for 3-4 minutes.",
+        "Add onion and gochujang, stir well.",
+        "Pour in water and bring to a boil. Add tofu, reduce heat, and simmer for 20 minutes.",
+        "Serve hot with steamed rice."
+      ]
+    },
+    "tags": ["meat", "spicy", "stew"]
+  },
+  {
+    "name": "Ceviche",
+    "acceptableGuesses": ["ceviche"],
+    "country": "Peru",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/9/99/Ceviche_peruano.jpg",
+    "ingredients": [
+      "white fish",
+      "lime juice",
+      "onion",
+      "cilantro",
+      "chili pepper"
+    ],
+    "blurb": "Fresh fish marinated in citrus and mixed with herbs and a touch of heat.",
+    "recipe": {
+      "ingredients": [
+        "300g white fish fillet, cut into 1/2-inch cubes",
+        "1/2 cup fresh lime juice",
+        "1/2 small red onion, thinly sliced",
+        "2 tbsp chopped cilantro",
+        "1 small chili pepper, thinly sliced"
+      ],
+      "instructions": [
+        "Place fish cubes in a bowl and cover with lime juice. Let marinate in the fridge for 30 minutes until opaque.",
+        "Drain most of the lime juice. Add onion, chili, and cilantro. Toss gently to combine.",
+        "Chill for another 10 minutes before serving."
+      ]
+    },
+    "tags": ["seafood", "starter", "raw"]
+  },
+  {
+    "name": "Pierogi",
+    "acceptableGuesses": ["pierogi", "polish dumplings"],
+    "country": "Poland",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/10/Pierogi_ruskie.jpg",
+    "ingredients": ["flour", "potatoes", "cheese", "onion", "butter"],
+    "blurb": "Soft dumplings filled with mashed potatoes and cheese, served boiled or fried.",
+    "recipe": {
+      "ingredients": [
+        "2 cups all-purpose flour",
+        "1/2 cup water",
+        "2 medium potatoes, peeled and diced",
+        "1 cup farmer's cheese or ricotta",
+        "1 small onion, chopped",
+        "2 tbsp butter"
+      ],
+      "instructions": [
+        "Mix flour and water to form a soft dough. Knead for 5 minutes, cover, and let rest.",
+        "Boil potatoes until tender, then mash with cheese. Season with salt and pepper.",
+        "Roll out dough and cut into circles. Place a spoonful of filling in each, fold and seal edges.",
+        "Boil pierogi in salted water until they float, about 3-4 minutes. Optionally, fry in butter with onions before serving."
+      ]
+    },
+    "tags": ["vegetarian", "dumplings", "comfort"]
+  },
+  {
+    "name": "Biryani",
+    "acceptableGuesses": ["biryani", "chicken biryani"],
+    "country": "India",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5e/Biryani_of_Lahore.jpg",
+    "ingredients": [
+      "basmati rice",
+      "chicken",
+      "yogurt",
+      "saffron",
+      "fried onions",
+      "spices"
+    ],
+    "blurb": "A fragrant rice dish layered with marinated meat, herbs, and deep spices.",
+    "recipe": {
+      "ingredients": [
+        "2 cups basmati rice",
+        "500g chicken pieces",
+        "1 cup plain yogurt",
+        "1/4 tsp saffron threads, soaked in 2 tbsp warm milk",
+        "1 cup fried onions",
+        "2 tbsp biryani spice mix"
+      ],
+      "instructions": [
+        "In a bowl, marinate chicken with yogurt and biryani spice mix for at least 1 hour.",
+        "Rinse rice and parboil in salted water with whole spices (like cardamom, cloves, bay leaf) for 6 minutes. Drain.",
+        "In a large pot, layer half the rice, then chicken, saffron milk, and fried onions. Top with remaining rice.",
+        "Cover and steam on low heat for 25 minutes. Fluff and serve hot."
+      ]
+    },
+    "tags": ["meat", "main", "rice"]
+  }
+]

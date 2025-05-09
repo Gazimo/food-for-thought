@@ -1,22 +1,14 @@
 "use client";
 
-import {
-  CountryGuessFeedback,
-  CountryGuessResult,
-} from "@/components/CountryGuessFeedback";
+import { CountryGuessFeedback } from "@/components/CountryGuessFeedback";
 import { GuessFeedback } from "@/components/GuessFeedback";
 import { GuessInput } from "@/components/GuessInput";
 import { ResultModal } from "@/components/ResultModal";
 import { TileGrid } from "@/components/dish-image/TileGrid";
 import { useGameStore } from "@/store/gameStore";
-import {
-  calculateDirection,
-  calculateDistance,
-  isDishGuessCorrect,
-  normalizeString,
-} from "@/utils/gameHelpers";
 import confetti from "canvas-confetti";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { getCountryNames } from "../../utils/countries";
 
 export default function GamePage() {
   const {
@@ -29,31 +21,38 @@ export default function GamePage() {
     revealRandomTile,
     revealAllTiles,
     revealedTiles,
+    resetCountryGuesses,
+    makeDishGuess,
+    makeCountryGuess,
+    countryGuessResults,
   } = useGameStore();
 
-  const [countryGuessResults, setCountryGuessResults] = useState<
-    CountryGuessResult[]
-  >([]);
-
-  const countryCoords: Record<string, { lat: number; lng: number }> = {
-    italy: { lat: 41.9028, lng: 12.4964 },
-    israel: { lat: 31.7683, lng: 35.2137 },
-    france: { lat: 46.2276, lng: 2.2137 },
-    japan: { lat: 36.2048, lng: 138.2529 },
-    mexico: { lat: 23.6345, lng: -102.5528 },
-    india: { lat: 20.5937, lng: 78.9629 },
-  };
+  const countryNames = getCountryNames();
 
   useEffect(() => {
-    if (!currentDish) {
+    const init = async () => {
+      const { loadDishes } = useGameStore.getState();
+      await loadDishes();
       startNewGame();
+      resetCountryGuesses();
+    };
+
+    if (!currentDish) {
+      init();
     }
-  }, [currentDish, startNewGame]);
+  }, [currentDish, startNewGame, resetCountryGuesses]);
+
+  useEffect(() => {
+    if (gamePhase === "dish") {
+      resetCountryGuesses();
+    }
+  }, [gamePhase, resetCountryGuesses]);
 
   const handleDishGuess = (guess: string) => {
     if (!currentDish) return;
 
-    if (isDishGuessCorrect(guess, currentDish)) {
+    const isCorrect = makeDishGuess(guess);
+    if (isCorrect) {
       confetti();
       revealAllTiles();
       moveToCountryPhase();
@@ -75,50 +74,10 @@ export default function GamePage() {
 
   const handleCountryGuess = (guess: string) => {
     if (!currentDish || !currentDish.coordinates) return;
-
-    const normalizedGuess = normalizeString(guess);
-    const normalizedAnswer = normalizeString(currentDish.country);
-
-    if (normalizedGuess === normalizedAnswer) {
-      setCountryGuessResults([
-        ...countryGuessResults,
-        { country: guess, isCorrect: true, distance: 0, direction: "N/A" },
-      ]);
+    const isCorrect = makeCountryGuess(guess);
+    if (isCorrect) {
       completeGame();
       confetti();
-    } else {
-      const guessedCoords = countryCoords[normalizedGuess];
-      if (!guessedCoords) {
-        setCountryGuessResults([
-          ...countryGuessResults,
-          {
-            country: guess,
-            isCorrect: false,
-            distance: NaN,
-            direction: "Invalid",
-          },
-        ]);
-        return;
-      }
-
-      const distance = calculateDistance(
-        guessedCoords.lat,
-        guessedCoords.lng,
-        currentDish.coordinates.lat,
-        currentDish.coordinates.lng
-      );
-
-      const direction = calculateDirection(
-        guessedCoords.lat,
-        guessedCoords.lng,
-        currentDish.coordinates.lat,
-        currentDish.coordinates.lng
-      );
-
-      setCountryGuessResults([
-        ...countryGuessResults,
-        { country: guess, isCorrect: false, distance, direction },
-      ]);
     }
   };
 
@@ -139,9 +98,7 @@ export default function GamePage() {
       <div className="mt-6">
         {gamePhase === "dish" && (
           <>
-            <h2 className="text-xl font-semibold mb-4">
-              Phase 1: Guess the Dish
-            </h2>
+            <h2 className="text-xl font-semibold mb-4">Guess the Dish</h2>
             <GuessInput
               placeholder="Enter a dish name..."
               onGuess={handleDishGuess}
@@ -151,12 +108,11 @@ export default function GamePage() {
 
         {gamePhase === "country" && (
           <>
-            <h2 className="text-xl font-semibold mb-4">
-              Phase 2: Guess the Country
-            </h2>
+            <h2 className="text-xl font-semibold mb-4">Guess the Country</h2>
             <GuessInput
               placeholder="Enter a country name..."
               onGuess={handleCountryGuess}
+              suggestions={countryNames}
             />
             <CountryGuessFeedback guessResults={countryGuessResults} />
           </>
