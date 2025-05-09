@@ -8,42 +8,8 @@ import {
   normalizeString,
 } from "@/utils/gameHelpers";
 import { create } from "zustand";
-import { Dish, enrichDishesWithCoords } from "../../public/data/dishes";
-import { CountryGuessResult } from "../components/CountryGuessFeedback";
-
-export type GamePhase = "dish" | "country" | "complete";
-
-export interface GameResults {
-  dishGuesses: number;
-  dishGuessSuccess: boolean;
-  countryGuesses: number;
-  countryGuessSuccess: boolean;
-  totalTime?: number; // We could add this later for tracking completion time
-}
-
-interface GameState {
-  currentDish: Dish | null;
-  dishes: Dish[];
-  loadDishes: () => Promise<void>;
-  gamePhase: GamePhase;
-  revealedIngredients: number;
-  dishGuesses: number;
-  countryGuesses: number;
-  gameResults: GameResults;
-  startNewGame: () => void;
-  makeDishGuess: (guess: string) => boolean;
-  makeCountryGuess: (guess: string) => boolean;
-  revealNextIngredient: () => void;
-  moveToCountryPhase: () => void;
-  completeGame: () => void;
-  revealedTiles: boolean[];
-  revealRandomTile: () => void;
-  revealAllTiles: () => void;
-  resetCountryGuesses: () => void;
-  countryGuessResults: CountryGuessResult[];
-  updateGameResults: (results: Partial<GameResults>) => void;
-  getSortedCountryCoords: () => Record<string, { lat: number; lng: number }>;
-}
+import { enrichDishesWithCoords } from "../../public/data/dishes";
+import { GameResults, GameState } from "../types/game";
 const countryCoords = getCountryCoordsMap();
 
 function getSortedCountryCoords() {
@@ -223,4 +189,46 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
   resetCountryGuesses: () => set({ countryGuessResults: [] }),
   getSortedCountryCoords,
+  guessDish: (guess: string): boolean => {
+    const {
+      currentDish,
+      makeDishGuess,
+      revealAllTiles,
+      moveToCountryPhase,
+      revealRandomTile,
+      revealNextIngredient,
+    } = get();
+    if (!currentDish) return false;
+    const isCorrect = makeDishGuess(guess);
+    if (isCorrect) {
+      if (typeof window !== "undefined")
+        import("canvas-confetti").then((m) => m.default());
+      revealAllTiles();
+      moveToCountryPhase();
+    } else {
+      const { dishGuesses, revealedIngredients } = get();
+      const ingredientsLength = currentDish.ingredients.length || 0;
+      if (dishGuesses >= 6) {
+        revealAllTiles();
+        moveToCountryPhase();
+      } else {
+        revealRandomTile();
+        if (revealedIngredients < ingredientsLength) {
+          revealNextIngredient();
+        }
+      }
+    }
+    return isCorrect;
+  },
+  guessCountry: (guess: string): boolean => {
+    const { currentDish, makeCountryGuess, completeGame } = get();
+    if (!currentDish || !currentDish.coordinates) return false;
+    const isCorrect = makeCountryGuess(guess);
+    if (isCorrect) {
+      if (typeof window !== "undefined")
+        import("canvas-confetti").then((m) => m.default());
+      completeGame();
+    }
+    return isCorrect;
+  },
 }));

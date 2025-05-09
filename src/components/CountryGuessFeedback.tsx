@@ -1,11 +1,5 @@
 import React from "react";
-
-export interface CountryGuessResult {
-  country: string;
-  distance: number;
-  direction: string;
-  isCorrect: boolean;
-}
+import { CountryGuessResult } from "../types/game";
 
 interface CountryGuessFeedbackProps {
   guessResults: CountryGuessResult[];

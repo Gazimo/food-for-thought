@@ -150,7 +150,7 @@
   },
   {
     "name": "Gado-Gado",
-    "acceptableGuesses": ["gado-gado", "indonesian salad"],
+    "acceptableGuesses": ["gado-gado", "gado gado", "indonesian salad"],
     "country": "Indonesia",
     "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e6/Gado_gado_Jakarta.jpg",
     "ingredients": [

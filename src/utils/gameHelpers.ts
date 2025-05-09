@@ -25,6 +25,13 @@ export function calculateDirection(
   lat2: number,
   lon2: number
 ) {
+  // Convert degrees to radians
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  lat1 = toRad(lat1);
+  lon1 = toRad(lon1);
+  lat2 = toRad(lat2);
+  lon2 = toRad(lon2);
+  
   const y = Math.sin(lon2 - lon1) * Math.cos(lat2);
   const x =
     Math.cos(lat1) * Math.sin(lat2) -
