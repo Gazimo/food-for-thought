@@ -14,27 +14,6 @@ export const GuessInput: React.FC<GuessInputProps> = ({
 }) => {
   const [input, setInput] = useState("");
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
-  if (suggestions.length === 0) {
-    return (
-      <div className="w-full">
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && input.trim()) {
-                onGuess(input.trim());
-                setInput("");
-              }
-            }}
-            placeholder={placeholder}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-      </div>
-    );
-  }
 
   const filteredSuggestions = suggestions.filter(
     (item) => !input || item.toLowerCase().includes(input.toLowerCase())
@@ -78,6 +57,28 @@ export const GuessInput: React.FC<GuessInputProps> = ({
       }
     },
   });
+
+  if (suggestions.length === 0) {
+    return (
+      <div className="w-full">
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && input.trim()) {
+                onGuess(input.trim());
+                setInput("");
+              }
+            }}
+            placeholder={placeholder}
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">
