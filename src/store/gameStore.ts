@@ -7,6 +7,7 @@ import {
   isDishGuessCorrect,
   normalizeString,
 } from "@/utils/gameHelpers";
+import confetti from "canvas-confetti";
 import { create } from "zustand";
 import { enrichDishesWithCoords } from "../../public/data/dishes";
 import { GameResults, GameState } from "../types/game";
@@ -201,8 +202,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     if (!currentDish) return false;
     const isCorrect = makeDishGuess(guess);
     if (isCorrect) {
-      if (typeof window !== "undefined")
-        import("canvas-confetti").then((m) => m.default());
+      if (typeof window !== "undefined") confetti();
       revealAllTiles();
       moveToCountryPhase();
     } else {
@@ -225,8 +225,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     if (!currentDish || !currentDish.coordinates) return false;
     const isCorrect = makeCountryGuess(guess);
     if (isCorrect) {
-      if (typeof window !== "undefined")
-        import("canvas-confetti").then((m) => m.default());
+      if (typeof window !== "undefined") confetti();
       completeGame();
     }
     return isCorrect;

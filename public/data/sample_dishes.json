@@ -128,7 +128,15 @@
     "acceptableGuesses": ["mansaf"],
     "country": "Jordan",
     "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/11/Mansaf_2.jpg",
-    "ingredients": ["lamb", "jameed", "rice", "almonds", "parsley"],
+    "ingredients": [
+      "lamb",
+      "jameed",
+      "rice",
+      "almonds",
+      "parsley",
+      "onion",
+      "greek yogurt"
+    ],
     "blurb": "A rich, comforting rice and lamb dish with a tangy fermented yogurt sauce.",
     "recipe": {
       "ingredients": [
@@ -158,7 +166,8 @@
       "green beans",
       "tofu",
       "boiled eggs",
-      "peanut sauce"
+      "peanut sauce",
+      "spinach"
     ],
     "blurb": "A colorful platter of cooked vegetables, tofu, and eggs served with a rich peanut dressing.",
     "recipe": {
@@ -211,32 +220,11 @@
     "tags": ["vegetarian", "breakfast", "one-pan"]
   },
   {
-    "name": "Poutine",
-    "acceptableGuesses": ["poutine"],
-    "country": "Canada",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/43/Poutine_Burger_Bar_Crescent.jpg",
-    "ingredients": ["french fries", "cheese curds", "gravy"],
-    "blurb": "Crispy fries smothered in savory brown gravy and squeaky cheese curds.",
-    "recipe": {
-      "ingredients": [
-        "500g frozen french fries (or homemade)",
-        "1 cup cheese curds",
-        "1 cup hot brown gravy"
-      ],
-      "instructions": [
-        "Fry or bake french fries until crispy and golden.",
-        "Heat gravy in a saucepan until hot.",
-        "Place fries on a plate, top with cheese curds, and pour hot gravy over to melt the curds. Serve immediately."
-      ]
-    },
-    "tags": ["vegetarian", "snack", "comfort"]
-  },
-  {
     "name": "Schnitzel",
     "acceptableGuesses": ["schnitzel", "wiener schnitzel"],
     "country": "Austria",
     "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Wiener_Schnitzel02.jpg",
-    "ingredients": ["veal", "breadcrumbs", "flour", "egg", "lemon"],
+    "ingredients": ["veal", "breadcrumbs", "flour", "egg", "lemon", "oil"],
     "blurb": "A thin cutlet breaded and fried until golden, served with a squeeze of lemon.",
     "recipe": {
       "ingredients": [
@@ -292,7 +280,15 @@
     "acceptableGuesses": ["kimchi jjigae", "kimchi stew"],
     "country": "South Korea",
     "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Kimchi_stew_01.jpg",
-    "ingredients": ["kimchi", "pork", "tofu", "onion", "gochujang"],
+    "ingredients": [
+      "kimchi",
+      "pork",
+      "tofu",
+      "onion",
+      "gochujang",
+      "green onion"
+    ],
+
     "blurb": "A fiery stew of aged kimchi, pork slices, and soft tofu in a bold broth.",
     "recipe": {
       "ingredients": [
@@ -320,6 +316,7 @@
     "ingredients": [
       "white fish",
       "lime juice",
+      "tomato",
       "onion",
       "cilantro",
       "chili pepper"
@@ -346,7 +343,15 @@
     "acceptableGuesses": ["pierogi", "polish dumplings"],
     "country": "Poland",
     "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/10/Pierogi_ruskie.jpg",
-    "ingredients": ["flour", "potatoes", "cheese", "onion", "butter"],
+    "ingredients": [
+      "flour",
+      "potatoes",
+      "onion",
+      "butter",
+      "sour cream",
+      "egg"
+    ],
+
     "blurb": "Soft dumplings filled with mashed potatoes and cheese, served boiled or fried.",
     "recipe": {
       "ingredients": [
@@ -397,5 +402,1362 @@
       ]
     },
     "tags": ["meat", "main", "rice"]
+  },
+
+  {
+    "name": "Masgouf",
+    "acceptableGuesses": ["masgouf", "iraqi grilled fish"],
+    "country": "Iraq",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Masgouf.jpg",
+    "ingredients": [
+      "fish",
+      "olive oil",
+      "lemon",
+      "tomatoes",
+      "salt",
+      "tamarind",
+      "turmeric"
+    ],
+    "blurb": "A delicious preparation of freshwater fish that is butterflied and slow-grilled over an open fire, creating a tender and smoky flavor.",
+    "recipe": {
+      "ingredients": [
+        "1 whole carp or other freshwater fish (about 2-3 lbs)",
+        "2 tbsp olive oil",
+        "1 tbsp salt",
+        "1 tbsp ground turmeric",
+        "2 lemons, sliced",
+        "2 tomatoes, sliced",
+        "1 tbsp tamarind paste",
+        "Fresh herbs for garnish"
+      ],
+      "instructions": [
+        "Clean and butterfly the fish, keeping it attached at the backbone.",
+        "Rub the fish with salt, turmeric, and olive oil.",
+        "Prepare a wood or charcoal fire and position the fish on a specialized fish grill rack.",
+        "Cook slowly for about 1-2 hours, basting occasionally with a mixture of tamarind and water.",
+        "Serve hot with sliced lemons, tomatoes, and fresh herbs."
+      ]
+    },
+    "tags": ["seafood", "grilled", "main", "national dish"]
+  },
+  {
+    "name": "Butter Chicken",
+    "acceptableGuesses": ["butter chicken", "murgh makhani"],
+    "country": "India",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3c/Chicken_makhani.jpg",
+    "ingredients": [
+      "chicken",
+      "butter",
+      "cream",
+      "tomato",
+      "garam masala",
+      "garlic",
+      "ginger"
+    ],
+    "blurb": "A rich and creamy curry made with tender chicken in a mildly spiced tomato sauce, enriched with butter and cream.",
+    "recipe": {
+      "ingredients": [
+        "1.5 lbs boneless chicken thighs, cut into pieces",
+        "1/2 cup yogurt",
+        "2 tbsp lemon juice",
+        "2 tsp garam masala",
+        "2 tbsp butter",
+        "1 cup tomato puree",
+        "1/2 cup heavy cream",
+        "2 cloves garlic, minced",
+        "1 inch ginger, grated",
+        "1 tsp each of cumin, coriander, and chili powder",
+        "Salt to taste",
+        "Fresh cilantro for garnish"
+      ],
+      "instructions": [
+        "Marinate chicken in yogurt, lemon juice, and 1 tsp garam masala for at least 30 minutes.",
+        "In a large pan, melt butter and sauté garlic and ginger until fragrant.",
+        "Add the remaining spices and cook for a minute until aromatic.",
+        "Add tomato puree and simmer for 10 minutes until slightly reduced.",
+        "Add the marinated chicken and cook until done, about 15 minutes.",
+        "Stir in heavy cream and remaining garam masala, simmer for 5 more minutes.",
+        "Garnish with fresh cilantro and serve with rice or naan."
+      ]
+    },
+    "tags": ["chicken", "curry", "creamy", "main"]
+  },
+  {
+    "name": "Kimchi",
+    "acceptableGuesses": ["kimchi", "fermented cabbage"],
+    "country": "South Korea",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Various_kimchi.jpg",
+    "ingredients": [
+      "napa cabbage",
+      "radish",
+      "green onion",
+      "garlic",
+      "ginger",
+      "chili powder",
+      "fish sauce"
+    ],
+    "blurb": "A flavorful fermented vegetable dish, typically made with cabbage and radish, seasoned with a spicy and savory paste that develops complex flavors over time.",
+    "recipe": {
+      "ingredients": [
+        "1 large napa cabbage",
+        "1/4 cup sea salt",
+        "1 cup Korean radish, julienned",
+        "4 green onions, chopped",
+        "6 cloves garlic, minced",
+        "1 tbsp grated ginger",
+        "1/4 cup Korean chili powder (gochugaru)",
+        "2 tbsp fish sauce",
+        "1 tbsp sugar",
+        "1/2 cup water"
+      ],
+      "instructions": [
+        "Cut cabbage into quarters, remove core, and salt between leaves. Let sit for 2 hours.",
+        "Rinse cabbage 3 times and drain for 30 minutes.",
+        "Mix garlic, ginger, chili powder, fish sauce, sugar, and water to create a paste.",
+        "Add radish and green onions to the paste and mix well.",
+        "Coat each cabbage leaf with the mixture, ensuring even distribution.",
+        "Pack tightly into a clean jar, leaving 1-inch headspace.",
+        "Ferment at room temperature for 1-5 days, then refrigerate. Best after 2 weeks."
+      ]
+    },
+    "tags": ["fermented", "vegetable", "spicy", "side dish", "vegan"]
+  },
+  {
+    "name": "Tamiya",
+    "acceptableGuesses": ["tamiya", "fava bean fritters", "egyptian falafel"],
+    "country": "Egypt",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Tamiya_with_salad.jpg",
+    "ingredients": [
+      "fava beans",
+      "herbs",
+      "spices",
+      "onion",
+      "garlic",
+      "coriander",
+      "cumin"
+    ],
+    "blurb": "Crispy fritters made from ground fava beans mixed with fresh herbs and aromatic spices, deep-fried to perfection.",
+    "recipe": {
+      "ingredients": [
+        "2 cups dried peeled fava beans, soaked overnight",
+        "1 small onion, roughly chopped",
+        "3 cloves garlic",
+        "1/2 cup fresh parsley",
+        "1/2 cup fresh coriander (cilantro)",
+        "1/4 cup fresh dill",
+        "1 tsp ground cumin",
+        "1 tsp ground coriander",
+        "1/2 tsp baking soda",
+        "Salt and pepper to taste",
+        "Vegetable oil for frying",
+        "Sesame seeds (optional)"
+      ],
+      "instructions": [
+        "Drain soaked fava beans and pat dry.",
+        "In a food processor, combine beans, onion, garlic, and herbs. Pulse until finely minced but not pureed.",
+        "Transfer to a bowl and mix in spices, baking soda, salt, and pepper.",
+        "Let mixture rest for 30 minutes.",
+        "Form into small patties, optionally coat with sesame seeds.",
+        "Heat oil to 350°F (175°C) and fry patties until golden brown, about 3-4 minutes.",
+        "Drain on paper towels and serve hot in pita bread with tahini sauce and vegetables."
+      ]
+    },
+    "tags": ["vegetarian", "fritters", "legumes", "street food"]
+  },
+  {
+    "name": "Okro Soup",
+    "acceptableGuesses": ["okro soup", "okra soup", "nigerian okra soup"],
+    "country": "Nigeria",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/36/Nigerian_okra_soup.jpg",
+    "ingredients": [
+      "okra",
+      "meat",
+      "fish",
+      "palm oil",
+      "spices",
+      "stock",
+      "vegetables"
+    ],
+    "blurb": "A hearty and mucilaginous soup featuring sliced okra, meat, fish, and aromatic spices, often enjoyed with a starchy side dish.",
+    "recipe": {
+      "ingredients": [
+        "2 lbs fresh okra, sliced",
+        "1 lb assorted meat (beef, goat, or tripe), cut into chunks",
+        "1/2 lb smoked fish or dried fish",
+        "1/4 cup palm oil",
+        "2 stock cubes",
+        "1 onion, chopped",
+        "2-3 scotch bonnet peppers (adjust to taste)",
+        "1 cup spinach or bitter leaf, chopped",
+        "Salt and pepper to taste"
+      ],
+      "instructions": [
+        "Cook meat with stock cubes, salt, and onion until tender, about 30-40 minutes.",
+        "Add smoked fish for the last 10 minutes of cooking.",
+        "In a separate pot, heat palm oil and briefly sauté remaining onions.",
+        "Add sliced okra and stir-fry for 5 minutes.",
+        "Pour in the meat stock with cooked meat and fish.",
+        "Add chopped peppers and simmer for 15 minutes.",
+        "Add leafy greens in the last 5 minutes of cooking.",
+        "Serve hot with fufu, pounded yam, or garri."
+      ]
+    },
+    "tags": ["soup", "seafood", "meat", "vegetables", "spicy"]
+  },
+  {
+    "name": "Ema Datshi",
+    "acceptableGuesses": ["ema datshi", "chili cheese stew"],
+    "country": "Bhutan",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/6/62/Ema_Datshi_Bhutanese_Food.jpg",
+    "ingredients": [
+      "chilies",
+      "cheese",
+      "butter",
+      "onion",
+      "garlic",
+      "tomatoes"
+    ],
+    "blurb": "A simple yet flavorful stew made primarily of hot chilies and cheese, creating a spicy, rich and comforting dish.",
+    "recipe": {
+      "ingredients": [
+        "2 cups green or red chilies, sliced lengthwise",
+        "1/2 cup farmer cheese or feta cheese",
+        "1 onion, sliced",
+        "2 cloves garlic, minced",
+        "1 tomato, chopped (optional)",
+        "1 tbsp butter",
+        "1/2 cup water",
+        "Salt to taste"
+      ],
+      "instructions": [
+        "Heat butter in a pot and sauté onions and garlic until translucent.",
+        "Add sliced chilies and tomato if using, cook for 2-3 minutes.",
+        "Add water and bring to a simmer.",
+        "Reduce heat to low and add cheese, stirring gently until melted.",
+        "Season with salt and simmer for another 5 minutes until slightly thickened.",
+        "Serve hot with steamed rice."
+      ]
+    },
+    "tags": ["vegetarian", "spicy", "cheese", "stew", "main"]
+  },
+  {
+    "name": "Cepelinai",
+    "acceptableGuesses": ["cepelinai", "potato dumplings", "zeppelins"],
+    "country": "Lithuania",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Cepelinai_Potato_dumplings_with_Mushroom_Sauce.jpg",
+    "ingredients": [
+      "potatoes",
+      "ground meat",
+      "onions",
+      "bacon",
+      "sour cream",
+      "butter"
+    ],
+    "blurb": "Large oval-shaped potato dumplings filled with ground meat and served with sour cream and bacon sauce.",
+    "recipe": {
+      "ingredients": [
+        "5 lbs potatoes (2/3 raw, 1/3 boiled)",
+        "1 lb ground pork or beef",
+        "1 onion, finely chopped",
+        "1 egg",
+        "1/4 lb bacon, diced",
+        "1 cup sour cream",
+        "Salt and pepper to taste"
+      ],
+      "instructions": [
+        "Peel and grate raw potatoes, squeeze out excess liquid using cheesecloth.",
+        "Boil, cool, and mash the remaining potatoes.",
+        "Mix raw potato pulp with mashed potatoes, add salt.",
+        "For filling, sauté onions, mix with ground meat, egg, salt, and pepper.",
+        "Form potato mixture into oval shapes, add meat filling, and seal completely.",
+        "Boil in salted water for 25-30 minutes until they float and are cooked through.",
+        "For sauce, fry bacon until crisp, add sour cream, and heat through.",
+        "Serve dumplings topped with bacon and sour cream sauce."
+      ]
+    },
+    "tags": ["dumplings", "meat", "potatoes", "main", "comfort food"]
+  },
+  {
+    "name": "Maraq",
+    "acceptableGuesses": ["maraq", "somali soup", "meat soup"],
+    "country": "Somalia",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Somali_maraq_meat_soup.jpg",
+    "ingredients": [
+      "meat",
+      "vegetables",
+      "potatoes",
+      "tomatoes",
+      "onions",
+      "spices"
+    ],
+    "blurb": "A nourishing meat soup with vegetables and aromatic spices, typically served with flatbread for dipping.",
+    "recipe": {
+      "ingredients": [
+        "1 lb lamb or goat meat, cut into cubes",
+        "2 potatoes, cubed",
+        "2 carrots, diced",
+        "1 onion, chopped",
+        "2 tomatoes, chopped",
+        "2 cloves garlic, minced",
+        "1 tsp ground cumin",
+        "1/2 tsp ground coriander",
+        "1/4 tsp ground cinnamon",
+        "1/4 tsp ground cardamom",
+        "1/4 tsp black pepper",
+        "2 tbsp vegetable oil",
+        "6 cups water or stock",
+        "Fresh cilantro for garnish",
+        "Salt to taste"
+      ],
+      "instructions": [
+        "Heat oil in a large pot and brown meat on all sides.",
+        "Add onions and garlic, sauté until fragrant.",
+        "Stir in spices and cook for another minute.",
+        "Add tomatoes and cook until softened.",
+        "Pour in water or stock, bring to a boil, then reduce heat.",
+        "Simmer covered for 45 minutes until meat begins to tenderize.",
+        "Add potatoes and carrots, continue cooking for 20-25 minutes until vegetables are tender.",
+        "Garnish with cilantro and serve hot with flatbread."
+      ]
+    },
+    "tags": ["soup", "meat", "vegetables", "main", "spiced"]
+  },
+  {
+    "name": "Meat Pie",
+    "acceptableGuesses": ["meat pie", "aussie meat pie", "savory pie"],
+    "country": "Australia",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Meat_pie_with_sauce.jpg",
+    "ingredients": [
+      "ground beef",
+      "pastry",
+      "onions",
+      "gravy",
+      "tomato sauce",
+      "flour"
+    ],
+    "blurb": "A handheld savory pie filled with minced meat and gravy encased in golden flaky pastry.",
+    "recipe": {
+      "ingredients": [
+        "2 sheets frozen puff pastry, thawed",
+        "1 lb ground beef",
+        "1 onion, finely chopped",
+        "2 cloves garlic, minced",
+        "1 beef stock cube",
+        "1 tbsp Worcestershire sauce",
+        "2 tbsp tomato paste",
+        "1 tbsp all-purpose flour",
+        "1 cup beef stock",
+        "1 egg, beaten (for egg wash)",
+        "Salt and pepper to taste",
+        "Tomato sauce (ketchup) for serving"
+      ],
+      "instructions": [
+        "Preheat oven to 375°F (190°C).",
+        "In a pan, sauté onions and garlic until soft. Add beef and brown thoroughly.",
+        "Sprinkle flour over meat, stir for 1 minute, then add stock, tomato paste, Worcestershire sauce, and crumbled stock cube.",
+        "Simmer for 15 minutes until thickened. Allow to cool.",
+        "Cut pastry sheets - larger circles for bottom, smaller for top.",
+        "Place larger circles in greased muffin tins, fill with meat mixture.",
+        "Cover with smaller pastry circles, sealing edges. Cut a small vent on top.",
+        "Brush with beaten egg and bake for 20-25 minutes until golden.",
+        "Serve hot with tomato sauce."
+      ]
+    },
+    "tags": ["baked", "pastry", "meat", "handheld", "savory"]
+  },
+  {
+    "name": "Arepas",
+    "acceptableGuesses": ["arepas", "corn cakes", "corn patties"],
+    "country": "Venezuela",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/8/86/Arepas_de_queso_colombianas.JPG",
+    "ingredients": ["corn flour", "water", "salt", "oil", "fillings"],
+    "blurb": "Round, flat patties made from corn flour, grilled or fried until crispy outside and fluffy inside, often split and filled with various ingredients.",
+    "recipe": {
+      "ingredients": [
+        "2 cups pre-cooked white corn meal (P.A.N.)",
+        "2 1/2 cups warm water",
+        "1 tsp salt",
+        "2 tbsp vegetable oil for cooking",
+        "Optional fillings: shredded cheese, shredded chicken, black beans, avocado, etc."
+      ],
+      "instructions": [
+        "In a large bowl, combine corn meal and salt.",
+        "Gradually add warm water, mixing with your hands until no dry spots remain.",
+        "Let dough rest for 5 minutes, then knead briefly until smooth.",
+        "Divide dough into 8 equal portions and form into balls.",
+        "Flatten each ball into a disc about 1/2 inch thick.",
+        "Heat oil in a skillet over medium heat.",
+        "Cook arepas for 5-7 minutes on each side until golden brown and crisp.",
+        "If desired, finish in a 350°F (175°C) oven for 15 minutes to ensure they're cooked through.",
+        "Split horizontally and fill with desired ingredients."
+      ]
+    },
+    "tags": ["bread", "corn", "vegetarian", "stuffed", "handheld"]
+  },
+  {
+    "name": "Dal Bhat",
+    "acceptableGuesses": ["dal bhat", "lentil rice", "dhal bhat"],
+    "country": "Nepal",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/9/96/Dal-Bhat-Tarkari_03.jpg",
+    "ingredients": [
+      "lentils",
+      "rice",
+      "vegetables",
+      "spices",
+      "ghee",
+      "cumin",
+      "turmeric"
+    ],
+    "blurb": "A hearty combination of lentil soup and steamed rice, often served with various vegetable curries and pickles.",
+    "recipe": {
+      "ingredients": [
+        "1 cup yellow or red lentils, rinsed",
+        "2 cups basmati rice",
+        "1 onion, finely chopped",
+        "2 tomatoes, chopped",
+        "2 cloves garlic, minced",
+        "1 inch ginger, grated",
+        "1 tsp cumin seeds",
+        "1/2 tsp turmeric powder",
+        "1 tsp coriander powder",
+        "2 tbsp ghee or oil",
+        "Fresh cilantro for garnish",
+        "Salt to taste"
+      ],
+      "instructions": [
+        "For rice: Rinse rice until water runs clear. Cook with 4 cups water until fluffy.",
+        "For dal: Cook lentils in 3 cups water until soft, about 20-25 minutes.",
+        "In a separate pan, heat ghee and add cumin seeds until they splutter.",
+        "Add onions, sauté until golden brown. Add garlic and ginger, cook until fragrant.",
+        "Add tomatoes and spices, cook until tomatoes break down.",
+        "Pour this tempering into cooked lentils, simmer for 5 minutes.",
+        "Garnish dal with cilantro.",
+        "Serve hot dal alongside rice with optional vegetable sides and pickles."
+      ]
+    },
+    "tags": ["vegetarian", "lentils", "rice", "main", "healthy"]
+  },
+  {
+    "name": "Pad Thai",
+    "acceptableGuesses": ["pad thai", "phad thai", "thai stir-fried noodles"],
+    "country": "Thailand",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Phat_Thai_kung_Chang_Khien_street_stall.jpg/1280px-Phat_Thai_kung_Chang_Khien_street_stall.jpg",
+    "ingredients": [
+      "rice noodles",
+      "shrimp",
+      "tofu",
+      "eggs",
+      "tamarind",
+      "fish sauce",
+      "peanuts"
+    ],
+    "blurb": "Stir-fried rice noodles with a perfect balance of sweet, sour, and savory flavors, typically combined with eggs, tofu, bean sprouts, and crushed peanuts.",
+    "recipe": {
+      "ingredients": [
+        "8 oz flat rice noodles",
+        "8 oz protein (shrimp, chicken, or tofu)",
+        "2 eggs, beaten",
+        "2 cloves garlic, minced",
+        "1 shallot, thinly sliced",
+        "2 tbsp vegetable oil",
+        "2 tbsp tamarind paste",
+        "2 tbsp fish sauce",
+        "2 tbsp palm sugar or brown sugar",
+        "1 cup bean sprouts",
+        "2 green onions, chopped",
+        "1/4 cup roasted peanuts, crushed",
+        "Lime wedges and chili flakes for serving"
+      ],
+      "instructions": [
+        "Soak rice noodles in warm water for 30 minutes until soft but still firm. Drain.",
+        "Mix tamarind paste, fish sauce, and sugar in a small bowl.",
+        "Heat oil in a wok over high heat. Add garlic and shallots, stir-fry until fragrant.",
+        "Add protein and cook until almost done.",
+        "Push ingredients to one side, pour eggs into empty space. Scramble until nearly set.",
+        "Add drained noodles and sauce mixture. Stir-fry until noodles absorb the sauce.",
+        "Add bean sprouts and half the green onions, toss briefly.",
+        "Serve hot, garnished with remaining green onions, crushed peanuts, lime wedges, and chili flakes."
+      ]
+    },
+    "tags": ["noodles", "stir-fried", "seafood", "street food", "savory-sweet"]
+  },
+  {
+    "name": "Momo",
+    "acceptableGuesses": ["momo", "dumplings", "nepalese dumplings"],
+    "country": "Nepal",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Momo_nepal.jpg",
+    "ingredients": [
+      "flour",
+      "ground meat",
+      "onions",
+      "garlic",
+      "ginger",
+      "spices"
+    ],
+    "blurb": "Delicate steamed dumplings filled with spiced meat or vegetables, served with a spicy dipping sauce.",
+    "recipe": {
+      "ingredients": [
+        "2 cups all-purpose flour",
+        "3/4 cup water",
+        "1 lb ground chicken, pork, or vegetables",
+        "1 onion, finely chopped",
+        "3 cloves garlic, minced",
+        "1 inch ginger, grated",
+        "2 green onions, chopped",
+        "1/4 cup cilantro, chopped",
+        "1 tsp cumin powder",
+        "Salt and pepper to taste",
+        "1 tbsp oil"
+      ],
+      "instructions": [
+        "Mix flour and water to form a smooth dough. Cover and rest for 30 minutes.",
+        "For filling, combine meat, onions, garlic, ginger, green onions, cilantro, cumin, salt, pepper, and oil.",
+        "Roll dough into a log and cut into 16 equal pieces.",
+        "Roll each piece into a thin circle approximately 3-4 inches in diameter.",
+        "Place a tablespoon of filling in the center of each circle.",
+        "Fold and pleat edges to form dumplings.",
+        "Steam in a steamer lined with cabbage leaves for 15-18 minutes until cooked through.",
+        "Serve hot with a spicy tomato-based or sesame dipping sauce."
+      ]
+    },
+    "tags": ["dumplings", "steamed", "meat", "appetizer", "street food"]
+  },
+  {
+    "name": "Tam Mak Hoong",
+    "acceptableGuesses": ["tam mak hoong", "green papaya salad", "som tam"],
+    "country": "Laos",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/34/2019-06-13_Green_papaya_salad.jpg",
+    "ingredients": [
+      "green papaya",
+      "tomatoes",
+      "chili",
+      "lime",
+      "fish sauce",
+      "garlic",
+      "peanuts"
+    ],
+    "blurb": "A vibrant, spicy salad featuring shredded unripe papaya, with a perfect balance of sour, sweet, salty, and spicy flavors.",
+    "recipe": {
+      "ingredients": [
+        "1 green (unripe) papaya, peeled and shredded",
+        "2 tomatoes, cut into wedges",
+        "2-6 Thai bird's eye chilies (adjust to taste)",
+        "3 cloves garlic",
+        "2 tbsp fish sauce",
+        "2 tbsp lime juice",
+        "1 tbsp palm sugar or brown sugar",
+        "2 tbsp roasted peanuts, crushed",
+        "5-6 green beans, cut into 1-inch pieces",
+        "1 tbsp dried shrimp (optional)"
+      ],
+      "instructions": [
+        "In a large mortar, pound garlic and chilies until crushed.",
+        "Add green beans and pound lightly to bruise them.",
+        "Add dried shrimp (if using) and pound briefly.",
+        "Add tomato wedges and lightly crush to release juices.",
+        "Mix in fish sauce, lime juice, and sugar until combined.",
+        "Add shredded papaya and gently pound while mixing to infuse flavors.",
+        "Taste and adjust seasonings as needed.",
+        "Transfer to a serving dish and sprinkle with crushed peanuts."
+      ]
+    },
+    "tags": ["salad", "spicy", "vegetable", "fresh", "appetizer"]
+  },
+  {
+    "name": "Fufu",
+    "acceptableGuesses": ["fufu", "foofoo", "african pounded yam"],
+    "country": "Togo",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/48/Fufu_and_light_soup.jpg",
+    "ingredients": ["cassava", "plantain", "yam", "water"],
+    "blurb": "A starchy, dough-like side dish made by boiling and pounding starchy vegetables into a smooth, elastic consistency.",
+    "recipe": {
+      "ingredients": [
+        "2 cups cassava flour or 2 large yams",
+        "1 ripe plantain (optional)",
+        "2-3 cups water",
+        "1/2 tsp salt"
+      ],
+      "instructions": [
+        "For easy version: Gradually add cassava flour to boiling water, stirring constantly to prevent lumps.",
+        "Continue stirring until mixture becomes thick and smooth.",
+        "For traditional version: Peel and cut yams (and plantain if using) into chunks.",
+        "Boil until very soft, about 25-30 minutes.",
+        "Drain well and transfer to a wooden mortar.",
+        "Pound with a pestle, folding mixture regularly until smooth and elastic.",
+        "Shape into round balls and serve immediately with soup or stew.",
+        "To eat, pinch off a small piece, make an indentation, and use it to scoop up sauce."
+      ]
+    },
+    "tags": ["staple", "starchy", "side dish", "vegan"]
+  },
+  {
+    "name": "Solomillo al Whisky",
+    "acceptableGuesses": [
+      "solomillo al whisky",
+      "pork tenderloin with whisky sauce",
+      "spanish pork"
+    ],
+    "country": "Spain",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Solomillo_al_whisky.jpg",
+    "ingredients": [
+      "pork tenderloin",
+      "whisky",
+      "garlic",
+      "olive oil",
+      "flour",
+      "stock"
+    ],
+    "blurb": "Tender pork medallions cooked in a rich and flavorful whisky-based sauce with garlic.",
+    "recipe": {
+      "ingredients": [
+        "1 lb pork tenderloin, cut into medallions",
+        "4 cloves garlic, thinly sliced",
+        "1/4 cup whisky",
+        "1/2 cup chicken stock",
+        "2 tbsp olive oil",
+        "1 tbsp flour",
+        "1 tsp sweet paprika",
+        "Salt and pepper to taste",
+        "Fresh parsley for garnish"
+      ],
+      "instructions": [
+        "Season pork medallions with salt and pepper. Lightly dust with flour.",
+        "Heat olive oil in a large skillet over medium-high heat.",
+        "Sear pork for 2-3 minutes per side until golden but still slightly pink inside. Remove and set aside.",
+        "Lower heat, add sliced garlic to the same pan, and sauté until fragrant but not browned.",
+        "Add whisky to deglaze the pan, scraping up browned bits from the bottom.",
+        "Stir in paprika and chicken stock, simmer for 2-3 minutes until slightly reduced.",
+        "Return pork to the pan, cook for another 2 minutes until sauce thickens and pork is cooked through.",
+        "Garnish with parsley and serve with crusty bread to soak up the sauce."
+      ]
+    },
+    "tags": ["pork", "whisky", "sauce", "main", "quick"]
+  },
+  {
+    "name": "Laksa",
+    "acceptableGuesses": ["laksa", "curry noodle soup", "spicy coconut soup"],
+    "country": "Malaysia",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Laksa_Lemak.jpg/1200px-Laksa_Lemak.jpg",
+    "ingredients": [
+      "rice noodles",
+      "coconut milk",
+      "chili",
+      "lemongrass",
+      "shrimp",
+      "tofu",
+      "bean sprouts"
+    ],
+    "blurb": "A spicy noodle soup with a rich and aromatic coconut curry broth, topped with seafood, chicken, or tofu.",
+    "recipe": {
+      "ingredients": [
+        "8 oz rice noodles or vermicelli",
+        "8 oz protein (shrimp, chicken, or tofu)",
+        "2 cups coconut milk",
+        "2 cups chicken stock",
+        "2 tbsp laksa paste (or red curry paste)",
+        "2 stalks lemongrass, bruised",
+        "3 kaffir lime leaves",
+        "1 tbsp fish sauce",
+        "1 tsp palm sugar",
+        "1 cup bean sprouts",
+        "Fresh herbs (mint, cilantro, Vietnamese mint)",
+        "Lime wedges for serving"
+      ],
+      "instructions": [
+        "Soak rice noodles in warm water until soft, then drain and set aside.",
+        "In a large pot, simmer laksa paste in a little oil until fragrant.",
+        "Add lemongrass and kaffir lime leaves, stir for 30 seconds.",
+        "Pour in coconut milk and chicken stock, bring to a gentle simmer.",
+        "Add protein and cook until done (about 3-5 minutes for shrimp, 8-10 for chicken).",
+        "Season with fish sauce and palm sugar, adjust to taste.",
+        "Place noodles in serving bowls, ladle hot soup and protein over them.",
+        "Top with bean sprouts, fresh herbs, and serve with lime wedges."
+      ]
+    },
+    "tags": ["soup", "noodles", "spicy", "coconut", "seafood"]
+  },
+  {
+    "name": "Callaloo",
+    "acceptableGuesses": [
+      "callaloo",
+      "caribbean greens soup",
+      "trinidadian greens"
+    ],
+    "country": "Trinidad and Tobago",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c1/Callaloo_soup.jpg",
+    "ingredients": [
+      "dasheen leaves",
+      "okra",
+      "coconut milk",
+      "pumpkin",
+      "crab",
+      "thyme",
+      "onions"
+    ],
+    "blurb": "A velvety green soup made from leafy vegetables, okra, and often coconut milk, sometimes including crab or other seafood for added flavor.",
+    "recipe": {
+      "ingredients": [
+        "2 bunches callaloo leaves or spinach, chopped",
+        "10 okra pods, sliced",
+        "1 onion, chopped",
+        "3 cloves garlic, minced",
+        "1 cup coconut milk",
+        "1/2 cup pumpkin, cubed (optional)",
+        "1/2 lb crab legs or 1 cup crab meat (optional)",
+        "1 scotch bonnet pepper (whole for flavor)",
+        "2 sprigs thyme",
+        "2 cups water or stock",
+        "Salt and pepper to taste"
+      ],
+      "instructions": [
+        "In a large pot, sauté onions and garlic until translucent.",
+        "Add callaloo leaves, okra, pumpkin, scotch bonnet, and thyme.",
+        "Pour in water or stock and bring to a boil, then reduce to a simmer.",
+        "If using crab, add it now. Cover and cook for 20 minutes.",
+        "Add coconut milk and simmer for another 10 minutes.",
+        "Remove scotch bonnet pepper.",
+        "Using an immersion blender, blend until smooth (or leave chunky if preferred).",
+        "Season with salt and pepper, serve hot with rice or bread."
+      ]
+    },
+    "tags": ["soup", "greens", "seafood", "vegetable", "spicy"]
+  },
+  {
+    "name": "Ikan Bakar",
+    "acceptableGuesses": [
+      "ikan bakar",
+      "grilled fish",
+      "indonesian grilled fish"
+    ],
+    "country": "Indonesia",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/73/Ikan_bakar_Minang.JPG",
+    "ingredients": [
+      "fish",
+      "tamarind",
+      "chili",
+      "shallots",
+      "lemongrass",
+      "turmeric",
+      "lime"
+    ],
+    "blurb": "Aromatic grilled fish marinated in a spice paste and typically wrapped in banana leaves while cooking to enhance flavor.",
+    "recipe": {
+      "ingredients": [
+        "2 whole fish (such as snapper or mackerel), cleaned",
+        "4 shallots, minced",
+        "4 cloves garlic, minced",
+        "3 red chilies, chopped",
+        "1 inch ginger, grated",
+        "1 stalk lemongrass, white part only, minced",
+        "1 tsp turmeric powder",
+        "1 tbsp tamarind paste mixed with 2 tbsp water",
+        "2 tbsp vegetable oil",
+        "1 tsp salt",
+        "1 lime, cut into wedges",
+        "Banana leaves for wrapping (optional)"
+      ],
+      "instructions": [
+        "Score fish on both sides with diagonal cuts to help marinade penetrate.",
+        "Blend or pound shallots, garlic, chilies, ginger, lemongrass, and turmeric into a smooth paste.",
+        "Mix in tamarind liquid, oil, and salt.",
+        "Rub marinade all over fish, including inside cavity and cuts. Let marinate for at least 30 minutes.",
+        "If using banana leaves, briefly pass them over a flame to soften, then wrap fish.",
+        "Grill fish over medium charcoal heat for 6-8 minutes per side until cooked through.",
+        "Alternatively, bake at 375°F (190°C) for 20-25 minutes.",
+        "Serve hot with lime wedges and rice."
+      ]
+    },
+    "tags": ["seafood", "grilled", "spicy", "main", "aromatic"]
+  },
+  {
+    "name": "Qurutob",
+    "acceptableGuesses": ["qurutob", "fatir with qurut", "tajik bread dish"],
+    "country": "Tajikistan",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Qurutob.jpg",
+    "ingredients": [
+      "flatbread",
+      "qurut cheese",
+      "onions",
+      "vegetable oil",
+      "herbs"
+    ],
+    "blurb": "A layered dish featuring torn flatbread soaked in a tangy, reconstituted dried cheese sauce, topped with fried onions and fresh herbs.",
+    "recipe": {
+      "ingredients": [
+        "2 large flatbreads (such as fatir or mountain bread)",
+        "1 cup qurut (dried yogurt balls) or 2 cups greek yogurt with lemon juice",
+        "2 onions, thinly sliced",
+        "1/4 cup vegetable oil",
+        "1/2 cup fresh herbs (cilantro, dill, mint) chopped",
+        "1 tsp salt (adjust if using greek yogurt substitute)",
+        "1/2 cup warm water (for reconstituting qurut)"
+      ],
+      "instructions": [
+        "If using qurut, soak in warm water for 2-3 hours until soft, then mash into a sauce.",
+        "If using yogurt substitute, mix greek yogurt with lemon juice to taste.",
+        "Heat oil in a pan and sauté onions until golden brown and caramelized.",
+        "Tear flatbread into bite-sized pieces.",
+        "In a large serving dish, arrange a layer of bread pieces.",
+        "Pour the qurut sauce over the bread, allowing it to soak in.",
+        "Top with caramelized onions (including the oil).",
+        "Sprinkle generously with fresh herbs.",
+        "Traditionally served communally from one large plate."
+      ]
+    },
+    "tags": ["bread", "dairy", "vegetarian", "main", "communal"]
+  },
+  {
+    "name": "Colcannon",
+    "acceptableGuesses": [
+      "colcannon",
+      "irish mashed potatoes",
+      "potato and cabbage mash"
+    ],
+    "country": "Ireland",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/16/Colcannon_2.jpg",
+    "ingredients": [
+      "potatoes",
+      "kale",
+      "cabbage",
+      "butter",
+      "milk",
+      "green onions"
+    ],
+    "blurb": "A creamy mashed potato dish mixed with sautéed greens and scallions, finished with a pool of melted butter in the center.",
+    "recipe": {
+      "ingredients": [
+        "2 lbs potatoes, peeled and cut into chunks",
+        "1 cup chopped kale or cabbage",
+        "1/2 cup milk, warmed",
+        "1/2 cup butter, divided",
+        "4 green onions, finely chopped",
+        "Salt and pepper to taste",
+        "Chopped parsley for garnish"
+      ],
+      "instructions": [
+        "Place potatoes in a pot, cover with cold water, add salt, and bring to a boil.",
+        "Simmer until potatoes are tender, about 15-20 minutes, then drain well.",
+        "Meanwhile, blanch kale or cabbage in boiling water for 3-5 minutes, then drain thoroughly.",
+        "Mash potatoes thoroughly, add warm milk and half the butter, beat until smooth.",
+        "Fold in the blanched greens and chopped green onions.",
+        "Season with salt and pepper to taste.",
+        "Transfer to a serving dish, make a well in the center.",
+        "Melt remaining butter and pour into the well. Garnish with parsley."
+      ]
+    },
+    "tags": ["vegetarian", "side dish", "comfort food", "potatoes", "greens"]
+  },
+  {
+    "name": "Koshari",
+    "acceptableGuesses": ["koshari", "kushari", "rice and lentil dish"],
+    "country": "Egypt",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/46/Koshari.jpg",
+    "ingredients": [
+      "rice",
+      "lentils",
+      "macaroni",
+      "chickpeas",
+      "tomato sauce",
+      "fried onions",
+      "garlic"
+    ],
+    "blurb": "A hearty street food dish combining rice, lentils, pasta, and chickpeas, topped with spiced tomato sauce and crispy fried onions.",
+    "recipe": {
+      "ingredients": [
+        "1 cup rice",
+        "1 cup brown lentils, rinsed",
+        "1 cup macaroni or small pasta",
+        "1 can (15 oz) chickpeas, drained and rinsed",
+        "2 large onions, thinly sliced",
+        "4 cloves garlic, minced",
+        "1 can (15 oz) tomato sauce",
+        "2 tbsp vegetable oil, plus more for frying onions",
+        "1 tbsp vinegar",
+        "1 tsp each cumin, coriander",
+        "1/2 tsp red pepper flakes",
+        "Salt and pepper to taste"
+      ],
+      "instructions": [
+        "Cook lentils in 3 cups water until tender but not mushy, about 20-25 minutes.",
+        "In another pot, cook rice according to package directions.",
+        "Cook pasta until al dente, drain and rinse with cold water.",
+        "For the sauce: Sauté 2 cloves garlic in 2 tbsp oil until fragrant, add tomato sauce, vinegar, half the spices, salt, and pepper. Simmer for 10 minutes.",
+        "For crispy onions: Coat sliced onions in flour, fry in hot oil until golden and crisp. Drain on paper towels.",
+        "In a small pan, sauté remaining garlic and spices in oil for 1 minute to make a dakka sauce.",
+        "To serve: Layer rice, lentils, pasta, and chickpeas. Top with tomato sauce, dakka sauce, and crispy onions."
+      ]
+    },
+    "tags": ["vegetarian", "street food", "grain", "legumes", "main"]
+  },
+  {
+    "name": "Pizza",
+    "acceptableGuesses": ["pizza", "pizza margherita", "neapolitan pizza"],
+    "country": "Italy",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Eq_it-na_pizza-margherita_sep2005_sml.jpg",
+    "ingredients": [
+      "dough",
+      "tomato sauce",
+      "mozzarella",
+      "basil",
+      "olive oil",
+      "flour",
+      "yeast"
+    ],
+    "blurb": "A round flatbread topped with tomato sauce and cheese, baked at a high temperature until the crust is crisp and the cheese melted and bubbly.",
+    "recipe": {
+      "ingredients": [
+        "3 1/2 cups all-purpose flour",
+        "1 tsp instant yeast",
+        "1 tsp salt",
+        "1 1/2 cups warm water",
+        "1 tbsp olive oil, plus more for drizzling",
+        "1 can (14 oz) crushed tomatoes",
+        "2 cloves garlic, minced",
+        "1 tsp dried oregano",
+        "8 oz fresh mozzarella, sliced",
+        "Fresh basil leaves",
+        "Salt and pepper to taste"
+      ],
+      "instructions": [
+        "For dough: Mix flour, yeast, and salt. Add water and oil, mix until dough forms.",
+        "Knead dough for 10 minutes until smooth and elastic. Place in oiled bowl, cover, and let rise for 1-2 hours.",
+        "For sauce: Mix crushed tomatoes with garlic, oregano, salt, and pepper.",
+        "Preheat oven to highest setting (ideally 500°F/260°C) with pizza stone if available.",
+        "Divide dough into 2-3 balls. Stretch or roll each into a thin circle.",
+        "Spread sauce thinly over dough, leaving a border for crust.",
+        "Top with mozzarella slices.",
+        "Bake for 8-10 minutes until crust is golden and cheese is bubbly.",
+        "Remove from oven, top with fresh basil and a drizzle of olive oil."
+      ]
+    },
+    "tags": ["baked", "cheese", "tomato", "bread", "classic"]
+  },
+  {
+    "name": "Falafel",
+    "acceptableGuesses": ["falafel"],
+    "country": "Israel",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Falafel_with_Hummus%2C_Israel.jpg",
+    "ingredients": [
+      "chickpeas",
+      "onion",
+      "garlic",
+      "cumin",
+      "parsley",
+      "flour"
+    ],
+    "blurb": "Crispy golden orbs made from a blend of legumes and herbs, often enjoyed tucked into warm flatbreads with fresh vegetables.",
+    "recipe": {
+      "ingredients": [
+        "1 cup dried chickpeas, soaked overnight",
+        "1 small onion, chopped",
+        "2 cloves garlic, minced",
+        "1/4 cup chopped parsley",
+        "1 tsp ground cumin",
+        "2 tbsp flour",
+        "Salt and pepper to taste",
+        "Oil for frying"
+      ],
+      "instructions": [
+        "Drain soaked chickpeas and blend with onion, garlic, parsley, cumin, flour, salt, and pepper until coarse paste forms.",
+        "Chill the mixture for 30 minutes.",
+        "Form into small balls or patties.",
+        "Heat oil to 350°F (175°C) and fry in batches until deep golden brown.",
+        "Drain on paper towels and serve warm."
+      ]
+    },
+    "tags": ["fried", "vegan", "crispy", "street food", "legume"]
+  },
+  {
+    "name": "Sushi",
+    "acceptableGuesses": ["sushi"],
+    "country": "Japan",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/6/60/Sushi_platter.jpg",
+    "ingredients": [
+      "sushi rice",
+      "nori",
+      "raw fish",
+      "rice vinegar",
+      "wasabi",
+      "soy sauce"
+    ],
+    "blurb": "Small, artfully crafted rolls combining seasoned rice with delicate slices of fish or vegetables, often dipped in a salty-savory condiment.",
+    "recipe": {
+      "ingredients": [
+        "2 cups sushi rice",
+        "1/4 cup rice vinegar",
+        "1 tbsp sugar",
+        "1 tsp salt",
+        "4 sheets nori",
+        "4 oz raw fish (salmon, tuna), thinly sliced",
+        "Cucumber, avocado, optional",
+        "Wasabi and soy sauce for serving"
+      ],
+      "instructions": [
+        "Cook sushi rice and season with vinegar, sugar, and salt mixture.",
+        "Place nori on bamboo mat, spread rice thinly over it.",
+        "Add fillings along one edge, roll tightly using the mat.",
+        "Slice into bite-sized pieces with a sharp knife.",
+        "Serve with wasabi and soy sauce."
+      ]
+    },
+    "tags": ["raw", "rice", "fish", "rolled", "finger food"]
+  },
+  {
+    "name": "Croissant",
+    "acceptableGuesses": ["croissant"],
+    "country": "France",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/6/65/Croissant-Petr-Kratochvil.jpg",
+    "ingredients": ["butter", "flour", "yeast", "milk", "sugar", "salt"],
+    "blurb": "Flaky, golden layers of laminated dough form a light, buttery crescent-shaped pastry that's both airy and rich.",
+    "recipe": {
+      "ingredients": [
+        "4 cups flour",
+        "1 tbsp sugar",
+        "1 tsp salt",
+        "1 tbsp yeast",
+        "1 1/4 cups warm milk",
+        "1 cup cold unsalted butter"
+      ],
+      "instructions": [
+        "Mix flour, sugar, salt, yeast, and milk to form a dough. Rest 1 hour.",
+        "Roll out dough, place sliced cold butter in center, fold and roll.",
+        "Refrigerate and repeat folds 3 times to laminate.",
+        "Roll and cut triangles, shape into crescents.",
+        "Let rise until puffy. Bake at 375°F (190°C) until golden.",
+        "Cool slightly before serving."
+      ]
+    },
+    "tags": ["baked", "pastry", "flaky", "buttery", "breakfast"]
+  },
+  {
+    "name": "Tacos",
+    "acceptableGuesses": ["tacos"],
+    "country": "Mexico",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Taco_mexicano.jpg",
+    "ingredients": ["tortilla", "meat", "onion", "cilantro", "lime", "chili"],
+    "blurb": "A handheld delight built on a soft or crispy shell and layered with savory fillings, fresh toppings, and a squeeze of citrus.",
+    "recipe": {
+      "ingredients": [
+        "8 corn tortillas",
+        "1 lb beef or pork, cooked and shredded",
+        "1 small onion, diced",
+        "1/4 cup chopped cilantro",
+        "2 limes, cut into wedges",
+        "Chili sauce or powder to taste"
+      ],
+      "instructions": [
+        "Warm tortillas until pliable.",
+        "Fill with meat, sprinkle with onion and cilantro.",
+        "Drizzle with chili sauce and serve with lime wedges.",
+        "Optional: Add avocado or cheese."
+      ]
+    },
+    "tags": ["handheld", "spicy", "street food", "fresh", "grilled"]
+  },
+  {
+    "name": "Chakalaka",
+    "acceptableGuesses": ["chakalaka"],
+    "country": "South Africa",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/74/Chakalaka%2C_pap%2C_and_grilled_chicken.jpg",
+    "ingredients": [
+      "onion",
+      "tomato",
+      "carrot",
+      "beans",
+      "curry powder",
+      "garlic"
+    ],
+    "blurb": "A vibrant vegetable medley simmered with spices, often served as a flavorful companion to grilled dishes or starches.",
+    "recipe": {
+      "ingredients": [
+        "1 onion, chopped",
+        "2 tomatoes, diced",
+        "2 carrots, grated",
+        "1 can baked beans",
+        "1 tbsp curry powder",
+        "2 cloves garlic, minced",
+        "Salt and oil to taste"
+      ],
+      "instructions": [
+        "Sauté onion and garlic in oil until soft.",
+        "Add tomatoes, cook until softened.",
+        "Stir in carrots and curry powder, cook 5 mins.",
+        "Add beans, mix well, simmer for 10 minutes.",
+        "Serve warm or chilled."
+      ]
+    },
+    "tags": ["vegetarian", "spicy", "simmered", "colorful", "side dish"]
+  },
+  {
+    "name": "Chicken Adobo",
+    "acceptableGuesses": ["chicken adobo", "adobo"],
+    "country": "Philippines",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Philippine_Chicken_Adobo.jpg",
+    "ingredients": [
+      "chicken",
+      "soy sauce",
+      "vinegar",
+      "garlic",
+      "bay leaf",
+      "black pepper"
+    ],
+    "blurb": "A comforting dish featuring tender meat simmered slowly in a tangy, garlicky marinade that reduces into a rich glaze.",
+    "recipe": {
+      "ingredients": [
+        "2 lbs chicken thighs",
+        "1/2 cup soy sauce",
+        "1/3 cup vinegar",
+        "4 cloves garlic, minced",
+        "2 bay leaves",
+        "1 tsp whole black peppercorns",
+        "1 tbsp oil",
+        "1/2 cup water (optional)"
+      ],
+      "instructions": [
+        "Marinate chicken with soy sauce, vinegar, garlic, bay leaves, and pepper for 30 minutes.",
+        "In a pot, brown chicken in oil.",
+        "Add marinade and simmer covered for 30–40 minutes.",
+        "Uncover and cook until sauce thickens.",
+        "Serve hot with rice."
+      ]
+    },
+    "tags": ["braised", "tangy", "savory", "comfort food", "glazed"]
+  },
+  {
+    "name": "Khinkali",
+    "acceptableGuesses": ["khinkali"],
+    "country": "Georgia",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Khinkali_Georgian_dumplings.jpg",
+    "ingredients": [
+      "flour",
+      "water",
+      "beef",
+      "onion",
+      "black pepper",
+      "coriander"
+    ],
+    "blurb": "Hand-shaped dumplings with a juicy filling inside, traditionally eaten by hand and known for their signature twist at the top.",
+    "recipe": {
+      "ingredients": [
+        "3 cups flour",
+        "1 cup water",
+        "1/2 tsp salt",
+        "1 lb ground beef",
+        "1 small onion, finely chopped",
+        "1 tsp black pepper",
+        "1/2 tsp ground coriander",
+        "1/4 cup cold water (for filling)"
+      ],
+      "instructions": [
+        "Mix flour, salt, and water into a dough. Let rest 30 mins.",
+        "Combine beef, onion, spices, and cold water for filling.",
+        "Roll dough thin, cut into circles, place filling in center.",
+        "Pleat and twist to seal dumplings.",
+        "Boil in salted water until they float + 3 mins more.",
+        "Serve hot, traditionally eaten by hand."
+      ]
+    },
+    "tags": ["dumpling", "boiled", "savory", "juicy", "handheld"]
+  },
+  {
+    "name": "Poutine",
+    "acceptableGuesses": ["poutine"],
+    "country": "Canada",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e5/Poutine_Burger_Bar_Crescent_Montreal.jpg",
+    "ingredients": [
+      "fries",
+      "cheese curds",
+      "gravy",
+      "butter",
+      "flour",
+      "beef broth"
+    ],
+    "blurb": "A hearty dish built around golden fries smothered in warm, savory sauce and soft, slightly squeaky dairy morsels.",
+    "recipe": {
+      "ingredients": [
+        "4 cups French fries, freshly cooked",
+        "1 cup cheese curds",
+        "2 tbsp butter",
+        "2 tbsp flour",
+        "1 1/2 cups beef broth",
+        "Salt and pepper to taste"
+      ],
+      "instructions": [
+        "Melt butter in a saucepan, add flour and cook for 2 minutes.",
+        "Gradually whisk in broth, stir until thickened.",
+        "Season with salt and pepper.",
+        "Place hot fries on a plate, top with cheese curds.",
+        "Pour hot gravy over the top and serve immediately."
+      ]
+    },
+    "tags": ["comfort food", "fried", "cheesy", "saucy", "indulgent"]
+  },
+  {
+    "name": "Empanadas",
+    "acceptableGuesses": ["empanadas"],
+    "country": "Argentina",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f2/Argentine_empanadas.jpg",
+    "ingredients": ["flour", "beef", "onion", "paprika", "egg", "olive oil"],
+    "blurb": "Golden pastry pockets filled with a flavorful mix of seasoned meat and vegetables, often baked or fried for a crispy shell.",
+    "recipe": {
+      "ingredients": [
+        "2 1/2 cups flour",
+        "1/2 cup olive oil",
+        "1/2 cup warm water",
+        "1 lb ground beef",
+        "1 onion, chopped",
+        "1 tsp paprika",
+        "1 hard-boiled egg, chopped",
+        "Salt and pepper to taste"
+      ],
+      "instructions": [
+        "Make dough with flour, oil, and water. Rest 30 minutes.",
+        "Cook beef with onion, paprika, salt, and pepper.",
+        "Cool, mix in chopped egg.",
+        "Roll dough, cut into circles, fill, and fold.",
+        "Seal edges, bake at 400°F (200°C) for 20–25 minutes.",
+        "Serve warm."
+      ]
+    },
+    "tags": ["baked", "filled", "handheld", "savory", "street food"]
+  },
+  {
+    "name": "Ropa Vieja",
+    "acceptableGuesses": ["ropa vieja"],
+    "country": "Cuba",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Ropa_Vieja_%28Cuban_dish%29.jpg",
+    "ingredients": [
+      "beef",
+      "tomato",
+      "bell pepper",
+      "onion",
+      "garlic",
+      "olive oil"
+    ],
+    "blurb": "Tender strands of meat simmered with vegetables in a rich, aromatic sauce that's both rustic and deeply comforting.",
+    "recipe": {
+      "ingredients": [
+        "2 lbs flank steak",
+        "1 onion, sliced",
+        "1 red bell pepper, sliced",
+        "3 cloves garlic, minced",
+        "1 can crushed tomatoes (14 oz)",
+        "1/4 cup olive oil",
+        "1 tsp cumin",
+        "Salt and pepper to taste"
+      ],
+      "instructions": [
+        "Boil flank steak until tender, shred with forks.",
+        "Sauté onion, pepper, and garlic in olive oil.",
+        "Add tomatoes, cumin, salt, pepper, and beef.",
+        "Simmer for 30–40 minutes until flavors meld.",
+        "Serve with rice or plantains."
+      ]
+    },
+    "tags": ["shredded", "braised", "savory", "slow-cooked", "comfort food"]
+  },
+  {
+    "name": "Tom Yum Soup",
+    "acceptableGuesses": ["tom yum", "tom yum soup"],
+    "country": "Thailand",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d3/Tom_Yum_Goong.JPG",
+    "ingredients": [
+      "shrimp",
+      "lemongrass",
+      "lime",
+      "chilies",
+      "mushrooms",
+      "fish sauce"
+    ],
+    "blurb": "A hot and sour soup bursting with herbal aroma and a fiery tang, often served with tender seafood or mushrooms.",
+    "recipe": {
+      "ingredients": [
+        "1/2 lb shrimp, peeled and deveined",
+        "2 stalks lemongrass, bruised and chopped",
+        "4 kaffir lime leaves",
+        "2 cups mushrooms, sliced",
+        "2–3 Thai chilies, chopped",
+        "2 tbsp fish sauce",
+        "Juice of 2 limes",
+        "4 cups chicken broth"
+      ],
+      "instructions": [
+        "Boil lemongrass and lime leaves in broth for 10 minutes.",
+        "Add mushrooms and shrimp, cook until shrimp is pink.",
+        "Stir in chilies, fish sauce, and lime juice.",
+        "Serve hot with cilantro garnish."
+      ]
+    },
+    "tags": ["soup", "spicy", "sour", "herbal", "seafood"]
+  },
+  {
+    "name": "Bibimbap",
+    "acceptableGuesses": ["bibimbap"],
+    "country": "South Korea",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/11/Dolsot-bibimbap.jpg",
+    "ingredients": [
+      "rice",
+      "egg",
+      "spinach",
+      "carrot",
+      "soy sauce",
+      "gochujang"
+    ],
+    "blurb": "A vibrant bowl layered with assorted vegetables, protein, and a spicy sauce, all mixed together just before eating.",
+    "recipe": {
+      "ingredients": [
+        "2 cups cooked rice",
+        "1 cup spinach, blanched",
+        "1/2 cup carrots, julienned",
+        "1/2 cup bean sprouts",
+        "1 egg",
+        "2 tbsp gochujang (Korean chili paste)",
+        "1 tbsp soy sauce",
+        "1 tsp sesame oil"
+      ],
+      "instructions": [
+        "Arrange warm rice in a bowl.",
+        "Top with neatly arranged vegetables and a fried egg.",
+        "Drizzle with soy sauce and sesame oil.",
+        "Add gochujang to taste.",
+        "Mix everything thoroughly before eating."
+      ]
+    },
+    "tags": ["rice bowl", "vegetables", "spicy", "colorful", "mix"]
+  },
+  {
+    "name": "Jollof Rice",
+    "acceptableGuesses": ["jollof rice", "jollof"],
+    "country": "Nigeria",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/2/29/Jollof_Rice_with_fried_plantains.jpg",
+    "ingredients": [
+      "rice",
+      "tomato paste",
+      "onion",
+      "bell pepper",
+      "garlic",
+      "vegetable oil"
+    ],
+    "blurb": "A bold and vibrant one-pot rice dish simmered in a rich tomato base and spiced with peppers and herbs.",
+    "recipe": {
+      "ingredients": [
+        "2 cups long-grain rice",
+        "1/4 cup tomato paste",
+        "1 onion, chopped",
+        "1 red bell pepper, blended",
+        "2 cloves garlic, minced",
+        "1/4 cup vegetable oil",
+        "2 cups chicken or vegetable broth",
+        "Salt and spices to taste"
+      ],
+      "instructions": [
+        "Sauté onion, garlic, and blended pepper in oil.",
+        "Add tomato paste and fry until deep red.",
+        "Stir in rice and broth, bring to boil.",
+        "Cover and simmer on low heat until rice is cooked and fluffy.",
+        "Stir occasionally to prevent burning."
+      ]
+    },
+    "tags": ["rice", "one-pot", "spicy", "tomato-based", "festive"]
   }
 ]
