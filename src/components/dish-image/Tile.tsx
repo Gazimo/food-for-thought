@@ -1,4 +1,7 @@
 import Image from "next/image";
+import { useState } from "react";
+
+const FALLBACK_IMAGE = "/images/404.png";
 
 export function Tile({
   imageUrl,
@@ -15,6 +18,14 @@ export function Tile({
   width: number;
   height: number;
 }) {
+  const [imgSrc, setImgSrc] = useState(imageUrl);
+
+  // Handle image load error by switching to fallback
+  const handleImageError = () => {
+    console.warn(`Failed to load image: ${imgSrc}`);
+    setImgSrc(FALLBACK_IMAGE);
+  };
+
   return (
     <div
       className="relative perspective-[1000px]"
@@ -42,11 +53,13 @@ export function Tile({
             }}
           >
             <Image
-              src={imageUrl}
+              src={imgSrc}
               alt="tile"
               width={width}
               height={height}
               className="w-full h-full object-cover"
+              onError={handleImageError}
+              priority={true} // Load this image with priority
             />
           </div>
         </div>

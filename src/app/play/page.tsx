@@ -14,6 +14,8 @@ export default function GamePage() {
   const {
     currentDish,
     gamePhase,
+    modalVisible,
+    toggleModal,
     startNewGame,
     revealedTiles,
     resetCountryGuesses,
@@ -52,6 +54,16 @@ export default function GamePage() {
       <PhaseContainer>
         {gamePhase === "dish" && <DishPhase />}
         {gamePhase === "country" && <CountryPhase />}
+        {gamePhase === "complete" && !modalVisible && (
+          <div className="text-center mt-4">
+            <button
+              onClick={() => toggleModal(true)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Show Results
+            </button>
+          </div>
+        )}
       </PhaseContainer>
 
       <ResultModal />

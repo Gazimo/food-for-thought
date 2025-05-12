@@ -2,16 +2,32 @@ import { useGameStore } from "@/store/gameStore";
 import React from "react";
 
 export const ResultModal: React.FC = () => {
-  const { currentDish, gamePhase, startNewGame, gameResults } = useGameStore();
+  const {
+    currentDish,
+    gamePhase,
+    startNewGame,
+    gameResults,
+    modalVisible,
+    toggleModal,
+  } = useGameStore();
 
-  if (gamePhase !== "complete" || !currentDish) return null;
+  if (gamePhase !== "complete" || !currentDish || !modalVisible) return null;
 
   const totalGuesses = gameResults.dishGuesses + gameResults.countryGuesses;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 max-w-md w-full">
-        <h2 className="text-2xl font-bold mb-4">🎉 Game Complete!</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold">🎉 Game Complete!</h2>
+          <button
+            onClick={() => toggleModal(false)}
+            className="text-gray-500 hover:text-gray-700"
+            aria-label="Close"
+          >
+            ✕
+          </button>
+        </div>
 
         <div className="mb-4">
           <p className="text-lg">The dish was:</p>

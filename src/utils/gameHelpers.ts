@@ -27,19 +27,20 @@ export function calculateDirection(
 ) {
   // Convert degrees to radians
   const toRad = (deg: number) => (deg * Math.PI) / 180;
-  lat1 = toRad(lat1);
-  lon1 = toRad(lon1);
-  lat2 = toRad(lat2);
-  lon2 = toRad(lon2);
-  
-  const y = Math.sin(lon2 - lon1) * Math.cos(lat2);
+  const lat1Rad = toRad(lat1);
+  const lon1Rad = toRad(lon1);
+  const lat2Rad = toRad(lat2);
+  const lon2Rad = toRad(lon2);
+
+  const y = Math.sin(lon2Rad - lon1Rad) * Math.cos(lat2Rad);
   const x =
-    Math.cos(lat1) * Math.sin(lat2) -
-    Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
+    Math.cos(lat1Rad) * Math.sin(lat2Rad) -
+    Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(lon2Rad - lon1Rad);
   const bearing = (Math.atan2(y, x) * 180) / Math.PI;
+
   const direction = (bearing + 360) % 360;
-  const directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW", "N"];
-  return directions[Math.round(direction / 45)];
+  const directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
+  return directions[Math.floor((direction % 360) / 45)];
 }
 
 export function normalizeString(str: string) {

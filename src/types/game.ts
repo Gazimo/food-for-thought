@@ -41,4 +41,6 @@ export interface GameState {
   getSortedCountryCoords: () => Record<string, { lat: number; lng: number }>;
   guessDish: (guess: string) => boolean;
   guessCountry: (guess: string) => boolean;
+  modalVisible: boolean;
+  toggleModal: (visible?: boolean) => void;
 }

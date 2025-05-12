@@ -43,6 +43,14 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
   revealedTiles: [false, false, false, false, false, false],
   countryGuessResults: [],
+  modalVisible: true,
+  toggleModal: (visible?: boolean) => {
+    if (visible !== undefined) {
+      set({ modalVisible: visible });
+    } else {
+      set((state) => ({ modalVisible: !state.modalVisible }));
+    }
+  },
   updateGameResults: (results: Partial<GameResults>) => {
     set((state) => ({
       gameResults: { ...state.gameResults, ...results },
@@ -186,7 +194,10 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   completeGame: () => {
-    set({ gamePhase: "complete" });
+    set({
+      gamePhase: "complete",
+      modalVisible: true,
+    });
   },
   resetCountryGuesses: () => set({ countryGuessResults: [] }),
   getSortedCountryCoords,
