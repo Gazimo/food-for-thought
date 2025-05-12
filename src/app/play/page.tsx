@@ -7,7 +7,6 @@ import { ResultModal } from "@/components/ResultModal";
 import { TileGrid } from "@/components/dish-image/TileGrid";
 import { useGameStore } from "@/store/gameStore";
 import { useEffect } from "react";
-import { getCountryNames } from "../../utils/countries";
 import { CountryPhase } from "./CountryPhase";
 import { DishPhase } from "./DishPhase";
 
@@ -19,8 +18,6 @@ export default function GamePage() {
     revealedTiles,
     resetCountryGuesses,
   } = useGameStore();
-
-  const countryNames = getCountryNames();
 
   useEffect(() => {
     const init = async () => {
