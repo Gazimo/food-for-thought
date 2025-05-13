@@ -52,8 +52,14 @@ export default function GamePage() {
       )}
 
       <PhaseContainer>
-        {gamePhase === "dish" && <DishPhase />}
-        {gamePhase === "country" && <CountryPhase />}
+        {(gamePhase === "dish" ||
+          (gamePhase === "complete" && !modalVisible)) && (
+          <DishPhase isComplete={gamePhase === "complete"} />
+        )}
+        {(gamePhase === "country" ||
+          (gamePhase === "complete" && !modalVisible)) && (
+          <CountryPhase isComplete={gamePhase === "complete"} />
+        )}
         {gamePhase === "complete" && !modalVisible && (
           <div className="text-center mt-4">
             <button

@@ -19,11 +19,18 @@ export const CountryGuessFeedback: React.FC<CountryGuessFeedbackProps> = ({
 
   if (guessResults.length === 0) return null;
 
+  // Sort by distance, closest first, NaN/Invalid at the end
+  const sortedResults = [...guessResults].sort((a, b) => {
+    if (isNaN(a.distance)) return 1;
+    if (isNaN(b.distance)) return -1;
+    return a.distance - b.distance;
+  });
+
   return (
     <div className="mt-4">
       <h3 className="font-semibold text-lg mb-2">Previous Guesses:</h3>
       <div className="space-y-2">
-        {guessResults.map((result, index) => (
+        {sortedResults.map((result, index) => (
           <div
             key={index}
             className={`p-3 rounded-lg border ${
