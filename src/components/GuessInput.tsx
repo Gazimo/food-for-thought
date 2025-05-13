@@ -75,6 +75,19 @@ export const GuessInput: React.FC<GuessInputProps> = ({
             placeholder={placeholder}
             className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+          <button
+            type="button"
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+            disabled={!input.trim()}
+            onClick={() => {
+              if (input.trim()) {
+                onGuess(input.trim());
+                setInput("");
+              }
+            }}
+          >
+            Submit
+          </button>
         </div>
       </div>
     );
@@ -90,6 +103,22 @@ export const GuessInput: React.FC<GuessInputProps> = ({
               "flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500",
           })}
         />
+        <button
+          type="button"
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+          disabled={!input.trim()}
+          onClick={() => {
+            if (input.trim()) {
+              onGuess(input.trim());
+              setInput("");
+              setInputValue("");
+              setSelectedItem(null);
+              reset();
+            }
+          }}
+        >
+          Submit
+        </button>
       </div>
       <ul
         {...getMenuProps()}
