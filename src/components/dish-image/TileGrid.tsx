@@ -9,14 +9,12 @@ export function TileGrid({
 }) {
   // Responsive: use 100vw - 32px for mobile, 500px for desktop
   // 3:2 aspect ratio
-  const isMobile = typeof window !== "undefined" && window.innerWidth <= 600;
   const width =
     typeof window !== "undefined" ? Math.min(window.innerWidth - 32, 500) : 500;
   const height = (width / 3) * 2;
   const cols = 3;
   const tileWidth = width / 3;
   const tileHeight = height / 2;
-  const allRevealed = revealedTiles.every((tile) => tile);
 
   return (
     <div
