@@ -40,7 +40,7 @@ export function calculateDirection(
 
   const direction = (bearing + 360) % 360;
   const directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
-  return directions[Math.floor((direction % 360) / 45)];
+  return directions[Math.round(direction / 45) % 8];
 }
 
 export function normalizeString(str: string) {

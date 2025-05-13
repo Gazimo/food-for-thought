@@ -1,4 +1,5 @@
 import { CountryGuessFeedback } from "@/components/CountryGuessFeedback";
+import { GuessFeedback } from "@/components/GuessFeedback";
 import { GuessInput } from "@/components/GuessInput";
 import { useGameStore } from "@/store/gameStore";
 import { getCountryNames } from "../../utils/countries";
@@ -33,6 +34,7 @@ export function CountryPhase({ isComplete }: CountryPhaseProps) {
         </>
       )}
       <CountryGuessFeedback guessResults={countryGuessResults} />
+      <GuessFeedback />
     </>
   );
 }
