@@ -28,10 +28,11 @@ export function Tile({
 
   return (
     <div
-      className="relative perspective-[1000px]"
+      className="relative perspective-[1000px] max-w-full"
       style={{
         width: width / 3,
         height: height / 2,
+        maxWidth: "100vw",
         transform: "translateZ(0)",
       }}
     >
@@ -50,6 +51,7 @@ export function Tile({
               height: `${height}px`,
               top: `-${top}px`,
               left: `-${left}px`,
+              maxWidth: "100vw",
             }}
           >
             <Image

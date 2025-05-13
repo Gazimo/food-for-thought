@@ -7,19 +7,21 @@ export function TileGrid({
   imageUrl: string;
   revealedTiles: boolean[];
 }) {
+  // Responsive: use 100vw - 32px for mobile, 500px for desktop
+  // 3:2 aspect ratio
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= 600;
+  const width =
+    typeof window !== "undefined" ? Math.min(window.innerWidth - 32, 500) : 500;
+  const height = (width / 3) * 2;
   const cols = 3;
-  const width = 500;
-  const height = 333;
-  const tileWidth = 500 / 3;
-  const tileHeight = 333 / 2;
+  const tileWidth = width / 3;
+  const tileHeight = height / 2;
   const allRevealed = revealedTiles.every((tile) => tile);
 
   return (
     <div
-      className={`grid grid-cols-3 grid-rows-2 mx-auto mb-4 ${
-        allRevealed ? "gap-0" : "gap-x-1 gap-y-[4px]"
-      }`}
-      style={{ width: `${width}px` }}
+      className={`grid grid-cols-3 grid-rows-2 mx-auto mb-4 max-w-full`}
+      style={{ width: `${width}px`, maxWidth: "100vw" }}
     >
       {Array.from({ length: 6 }).map((_, index) => {
         const row = Math.floor(index / cols);

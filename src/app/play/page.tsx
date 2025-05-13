@@ -41,7 +41,7 @@ export default function GamePage() {
   }, [gamePhase, resetCountryGuesses]);
 
   return (
-    <main className="p-6 max-w-xl mx-auto">
+    <main className="p-4 sm:p-6 max-w-full sm:max-w-xl mx-auto">
       <GameHeader />
 
       {currentDish?.imageUrl && (
