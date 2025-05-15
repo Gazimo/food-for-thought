@@ -19,6 +19,8 @@ export default function GamePage() {
     startNewGame,
     revealedTiles,
     resetCountryGuesses,
+    activePhase,
+    setActivePhase,
   } = useGameStore();
 
   useEffect(() => {
@@ -27,18 +29,20 @@ export default function GamePage() {
       await loadDishes();
       startNewGame();
       resetCountryGuesses();
+      setActivePhase("dish");
     };
 
     if (!currentDish) {
       init();
     }
-  }, [currentDish, startNewGame, resetCountryGuesses]);
+  }, [currentDish, startNewGame, resetCountryGuesses, setActivePhase]);
 
   useEffect(() => {
     if (gamePhase === "dish") {
       resetCountryGuesses();
+      setActivePhase("dish");
     }
-  }, [gamePhase, resetCountryGuesses]);
+  }, [gamePhase, resetCountryGuesses, setActivePhase]);
 
   return (
     <main className="p-4 sm:p-6 max-w-full sm:max-w-xl mx-auto">
@@ -52,14 +56,38 @@ export default function GamePage() {
       )}
 
       <PhaseContainer>
-        {(gamePhase === "dish" ||
-          (gamePhase === "complete" && !modalVisible)) && (
-          <DishPhase isComplete={gamePhase === "complete"} />
+        {/* Phase Content */}
+        {activePhase === "dish" && (
+          <DishPhase isComplete={gamePhase !== "dish"} />
         )}
-        {(gamePhase === "country" ||
-          (gamePhase === "complete" && !modalVisible)) && (
+        {activePhase === "country" && (
           <CountryPhase isComplete={gamePhase === "complete"} />
         )}
+        {/* Next/Back navigation */}
+        {activePhase === "dish" &&
+          (gamePhase === "country" || gamePhase === "complete") && (
+            <div className="text-center mt-4">
+              <button
+                onClick={() => setActivePhase("country")}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                {gamePhase === "complete"
+                  ? "Review your country guess"
+                  : "Try the next round"}
+              </button>
+            </div>
+          )}
+        {activePhase === "country" && (
+          <div className="text-left mt-2 mb-4">
+            <button
+              onClick={() => setActivePhase("dish")}
+              className="px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors"
+            >
+              ← Back to Dish
+            </button>
+          </div>
+        )}
+        {/* Show Results button after completion */}
         {gamePhase === "complete" && !modalVisible && (
           <div className="text-center mt-4">
             <button

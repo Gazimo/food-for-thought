@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const FALLBACK_IMAGE = "/images/404.png";
 
@@ -20,6 +20,9 @@ export function Tile({
 }) {
   const [imgSrc, setImgSrc] = useState(imageUrl);
 
+  useEffect(() => {
+    setImgSrc(imageUrl);
+  }, [imageUrl]);
   // Handle image load error by switching to fallback
   const handleImageError = () => {
     console.warn(`Failed to load image: ${imgSrc}`);

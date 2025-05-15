@@ -2,17 +2,28 @@
 
 import { useGameStore } from "@/store/gameStore";
 
-export const GuessFeedback = () => {
+interface GuessFeedbackProps {
+  alwaysShowIngredients?: boolean;
+}
+
+export const GuessFeedback = ({
+  alwaysShowIngredients = false,
+}: GuessFeedbackProps) => {
   const { currentDish, gamePhase, revealedIngredients } = useGameStore();
 
   if (!currentDish) return null;
 
   // Don't show ingredients section if no ingredients are revealed yet
-  if (gamePhase === "dish" && revealedIngredients <= 1) return null;
+  if (
+    !alwaysShowIngredients &&
+    gamePhase === "dish" &&
+    revealedIngredients <= 1
+  )
+    return null;
 
   return (
     <div className="mt-4">
-      {(gamePhase === "dish" || gamePhase === "complete") && (
+      {(gamePhase === "dish" || alwaysShowIngredients) && (
         <div className="space-y-2">
           <h3 className="font-semibold text-lg">Revealed Ingredients:</h3>
           <ul className="space-y-1">

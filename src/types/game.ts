@@ -43,4 +43,6 @@ export interface GameState {
   guessCountry: (guess: string) => boolean;
   modalVisible: boolean;
   toggleModal: (visible?: boolean) => void;
+  activePhase: "dish" | "country";
+  setActivePhase: (phase: "dish" | "country") => void;
 }

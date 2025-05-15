@@ -241,4 +241,6 @@ export const useGameStore = create<GameState>((set, get) => ({
     }
     return isCorrect;
   },
+  activePhase: "dish",
+  setActivePhase: (phase: "dish" | "country") => set({ activePhase: phase }),
 }));

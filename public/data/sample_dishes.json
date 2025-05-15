@@ -3,7 +3,7 @@
     "name": "Khachapuri",
     "acceptableGuesses": ["khachapuri", "georgian cheese bread"],
     "country": "Georgia",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Adjarian_Khachapuri.jpg",
+    "imageUrl": "/images/dishes/khachapuri.png",
     "ingredients": ["flour", "yeast", "milk", "eggs", "cheese", "butter"],
     "blurb": "A warm, boat-shaped bread filled with melted cheese and topped with a runny egg.",
     "recipe": {
@@ -30,7 +30,7 @@
     "name": "Injera with Stew",
     "acceptableGuesses": ["injera", "injera with stew"],
     "country": "Ethiopia",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/2/28/Injera_with_various_wot.JPG",
+    "imageUrl": "/images/dishes/injera.png",
     "ingredients": [
       "teff flour",
       "water",
@@ -63,7 +63,7 @@
     "name": "Okonomiyaki",
     "acceptableGuesses": ["okonomiyaki", "japanese pancake"],
     "country": "Japan",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/12/Okonomiyaki_001.jpg",
+    "imageUrl": "/images/dishes/okonomiyaki.jpg",
     "ingredients": [
       "cabbage",
       "flour",
@@ -95,7 +95,7 @@
     "name": "Feijoada",
     "acceptableGuesses": ["feijoada"],
     "country": "Brazil",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Feijoada.jpg",
+    "imageUrl": "/images/dishes/feijoada.png",
     "ingredients": [
       "black beans",
       "pork",
@@ -127,7 +127,7 @@
     "name": "Mansaf",
     "acceptableGuesses": ["mansaf"],
     "country": "Jordan",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/11/Mansaf_2.jpg",
+    "imageUrl": "/images/dishes/mansaf.png",
     "ingredients": [
       "lamb",
       "jameed",
@@ -160,7 +160,7 @@
     "name": "Gado-Gado",
     "acceptableGuesses": ["gado-gado", "gado gado", "indonesian salad"],
     "country": "Indonesia",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e6/Gado_gado_Jakarta.jpg",
+    "imageUrl": "/images/dishes/gado-gado.png",
     "ingredients": [
       "potatoes",
       "green beans",
@@ -191,7 +191,7 @@
     "name": "Shakshuka",
     "acceptableGuesses": ["shakshuka"],
     "country": "Tunisia",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/31/Shakshouka.jpg",
+    "imageUrl": "/images/dishes/shakshuka.jpg",
     "ingredients": [
       "eggs",
       "tomatoes",
@@ -223,7 +223,7 @@
     "name": "Schnitzel",
     "acceptableGuesses": ["schnitzel", "wiener schnitzel"],
     "country": "Austria",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Wiener_Schnitzel02.jpg",
+    "imageUrl": "/images/dishes/schnitzel.png",
     "ingredients": ["veal", "breadcrumbs", "flour", "egg", "lemon", "oil"],
     "blurb": "A thin cutlet breaded and fried until golden, served with a squeeze of lemon.",
     "recipe": {
@@ -244,42 +244,10 @@
     "tags": ["meat", "main", "fried"]
   },
   {
-    "name": "Koshari",
-    "acceptableGuesses": ["koshari", "kushari"],
-    "country": "Egypt",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Koshari_egyptian_dish.jpg",
-    "ingredients": [
-      "lentils",
-      "rice",
-      "macaroni",
-      "chickpeas",
-      "tomato sauce",
-      "fried onions"
-    ],
-    "blurb": "A layered bowl of lentils, rice, pasta, and chickpeas topped with spicy tomato sauce and crispy onions.",
-    "recipe": {
-      "ingredients": [
-        "1 cup brown lentils",
-        "1 cup long-grain rice",
-        "1 cup elbow macaroni",
-        "1 cup canned chickpeas, drained",
-        "1 cup tomato sauce",
-        "1 cup fried onions"
-      ],
-      "instructions": [
-        "Cook lentils in boiling water until tender, about 20 minutes. Drain.",
-        "Cook rice and macaroni separately according to package instructions.",
-        "Layer lentils, rice, macaroni, and chickpeas in a bowl.",
-        "Top with warm tomato sauce and a generous handful of fried onions."
-      ]
-    },
-    "tags": ["vegan", "main", "hearty"]
-  },
-  {
     "name": "Kimchi Jjigae",
     "acceptableGuesses": ["kimchi jjigae", "kimchi stew"],
     "country": "South Korea",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Kimchi_stew_01.jpg",
+    "imageUrl": "/images/dishes/kimchi-jjigae.png",
     "ingredients": [
       "kimchi",
       "pork",
@@ -312,7 +280,7 @@
     "name": "Ceviche",
     "acceptableGuesses": ["ceviche"],
     "country": "Peru",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/9/99/Ceviche_peruano.jpg",
+    "imageUrl": "/images/dishes/ceviche.png",
     "ingredients": [
       "white fish",
       "lime juice",
@@ -342,7 +310,7 @@
     "name": "Pierogi",
     "acceptableGuesses": ["pierogi", "polish dumplings"],
     "country": "Poland",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/10/Pierogi_ruskie.jpg",
+    "imageUrl": "/images/dishes/pierogi.png",
     "ingredients": [
       "flour",
       "potatoes",
@@ -375,7 +343,7 @@
     "name": "Biryani",
     "acceptableGuesses": ["biryani", "chicken biryani"],
     "country": "India",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5e/Biryani_of_Lahore.jpg",
+    "imageUrl": "/images/dishes/biryani.png",
     "ingredients": [
       "basmati rice",
       "chicken",
@@ -408,7 +376,7 @@
     "name": "Masgouf",
     "acceptableGuesses": ["masgouf", "iraqi grilled fish"],
     "country": "Iraq",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Masgouf.jpg",
+    "imageUrl": "/images/dishes/masgouf.png",
     "ingredients": [
       "fish",
       "olive oil",
@@ -444,7 +412,7 @@
     "name": "Butter Chicken",
     "acceptableGuesses": ["butter chicken", "murgh makhani"],
     "country": "India",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3c/Chicken_makhani.jpg",
+    "imageUrl": "/images/dishes/butter-chicken.png",
     "ingredients": [
       "chicken",
       "butter",
@@ -486,7 +454,7 @@
     "name": "Kimchi",
     "acceptableGuesses": ["kimchi", "fermented cabbage"],
     "country": "South Korea",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Various_kimchi.jpg",
+    "imageUrl": "/images/dishes/kimchi.png",
     "ingredients": [
       "napa cabbage",
       "radish",
@@ -526,7 +494,7 @@
     "name": "Tamiya",
     "acceptableGuesses": ["tamiya", "fava bean fritters", "egyptian falafel"],
     "country": "Egypt",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5c/Tamiya_with_salad.jpg",
+    "imageUrl": "/images/dishes/tamiya.png",
     "ingredients": [
       "fava beans",
       "herbs",
@@ -568,7 +536,7 @@
     "name": "Okro Soup",
     "acceptableGuesses": ["okro soup", "okra soup", "nigerian okra soup"],
     "country": "Nigeria",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/36/Nigerian_okra_soup.jpg",
+    "imageUrl": "/images/dishes/okro-soup.png",
     "ingredients": [
       "okra",
       "meat",
@@ -608,7 +576,7 @@
     "name": "Ema Datshi",
     "acceptableGuesses": ["ema datshi", "chili cheese stew"],
     "country": "Bhutan",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/6/62/Ema_Datshi_Bhutanese_Food.jpg",
+    "imageUrl": "/images/dishes/ema-datshi.png",
     "ingredients": [
       "chilies",
       "cheese",
@@ -644,7 +612,7 @@
     "name": "Cepelinai",
     "acceptableGuesses": ["cepelinai", "potato dumplings", "zeppelins"],
     "country": "Lithuania",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Cepelinai_Potato_dumplings_with_Mushroom_Sauce.jpg",
+    "imageUrl": "/images/dishes/cepelinai.png",
     "ingredients": [
       "potatoes",
       "ground meat",
@@ -681,7 +649,7 @@
     "name": "Maraq",
     "acceptableGuesses": ["maraq", "somali soup", "meat soup"],
     "country": "Somalia",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Somali_maraq_meat_soup.jpg",
+    "imageUrl": "/images/dishes/maraq.png",
     "ingredients": [
       "meat",
       "vegetables",
@@ -726,7 +694,7 @@
     "name": "Meat Pie",
     "acceptableGuesses": ["meat pie", "aussie meat pie", "savory pie"],
     "country": "Australia",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f3/Meat_pie_with_sauce.jpg",
+    "imageUrl": "/images/dishes/meat-pie.png",
     "ingredients": [
       "ground beef",
       "pastry",
@@ -769,7 +737,7 @@
     "name": "Arepas",
     "acceptableGuesses": ["arepas", "corn cakes", "corn patties"],
     "country": "Venezuela",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/8/86/Arepas_de_queso_colombianas.JPG",
+    "imageUrl": "/images/dishes/arepas.png",
     "ingredients": ["corn flour", "water", "salt", "oil", "fillings"],
     "blurb": "Round, flat patties made from corn flour, grilled or fried until crispy outside and fluffy inside, often split and filled with various ingredients.",
     "recipe": {
@@ -798,7 +766,7 @@
     "name": "Dal Bhat",
     "acceptableGuesses": ["dal bhat", "lentil rice", "dhal bhat"],
     "country": "Nepal",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/9/96/Dal-Bhat-Tarkari_03.jpg",
+    "imageUrl": "/images/dishes/dal-bhat.png",
     "ingredients": [
       "lentils",
       "rice",
@@ -841,7 +809,7 @@
     "name": "Pad Thai",
     "acceptableGuesses": ["pad thai", "phad thai", "thai stir-fried noodles"],
     "country": "Thailand",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Phat_Thai_kung_Chang_Khien_street_stall.jpg/1280px-Phat_Thai_kung_Chang_Khien_street_stall.jpg",
+    "imageUrl": "/images/dishes/pad-thai.png",
     "ingredients": [
       "rice noodles",
       "shrimp",
@@ -885,7 +853,7 @@
     "name": "Momo",
     "acceptableGuesses": ["momo", "dumplings", "nepalese dumplings"],
     "country": "Nepal",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Momo_nepal.jpg",
+    "imageUrl": "/images/dishes/momo.png",
     "ingredients": [
       "flour",
       "ground meat",
@@ -926,7 +894,7 @@
     "name": "Tam Mak Hoong",
     "acceptableGuesses": ["tam mak hoong", "green papaya salad", "som tam"],
     "country": "Laos",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/34/2019-06-13_Green_papaya_salad.jpg",
+    "imageUrl": "/images/dishes/tam-mak-hoong.png",
     "ingredients": [
       "green papaya",
       "tomatoes",
@@ -967,7 +935,7 @@
     "name": "Fufu",
     "acceptableGuesses": ["fufu", "foofoo", "african pounded yam"],
     "country": "Togo",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/48/Fufu_and_light_soup.jpg",
+    "imageUrl": "/images/dishes/fufu.png",
     "ingredients": ["cassava", "plantain", "yam", "water"],
     "blurb": "A starchy, dough-like side dish made by boiling and pounding starchy vegetables into a smooth, elastic consistency.",
     "recipe": {
@@ -998,7 +966,7 @@
       "spanish pork"
     ],
     "country": "Spain",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f8/Solomillo_al_whisky.jpg",
+    "imageUrl": "/images/dishes/solomillo-al-whisky.png",
     "ingredients": [
       "pork tenderloin",
       "whisky",
@@ -1037,7 +1005,7 @@
     "name": "Laksa",
     "acceptableGuesses": ["laksa", "curry noodle soup", "spicy coconut soup"],
     "country": "Malaysia",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Laksa_Lemak.jpg/1200px-Laksa_Lemak.jpg",
+    "imageUrl": "/images/dishes/laksa.png",
     "ingredients": [
       "rice noodles",
       "coconut milk",
@@ -1084,7 +1052,7 @@
       "trinidadian greens"
     ],
     "country": "Trinidad and Tobago",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c1/Callaloo_soup.jpg",
+    "imageUrl": "/images/dishes/callaloo.png",
     "ingredients": [
       "dasheen leaves",
       "okra",
@@ -1130,7 +1098,7 @@
       "indonesian grilled fish"
     ],
     "country": "Indonesia",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/73/Ikan_bakar_Minang.JPG",
+    "imageUrl": "/images/dishes/ikan-bakar.png",
     "ingredients": [
       "fish",
       "tamarind",
@@ -1173,7 +1141,7 @@
     "name": "Qurutob",
     "acceptableGuesses": ["qurutob", "fatir with qurut", "tajik bread dish"],
     "country": "Tajikistan",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Qurutob.jpg",
+    "imageUrl": "/images/dishes/qurutob.png",
     "ingredients": [
       "flatbread",
       "qurut cheese",
@@ -1214,7 +1182,7 @@
       "potato and cabbage mash"
     ],
     "country": "Ireland",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/16/Colcannon_2.jpg",
+    "imageUrl": "/images/dishes/colcannon.png",
     "ingredients": [
       "potatoes",
       "kale",
@@ -1249,17 +1217,16 @@
   },
   {
     "name": "Koshari",
-    "acceptableGuesses": ["koshari", "kushari", "rice and lentil dish"],
+    "acceptableGuesses": ["koshari", "kushari"],
     "country": "Egypt",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/46/Koshari.jpg",
+    "imageUrl": "/images/dishes/koshari.png",
     "ingredients": [
       "rice",
       "lentils",
       "macaroni",
       "chickpeas",
       "tomato sauce",
-      "fried onions",
-      "garlic"
+      "fried onions"
     ],
     "blurb": "A hearty street food dish combining rice, lentils, pasta, and chickpeas, topped with spiced tomato sauce and crispy fried onions.",
     "recipe": {
@@ -1293,7 +1260,7 @@
     "name": "Pizza",
     "acceptableGuesses": ["pizza", "pizza margherita", "neapolitan pizza"],
     "country": "Italy",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a3/Eq_it-na_pizza-margherita_sep2005_sml.jpg",
+    "imageUrl": "/images/dishes/pizza.jpg",
     "ingredients": [
       "dough",
       "tomato sauce",
@@ -1336,7 +1303,7 @@
     "name": "Falafel",
     "acceptableGuesses": ["falafel"],
     "country": "Israel",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Falafel_with_Hummus%2C_Israel.jpg",
+    "imageUrl": "/images/dishes/falafel.png",
     "ingredients": [
       "chickpeas",
       "onion",
@@ -1371,7 +1338,7 @@
     "name": "Sushi",
     "acceptableGuesses": ["sushi"],
     "country": "Japan",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/6/60/Sushi_platter.jpg",
+    "imageUrl": "/images/dishes/sushi.jpg",
     "ingredients": [
       "sushi rice",
       "nori",
@@ -1406,7 +1373,7 @@
     "name": "Croissant",
     "acceptableGuesses": ["croissant"],
     "country": "France",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/6/65/Croissant-Petr-Kratochvil.jpg",
+    "imageUrl": "/images/dishes/croissant.png",
     "ingredients": ["butter", "flour", "yeast", "milk", "sugar", "salt"],
     "blurb": "Flaky, golden layers of laminated dough form a light, buttery crescent-shaped pastry that's both airy and rich.",
     "recipe": {
@@ -1433,7 +1400,7 @@
     "name": "Tacos",
     "acceptableGuesses": ["tacos"],
     "country": "Mexico",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Taco_mexicano.jpg",
+    "imageUrl": "/images/dishes/taco.jpg",
     "ingredients": ["tortilla", "meat", "onion", "cilantro", "lime", "chili"],
     "blurb": "A handheld delight built on a soft or crispy shell and layered with savory fillings, fresh toppings, and a squeeze of citrus.",
     "recipe": {
@@ -1458,7 +1425,7 @@
     "name": "Chakalaka",
     "acceptableGuesses": ["chakalaka"],
     "country": "South Africa",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/74/Chakalaka%2C_pap%2C_and_grilled_chicken.jpg",
+    "imageUrl": "/images/dishes/chakalaka.png",
     "ingredients": [
       "onion",
       "tomato",
@@ -1492,7 +1459,7 @@
     "name": "Chicken Adobo",
     "acceptableGuesses": ["chicken adobo", "adobo"],
     "country": "Philippines",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Philippine_Chicken_Adobo.jpg",
+    "imageUrl": "/images/dishes/chicken-adobo.png",
     "ingredients": [
       "chicken",
       "soy sauce",
@@ -1527,7 +1494,7 @@
     "name": "Khinkali",
     "acceptableGuesses": ["khinkali"],
     "country": "Georgia",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Khinkali_Georgian_dumplings.jpg",
+    "imageUrl": "/images/dishes/khinkali.png",
     "ingredients": [
       "flour",
       "water",
@@ -1563,7 +1530,7 @@
     "name": "Poutine",
     "acceptableGuesses": ["poutine"],
     "country": "Canada",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/e/e5/Poutine_Burger_Bar_Crescent_Montreal.jpg",
+    "imageUrl": "/images/dishes/poutine.png",
     "ingredients": [
       "fries",
       "cheese curds",
@@ -1596,7 +1563,7 @@
     "name": "Empanadas",
     "acceptableGuesses": ["empanadas"],
     "country": "Argentina",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f2/Argentine_empanadas.jpg",
+    "imageUrl": "/images/dishes/empanadas.png",
     "ingredients": ["flour", "beef", "onion", "paprika", "egg", "olive oil"],
     "blurb": "Golden pastry pockets filled with a flavorful mix of seasoned meat and vegetables, often baked or fried for a crispy shell.",
     "recipe": {
@@ -1625,7 +1592,7 @@
     "name": "Ropa Vieja",
     "acceptableGuesses": ["ropa vieja"],
     "country": "Cuba",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Ropa_Vieja_%28Cuban_dish%29.jpg",
+    "imageUrl": "/images/dishes/ropa-vieja.png",
     "ingredients": [
       "beef",
       "tomato",
@@ -1660,7 +1627,7 @@
     "name": "Tom Yum Soup",
     "acceptableGuesses": ["tom yum", "tom yum soup"],
     "country": "Thailand",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d3/Tom_Yum_Goong.JPG",
+    "imageUrl": "/images/dishes/tom-yum-soup.png",
     "ingredients": [
       "shrimp",
       "lemongrass",
@@ -1694,7 +1661,7 @@
     "name": "Bibimbap",
     "acceptableGuesses": ["bibimbap"],
     "country": "South Korea",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/1/11/Dolsot-bibimbap.jpg",
+    "imageUrl": "/images/dishes/bibimbap.png",
     "ingredients": [
       "rice",
       "egg",
@@ -1729,7 +1696,7 @@
     "name": "Jollof Rice",
     "acceptableGuesses": ["jollof rice", "jollof"],
     "country": "Nigeria",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/2/29/Jollof_Rice_with_fried_plantains.jpg",
+    "imageUrl": "/images/dishes/jollof-rice.png",
     "ingredients": [
       "rice",
       "tomato paste",

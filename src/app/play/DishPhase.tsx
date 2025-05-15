@@ -25,7 +25,7 @@ export function DishPhase({ isComplete }: DishPhaseProps) {
           </button>
         </>
       )}
-      <GuessFeedback />
+      <GuessFeedback alwaysShowIngredients />
     </>
   );
 }
