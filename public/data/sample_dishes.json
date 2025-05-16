@@ -1400,7 +1400,7 @@
     "name": "Tacos",
     "acceptableGuesses": ["tacos"],
     "country": "Mexico",
-    "imageUrl": "/images/dishes/taco.jpg",
+    "imageUrl": "/images/dishes/tacos.jpg",
     "ingredients": ["tortilla", "meat", "onion", "cilantro", "lime", "chili"],
     "blurb": "A handheld delight built on a soft or crispy shell and layered with savory fillings, fresh toppings, and a squeeze of citrus.",
     "recipe": {

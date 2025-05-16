@@ -2,6 +2,7 @@ import { CountryGuessFeedback } from "@/components/CountryGuessFeedback";
 import { GuessFeedback } from "@/components/GuessFeedback";
 import { GuessInput } from "@/components/GuessInput";
 import { useGameStore } from "@/store/gameStore";
+import { Button } from "../../components/ui/button";
 import { getCountryNames } from "../../utils/countries";
 
 interface CountryPhaseProps {
@@ -22,15 +23,16 @@ export function CountryPhase({ isComplete }: CountryPhaseProps) {
             onGuess={guessCountry}
             suggestions={countryNames}
           />
-          <button
-            className="mt-2 w-full py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
+          <Button
+            className="mt-2"
+            variant="fun"
             onClick={() => {
               revealAllTiles();
               completeGame();
             }}
           >
-            Give Up & Reveal
-          </button>
+            Give Up 😩
+          </Button>
         </>
       )}
       <CountryGuessFeedback guessResults={countryGuessResults} />

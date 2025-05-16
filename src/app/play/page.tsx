@@ -7,6 +7,7 @@ import { ResultModal } from "@/components/ResultModal";
 import { TileGrid } from "@/components/dish-image/TileGrid";
 import { useGameStore } from "@/store/gameStore";
 import { useEffect } from "react";
+import { IntroModal } from "../../components/IntroModal";
 import { CountryPhase } from "./CountryPhase";
 import { DishPhase } from "./DishPhase";
 
@@ -46,6 +47,7 @@ export default function GamePage() {
 
   return (
     <main className="p-4 sm:p-6 max-w-full sm:max-w-xl mx-auto">
+      <IntroModal />
       <GameHeader />
 
       {currentDish?.imageUrl && (
