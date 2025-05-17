@@ -23,9 +23,9 @@ export default function GamePage() {
     resetCountryGuesses,
     activePhase,
     setActivePhase,
-    streak,
-    setStreak,
   } = useGameStore();
+
+  const setStreak = useGameStore((s) => s.setStreak);
 
   useEffect(() => {
     const value = getStreak();

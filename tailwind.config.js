@@ -66,9 +66,15 @@ module.exports = {
           '50%': { transform: 'scale(1.3)' },
           '100%': { transform: 'scale(1)' },
         },
+        shake: {
+          '0%, 100%': { transform: 'translateX(0)' },
+          '25%': { transform: 'translateX(-5px)' },
+          '75%': { transform: 'translateX(5px)' },
+        },
       },
       animation: {
         'streak-pop': 'streak-pop 0.3s ease-in-out',
+        'shake': 'shake 0.3s ease-in-out',
       },
     }
   },

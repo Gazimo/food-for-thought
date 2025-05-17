@@ -1,142 +1,124 @@
-import { useCombobox } from "downshift";
-import React, { useState } from "react";
+"use client";
+import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useState } from "react";
 
 interface GuessInputProps {
   placeholder: string;
   onGuess: (guess: string) => void;
   suggestions?: string[];
+  previousGuesses?: string[];
 }
 
 export const GuessInput: React.FC<GuessInputProps> = ({
   placeholder,
   onGuess,
   suggestions = [],
+  previousGuesses = [],
 }) => {
   const [input, setInput] = useState("");
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState("");
 
-  const filteredSuggestions = suggestions.filter(
-    (item) => !input || item.toLowerCase().includes(input.toLowerCase())
-  );
+  const handleGuess = (guess: string) => {
+    const trimmed = guess.trim();
+    if (!trimmed || previousGuesses.includes(trimmed)) return;
 
-  const {
-    isOpen,
-    getMenuProps,
-    getInputProps,
-    getItemProps,
-    highlightedIndex,
-    reset,
-    setInputValue,
-  } = useCombobox({
-    items: filteredSuggestions,
-    inputValue: input,
-    selectedItem,
-    onInputValueChange: ({ inputValue }) => {
-      setInput(inputValue ?? "");
-    },
-    onSelectedItemChange: ({ selectedItem }) => {
-      if (selectedItem) {
-        onGuess(selectedItem);
-        setInput("");
-        setInputValue("");
-        setSelectedItem(null);
-        reset();
-      }
-    },
-    onStateChange({ inputValue, type }) {
-      if (
-        type === useCombobox.stateChangeTypes.InputKeyDownEnter &&
-        inputValue &&
-        !filteredSuggestions.includes(inputValue)
-      ) {
-        onGuess(inputValue);
-        setInput("");
-        setInputValue("");
-        setSelectedItem(null);
-        reset();
-      }
-    },
-  });
+    onGuess(trimmed);
+    setInput("");
+    setValue("");
+    setOpen(false);
+  };
 
+  const filtered = suggestions
+    .filter((s) => s.toLowerCase().includes(input.toLowerCase()))
+    .filter((s) => !previousGuesses.includes(s));
+
+  // ✅ Case: fallback to plain input + button
   if (suggestions.length === 0) {
     return (
-      <div className="w-full">
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && input.trim()) {
-                onGuess(input.trim());
-                setInput("");
-              }
-            }}
-            placeholder={placeholder}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button
-            type="button"
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
-            disabled={!input.trim()}
-            onClick={() => {
-              if (input.trim()) {
-                onGuess(input.trim());
-                setInput("");
-              }
-            }}
-          >
-            Submit
-          </button>
-        </div>
+      <div className="w-full flex gap-2">
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleGuess(input);
+            }
+          }}
+          placeholder={placeholder}
+          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <Button
+          variant="fun"
+          disabled={!input.trim()}
+          onClick={() => handleGuess(input)}
+        >
+          Submit
+        </Button>
       </div>
     );
   }
 
+  // ✅ Case: suggestions exist — use full combobox
   return (
-    <div className="w-full">
-      <div className="flex gap-2">
-        <input
-          {...getInputProps({
-            placeholder,
-            className:
-              "flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500",
-          })}
-        />
-        <button
-          type="button"
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
-          disabled={!input.trim()}
-          onClick={() => {
-            if (input.trim()) {
-              onGuess(input.trim());
-              setInput("");
-              setInputValue("");
-              setSelectedItem(null);
-              reset();
-            }
-          }}
+    <Popover open={open} onOpenChange={setOpen}>
+      <div className="flex justify-between gap-2">
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="w-full justify-between text-left truncate"
+          >
+            {value || placeholder}
+          </Button>
+        </PopoverTrigger>
+        <Button
+          variant="fun"
+          className="block sm:hidden"
+          onClick={() => handleGuess(value)}
+          disabled={!value.trim()}
         >
           Submit
-        </button>
+        </Button>
       </div>
-      <ul
-        {...getMenuProps()}
-        className="mt-1 border border-gray-200 rounded-md shadow-md bg-white max-h-48 overflow-auto"
-      >
-        {isOpen &&
-          filteredSuggestions.map((item, index) => (
-            <li
-              key={`${item}${index}`}
-              {...getItemProps({ item, index })}
-              className={`px-4 py-2 cursor-pointer ${
-                highlightedIndex === index ? "bg-blue-100" : ""
-              }`}
-            >
-              {item}
-            </li>
-          ))}
-      </ul>
-    </div>
+      <PopoverContent align="start" side="bottom" className="p-0">
+        <Command>
+          <CommandInput placeholder={placeholder} className="h-9" />
+          <CommandList>
+            <CommandEmpty>No match found.</CommandEmpty>
+            <CommandGroup>
+              {filtered.map((item) => (
+                <CommandItem
+                  key={item}
+                  value={item}
+                  onSelect={(v) => {
+                    setValue(v);
+                    setOpen(false);
+                    onGuess(v);
+                  }}
+                >
+                  {item}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 };

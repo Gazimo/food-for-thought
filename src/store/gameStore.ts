@@ -243,4 +243,6 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
   activePhase: "dish",
   setActivePhase: (phase: "dish" | "country") => set({ activePhase: phase }),
+  streak: 0,
+  setStreak: (value: number) => set({ streak: value }),
 }));

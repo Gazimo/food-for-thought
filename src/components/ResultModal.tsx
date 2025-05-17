@@ -32,7 +32,7 @@ export const ResultModal: React.FC = () => {
           </div>
           {streak >= 1 && (
             <div className="text-orange-500 font-semibold text-sm mt-2 animate-streak-pop">
-              🔥 You're on a {streak}-day streak!
+              🔥 You&apos;re on a {streak}-day streak!
             </div>
           )}
         </div>
