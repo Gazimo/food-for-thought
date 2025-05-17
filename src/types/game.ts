@@ -45,4 +45,6 @@ export interface GameState {
   toggleModal: (visible?: boolean) => void;
   activePhase: "dish" | "country";
   setActivePhase: (phase: "dish" | "country") => void;
+  streak: number;
+  setStreak: (value: number) => void;
 }

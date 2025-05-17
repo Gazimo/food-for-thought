@@ -17,6 +17,7 @@ module.exports = {
       fontFamily: {
         sans: ['Nunito', ...fontFamily.sans],
       },
+
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
@@ -58,7 +59,17 @@ module.exports = {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))'
         }
-      }
+      },
+      keyframes: {
+        'streak-pop': {
+          '0%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.3)' },
+          '100%': { transform: 'scale(1)' },
+        },
+      },
+      animation: {
+        'streak-pop': 'streak-pop 0.3s ease-in-out',
+      },
     }
   },
   plugins: [require("tailwindcss-animate")],

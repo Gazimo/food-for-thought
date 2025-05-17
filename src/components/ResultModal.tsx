@@ -9,6 +9,7 @@ export const ResultModal: React.FC = () => {
     gameResults,
     modalVisible,
     toggleModal,
+    streak,
   } = useGameStore();
 
   if (gamePhase !== "complete" || !currentDish || !modalVisible) return null;
@@ -17,19 +18,25 @@ export const ResultModal: React.FC = () => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-4 sm:p-6 max-w-full sm:max-w-md w-full max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl sm:text-2xl font-bold">🎉 Game Complete!</h2>
-          <button
-            onClick={() => toggleModal(false)}
-            className="text-gray-500 hover:text-gray-700 text-2xl sm:text-xl px-2"
-            aria-label="Close"
-          >
-            ✕
-          </button>
+      <div className="bg-white rounded-lg p-4 sm:p-6 max-w-full sm:max-w-md w-full max-h-[90vh] overflow-y-auto gap-4 flex flex-col">
+        <div className="flex flex-col gap-1">
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl sm:text-2xl font-bold">🎉 Game Complete!</h2>
+            <button
+              onClick={() => toggleModal(false)}
+              className="text-gray-500 hover:text-gray-700 text-2xl sm:text-xl px-2"
+              aria-label="Close"
+            >
+              ✕
+            </button>
+          </div>
+          {streak >= 1 && (
+            <div className="text-orange-500 font-semibold text-sm mt-2 animate-streak-pop">
+              🔥 You're on a {streak}-day streak!
+            </div>
+          )}
         </div>
-
-        <div className="mb-4">
+        <div>
           <p className="text-base sm:text-lg">The dish was:</p>
           <p className="font-bold text-lg sm:text-xl mt-2 break-words">
             {currentDish.name}
@@ -59,8 +66,7 @@ export const ResultModal: React.FC = () => {
             </div>
           )}
         </div>
-
-        <div className="mb-6 space-y-2">
+        <div className="space-y-2">
           <p className="text-gray-700 text-sm sm:text-base">
             Total guesses: <span className="font-semibold">{totalGuesses}</span>
           </p>
@@ -94,8 +100,7 @@ export const ResultModal: React.FC = () => {
               {gameResults.countryGuessSuccess ? "✓" : "✗"}
             </span>
           </div>
-        </div>
-
+        </div>{" "}
         <button
           onClick={startNewGame}
           className="w-full py-2 sm:py-2.5 text-base sm:text-lg bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors mt-2"

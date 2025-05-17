@@ -8,6 +8,7 @@ import { TileGrid } from "@/components/dish-image/TileGrid";
 import { useGameStore } from "@/store/gameStore";
 import { useEffect } from "react";
 import { IntroModal } from "../../components/IntroModal";
+import { getStreak } from "../../utils/streak";
 import { CountryPhase } from "./CountryPhase";
 import { DishPhase } from "./DishPhase";
 
@@ -22,7 +23,14 @@ export default function GamePage() {
     resetCountryGuesses,
     activePhase,
     setActivePhase,
+    streak,
+    setStreak,
   } = useGameStore();
+
+  useEffect(() => {
+    const value = getStreak();
+    setStreak(value);
+  }, [setStreak]);
 
   useEffect(() => {
     const init = async () => {
