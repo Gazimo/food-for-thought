@@ -14,6 +14,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
+import { cn } from "../lib/utils";
 
 interface GuessInputProps {
   placeholder: string;
@@ -31,10 +33,26 @@ export const GuessInput: React.FC<GuessInputProps> = ({
   const [input, setInput] = useState("");
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
+  const [shake, setShake] = useState(false);
+
+  const triggerShake = () => {
+    setShake(false);
+    requestAnimationFrame(() => {
+      setShake(true);
+      setTimeout(() => setShake(false), 300);
+    });
+  };
 
   const handleGuess = (guess: string) => {
-    const trimmed = guess.trim();
-    if (!trimmed || previousGuesses.includes(trimmed)) return;
+    const trimmed = guess.trim().toLowerCase();
+
+    if (!trimmed) return;
+
+    if (previousGuesses.includes(trimmed)) {
+      triggerShake();
+      toast.error("You already guessed that!");
+      return;
+    }
 
     onGuess(trimmed);
     setInput("");
@@ -60,7 +78,10 @@ export const GuessInput: React.FC<GuessInputProps> = ({
             }
           }}
           placeholder={placeholder}
-          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={cn(
+            "flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500",
+            shake && "animate-shake"
+          )}
         />
         <Button
           variant="fun"
@@ -82,14 +103,16 @@ export const GuessInput: React.FC<GuessInputProps> = ({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-full justify-between text-left truncate"
+            className={cn(
+              "w-full justify-between text-left truncate",
+              shake && "animate-shake"
+            )}
           >
             {value || placeholder}
           </Button>
         </PopoverTrigger>
         <Button
           variant="fun"
-          className="block sm:hidden"
           onClick={() => handleGuess(value)}
           disabled={!value.trim()}
         >
@@ -109,7 +132,6 @@ export const GuessInput: React.FC<GuessInputProps> = ({
                   onSelect={(v) => {
                     setValue(v);
                     setOpen(false);
-                    onGuess(v);
                   }}
                 >
                   {item}

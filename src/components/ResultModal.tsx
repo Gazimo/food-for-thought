@@ -14,7 +14,8 @@ export const ResultModal: React.FC = () => {
 
   if (gamePhase !== "complete" || !currentDish || !modalVisible) return null;
 
-  const totalGuesses = gameResults.dishGuesses + gameResults.countryGuesses;
+  const totalGuesses =
+    gameResults.dishGuesses.length + gameResults.countryGuesses.length;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

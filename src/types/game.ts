@@ -3,9 +3,9 @@ import { Dish } from "../../public/data/dishes";
 export type GamePhase = "dish" | "country" | "complete";
 
 export interface GameResults {
-  dishGuesses: number;
+  dishGuesses: string[];
   dishGuessSuccess: boolean;
-  countryGuesses: number;
+  countryGuesses: string[];
   countryGuessSuccess: boolean;
   totalTime?: number; // We could add this later for tracking completion time
 }
@@ -23,8 +23,8 @@ export interface GameState {
   loadDishes: () => Promise<void>;
   gamePhase: GamePhase;
   revealedIngredients: number;
-  dishGuesses: number;
-  countryGuesses: number;
+  dishGuesses: string[];
+  countryGuesses: string[];
   gameResults: GameResults;
   startNewGame: () => void;
   makeDishGuess: (guess: string) => boolean;

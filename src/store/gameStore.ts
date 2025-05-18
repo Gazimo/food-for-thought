@@ -33,12 +33,12 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
   gamePhase: "dish",
   revealedIngredients: 1,
-  dishGuesses: 0,
-  countryGuesses: 0,
+  dishGuesses: [],
+  countryGuesses: [],
   gameResults: {
-    dishGuesses: 0,
+    dishGuesses: [],
     dishGuessSuccess: false,
-    countryGuesses: 0,
+    countryGuesses: [],
     countryGuessSuccess: false,
   },
   revealedTiles: [false, false, false, false, false, false],
@@ -86,12 +86,12 @@ export const useGameStore = create<GameState>((set, get) => ({
       currentDish: dish,
       gamePhase: "dish",
       revealedIngredients: 1,
-      dishGuesses: 0,
-      countryGuesses: 0,
+      dishGuesses: [],
+      countryGuesses: [],
       gameResults: {
-        dishGuesses: 0,
+        dishGuesses: [],
         dishGuessSuccess: false,
-        countryGuesses: 0,
+        countryGuesses: [],
         countryGuessSuccess: false,
       },
       revealedTiles: [false, false, false, false, false, false],
@@ -104,7 +104,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     const normalizedGuess = normalizeString(guess);
     if (gamePhase === "dish") {
       const isCorrect = isDishGuessCorrect(normalizedGuess, currentDish);
-      const newGuesses = get().dishGuesses + 1;
+      const newGuesses = [...get().dishGuesses, normalizedGuess];
       set((state) => ({
         dishGuesses: newGuesses,
         gameResults: {
@@ -125,7 +125,9 @@ export const useGameStore = create<GameState>((set, get) => ({
     if (gamePhase === "country") {
       const isCorrect =
         normalizedGuess === normalizeString(currentDish.country);
-      const newGuesses = get().countryGuesses + 1;
+      // const newGuesses = [...get().gameResults.countryGuesses, normalizedGuess];
+
+      const newGuesses = [...get().countryGuesses, normalizedGuess];
       const results = get().countryGuessResults;
       const updatedResults = [...results];
       if (isCorrect) {
@@ -219,7 +221,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     } else {
       const { dishGuesses, revealedIngredients } = get();
       const ingredientsLength = currentDish.ingredients.length || 0;
-      if (dishGuesses >= 6) {
+      if (dishGuesses.length >= 6) {
         revealAllTiles();
         moveToCountryPhase();
       } else {

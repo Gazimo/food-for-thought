@@ -8,13 +8,18 @@ interface DishPhaseProps {
 }
 
 export function DishPhase({ isComplete }: DishPhaseProps) {
-  const { guessDish, revealAllTiles, moveToCountryPhase } = useGameStore();
+  const { guessDish, revealAllTiles, moveToCountryPhase, dishGuesses } =
+    useGameStore();
   return (
     <>
       <h2 className="text-xl font-semibold mb-4">Guess the Dish</h2>
       {!isComplete && (
         <>
-          <GuessInput placeholder="Enter a dish name..." onGuess={guessDish} />
+          <GuessInput
+            placeholder="Enter a dish name..."
+            onGuess={guessDish}
+            previousGuesses={dishGuesses}
+          />
           <Button
             className="mt-2"
             variant="fun"

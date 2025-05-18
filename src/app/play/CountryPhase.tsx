@@ -10,7 +10,7 @@ interface CountryPhaseProps {
 }
 
 export function CountryPhase({ isComplete }: CountryPhaseProps) {
-  const { guessCountry, countryGuessResults, revealAllTiles, completeGame } =
+  const { guessCountry, countryGuessResults, revealAllTiles, completeGame, countryGuesses } =
     useGameStore();
   const countryNames = getCountryNames();
   return (
@@ -22,6 +22,7 @@ export function CountryPhase({ isComplete }: CountryPhaseProps) {
             placeholder="Enter a country name..."
             onGuess={guessCountry}
             suggestions={countryNames}
+            previousGuesses={countryGuesses}
           />
           <Button
             className="mt-2"

@@ -63,7 +63,7 @@
     "name": "Okonomiyaki",
     "acceptableGuesses": ["okonomiyaki", "japanese pancake"],
     "country": "Japan",
-    "imageUrl": "/images/dishes/okonomiyaki.jpg",
+    "imageUrl": "/images/dishes/okonomiyaki.png",
     "ingredients": [
       "cabbage",
       "flour",
