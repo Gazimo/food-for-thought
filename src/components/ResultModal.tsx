@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useGameStore } from "@/store/gameStore";
+import Image from "next/image";
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { generateShareText } from "../utils/shareText";
@@ -55,7 +56,7 @@ export const ResultModal: React.FC = () => {
         </div>
 
         {currentDish.imageUrl && (
-          <img
+          <Image
             src={currentDish.imageUrl}
             alt={currentDish.name}
             className="rounded-lg w-full object-cover max-h-52"

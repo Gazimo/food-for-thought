@@ -31,7 +31,7 @@ export const RecipeModal = ({ open, onOpenChange, dish }: RecipeModalProps) => {
         <div className="space-y-4 max-h-[60vh] overflow-y-auto relative z-10">
           <div>
             <p className="text-gray-600 text-sm mb-2 italic">
-              Here's how you make {dish.name} — straight from {dish.country}.
+              Here&apos;s how you make {dish.name} — straight from {dish.country}.
             </p>
             <p className="font-semibold">Ingredients:</p>
             <ul className="list-disc list-inside text-gray-700">

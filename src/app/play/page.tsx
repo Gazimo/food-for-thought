@@ -52,7 +52,7 @@ export default function GamePage() {
     if (!currentDish) {
       init();
     }
-  }, [currentDish]);
+  }, [currentDish, startNewGame, resetCountryGuesses, setActivePhase]);
 
   useEffect(() => {
     if (gamePhase === "dish") {
