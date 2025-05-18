@@ -75,7 +75,7 @@ export const ResultModal: React.FC = () => {
           <div className="flex flex-wrap items-center gap-2 text-sm sm:text-base">
             <span className="text-gray-700">Dish phase:</span>
             <span className="font-semibold">
-              {gameResults.dishGuesses} guesses
+              {gameResults.dishGuesses.length} guesses
             </span>
             <span
               className={
@@ -89,7 +89,7 @@ export const ResultModal: React.FC = () => {
           <div className="flex flex-wrap items-center gap-2 text-sm sm:text-base">
             <span className="text-gray-700">Country phase:</span>
             <span className="font-semibold">
-              {gameResults.countryGuesses} guesses
+              {gameResults.countryGuesses.length} guesses
             </span>
             <span
               className={

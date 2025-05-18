@@ -94,7 +94,6 @@ export const GuessInput: React.FC<GuessInputProps> = ({
     );
   }
 
-  // ✅ Case: suggestions exist — use full combobox
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <div className="flex justify-between gap-2">
@@ -103,6 +102,12 @@ export const GuessInput: React.FC<GuessInputProps> = ({
             variant="outline"
             role="combobox"
             aria-expanded={open}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && value) {
+                e.preventDefault();
+                handleGuess(value);
+              }
+            }}
             className={cn(
               "w-full justify-between text-left truncate",
               shake && "animate-shake"

@@ -12,7 +12,6 @@ export function DishPhase({ isComplete }: DishPhaseProps) {
     useGameStore();
   return (
     <>
-      <h2 className="text-xl font-semibold mb-4">Guess the Dish</h2>
       {!isComplete && (
         <>
           <GuessInput

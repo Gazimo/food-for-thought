@@ -11,6 +11,7 @@ import { IntroModal } from "../../components/IntroModal";
 import { getStreak } from "../../utils/streak";
 import { CountryPhase } from "./CountryPhase";
 import { DishPhase } from "./DishPhase";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function GamePage() {
   const {
@@ -66,14 +67,42 @@ export default function GamePage() {
       )}
 
       <PhaseContainer>
-        {/* Phase Content */}
-        {activePhase === "dish" && (
+        {/* {activePhase === "dish" && (
           <DishPhase isComplete={gamePhase !== "dish"} />
         )}
         {activePhase === "country" && (
           <CountryPhase isComplete={gamePhase === "complete"} />
-        )}
-        {/* Next/Back navigation */}
+        )} */}
+
+        <AnimatePresence mode="wait">
+          {activePhase === "dish" && (
+            <motion.div
+              key="dish"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+            >
+              <h2 className="text-xl font-semibold mb-3">🍽️ Guess the Dish</h2>
+              <DishPhase isComplete={gamePhase !== "dish"} />
+            </motion.div>
+          )}
+
+          {activePhase === "country" && (
+            <motion.div
+              key="country"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+            >
+              <h2 className="text-xl font-semibold mb-3">
+                🌍 Guess the Country of Origin
+              </h2>
+              <CountryPhase isComplete={gamePhase === "complete"} />
+            </motion.div>
+          )}
+        </AnimatePresence>
         {activePhase === "dish" &&
           (gamePhase === "country" || gamePhase === "complete") && (
             <div className="text-center mt-4">

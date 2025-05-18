@@ -10,12 +10,16 @@ interface CountryPhaseProps {
 }
 
 export function CountryPhase({ isComplete }: CountryPhaseProps) {
-  const { guessCountry, countryGuessResults, revealAllTiles, completeGame, countryGuesses } =
-    useGameStore();
+  const {
+    guessCountry,
+    countryGuessResults,
+    revealAllTiles,
+    completeGame,
+    countryGuesses,
+  } = useGameStore();
   const countryNames = getCountryNames();
   return (
     <>
-      <h2 className="text-xl font-semibold mb-4">Guess the Country</h2>
       {!isComplete && (
         <>
           <GuessInput
