@@ -27,6 +27,7 @@ export function CountryPhase({ isComplete }: CountryPhaseProps) {
             onGuess={guessCountry}
             suggestions={countryNames}
             previousGuesses={countryGuesses}
+            isComplete={isComplete}
           />
           <Button
             className="mt-2"

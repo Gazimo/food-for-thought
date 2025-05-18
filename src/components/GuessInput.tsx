@@ -22,6 +22,7 @@ interface GuessInputProps {
   onGuess: (guess: string) => void;
   suggestions?: string[];
   previousGuesses?: string[];
+  isComplete?: boolean;
 }
 
 export const GuessInput: React.FC<GuessInputProps> = ({
@@ -29,6 +30,7 @@ export const GuessInput: React.FC<GuessInputProps> = ({
   onGuess,
   suggestions = [],
   previousGuesses = [],
+  isComplete = false,
 }) => {
   const [input, setInput] = useState("");
   const [open, setOpen] = useState(false);
@@ -82,10 +84,11 @@ export const GuessInput: React.FC<GuessInputProps> = ({
             "flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500",
             shake && "animate-shake"
           )}
+          disabled={isComplete}
         />
         <Button
           variant="fun"
-          disabled={!input.trim()}
+          disabled={!input.trim() || isComplete}
           onClick={() => handleGuess(input)}
         >
           Submit
@@ -112,6 +115,7 @@ export const GuessInput: React.FC<GuessInputProps> = ({
               "w-full justify-between text-left truncate",
               shake && "animate-shake"
             )}
+            disabled={isComplete}
           >
             {value || placeholder}
           </Button>
@@ -119,14 +123,14 @@ export const GuessInput: React.FC<GuessInputProps> = ({
         <Button
           variant="fun"
           onClick={() => handleGuess(value)}
-          disabled={!value.trim()}
+          disabled={!value.trim() || isComplete}
         >
           Submit
         </Button>
       </div>
       <PopoverContent align="start" side="bottom" className="p-0">
         <Command>
-          <CommandInput placeholder={placeholder} className="h-9" />
+          <CommandInput placeholder={placeholder} className="h-9" disabled={isComplete}/>
           <CommandList>
             <CommandEmpty>No match found.</CommandEmpty>
             <CommandGroup>

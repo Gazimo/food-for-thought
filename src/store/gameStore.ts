@@ -11,6 +11,7 @@ import confetti from "canvas-confetti";
 import { create } from "zustand";
 import { enrichDishesWithCoords } from "../../public/data/dishes";
 import { GameResults, GameState } from "../types/game";
+import { updateStreak } from "../utils/streak";
 const countryCoords = getCountryCoordsMap();
 
 function getSortedCountryCoords() {
@@ -23,6 +24,37 @@ function getSortedCountryCoords() {
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
+  restoreGameStateFromStorage: () => {
+    if (typeof window === "undefined") return;
+
+    const savedDish = localStorage.getItem("fft-current-dish");
+    const savedResults = localStorage.getItem("fft-game-results");
+    const savedTiles = localStorage.getItem("fft-revealed-tiles");
+    const savedIngredients = localStorage.getItem("fft-revealed-ingredients");
+    const savedCountryResults = localStorage.getItem("fft-country-results");
+    const savedDishGuesses = localStorage.getItem("fft-dish-guesses");
+    const savedCountryGuesses = localStorage.getItem("fft-country-guesses");
+
+    if (savedDish && savedResults) {
+      set({
+        currentDish: JSON.parse(savedDish),
+        gameResults: JSON.parse(savedResults),
+        revealedTiles: savedTiles
+          ? JSON.parse(savedTiles)
+          : [false, false, false, false, false, false],
+        revealedIngredients: savedIngredients ? Number(savedIngredients) : 1,
+        countryGuessResults: savedCountryResults
+          ? JSON.parse(savedCountryResults)
+          : [],
+        dishGuesses: savedDishGuesses ? JSON.parse(savedDishGuesses) : [],
+        countryGuesses: savedCountryGuesses
+          ? JSON.parse(savedCountryGuesses)
+          : [],
+        modalVisible: true,
+        gamePhase: "complete",
+      });
+    }
+  },
   currentDish: null,
   dishes: [],
   loadDishes: async () => {
@@ -196,11 +228,47 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   completeGame: () => {
+    const newStreak = updateStreak();
+    const state = get();
+
+    if (typeof window !== "undefined") {
+      localStorage.setItem(
+        "fft-current-dish",
+        JSON.stringify(state.currentDish)
+      );
+      localStorage.setItem(
+        "fft-game-results",
+        JSON.stringify(state.gameResults)
+      );
+      localStorage.setItem(
+        "fft-revealed-tiles",
+        JSON.stringify(state.revealedTiles)
+      );
+      localStorage.setItem(
+        "fft-revealed-ingredients",
+        String(state.revealedIngredients)
+      );
+      localStorage.setItem(
+        "fft-country-results",
+        JSON.stringify(state.countryGuessResults)
+      );
+      localStorage.setItem(
+        "fft-dish-guesses",
+        JSON.stringify(state.dishGuesses)
+      );
+      localStorage.setItem(
+        "fft-country-guesses",
+        JSON.stringify(state.countryGuesses)
+      );
+    }
+
     set({
       gamePhase: "complete",
       modalVisible: true,
+      streak: newStreak,
     });
   },
+
   resetCountryGuesses: () => set({ countryGuessResults: [] }),
   getSortedCountryCoords,
   guessDish: (guess: string): boolean => {

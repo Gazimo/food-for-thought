@@ -6,12 +6,12 @@ import { PhaseContainer } from "@/components/PhaseContainer";
 import { ResultModal } from "@/components/ResultModal";
 import { TileGrid } from "@/components/dish-image/TileGrid";
 import { useGameStore } from "@/store/gameStore";
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
 import { IntroModal } from "../../components/IntroModal";
-import { getStreak } from "../../utils/streak";
+import { alreadyPlayedToday, getStreak } from "../../utils/streak";
 import { CountryPhase } from "./CountryPhase";
 import { DishPhase } from "./DishPhase";
-import { AnimatePresence, motion } from "framer-motion";
 
 export default function GamePage() {
   const {
@@ -35,17 +35,24 @@ export default function GamePage() {
 
   useEffect(() => {
     const init = async () => {
-      const { loadDishes } = useGameStore.getState();
+      const { loadDishes, restoreGameStateFromStorage } =
+        useGameStore.getState();
+
       await loadDishes();
-      startNewGame();
-      resetCountryGuesses();
-      setActivePhase("dish");
+
+      if (alreadyPlayedToday()) {
+        restoreGameStateFromStorage();
+      } else {
+        startNewGame();
+        resetCountryGuesses();
+        setActivePhase("dish");
+      }
     };
 
     if (!currentDish) {
       init();
     }
-  }, [currentDish, startNewGame, resetCountryGuesses, setActivePhase]);
+  }, [currentDish]);
 
   useEffect(() => {
     if (gamePhase === "dish") {
@@ -67,13 +74,6 @@ export default function GamePage() {
       )}
 
       <PhaseContainer>
-        {/* {activePhase === "dish" && (
-          <DishPhase isComplete={gamePhase !== "dish"} />
-        )}
-        {activePhase === "country" && (
-          <CountryPhase isComplete={gamePhase === "complete"} />
-        )} */}
-
         <AnimatePresence mode="wait">
           {activePhase === "dish" && (
             <motion.div

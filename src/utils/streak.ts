@@ -1,35 +1,29 @@
-// utils/streak.ts
+export const STREAK_KEY = "fft-streak";
+export const LAST_PLAYED_KEY = "fft-last-played";
 
-const STREAK_KEY = 'streak';
-const LAST_PLAY_KEY = 'lastPlayedDate';
+export function getStreak(): number {
+  return Number(localStorage.getItem(STREAK_KEY) || 0);
+}
 
-const getToday = () => new Date().toDateString();
+export function updateStreak(): number {
+  const today = new Date().toISOString().split("T")[0];
+  const lastPlayed = localStorage.getItem(LAST_PLAYED_KEY);
 
-export function getStreak() {
-  const lastPlayed = localStorage.getItem(LAST_PLAY_KEY);
-  const streak = parseInt(localStorage.getItem(STREAK_KEY) || '0', 10);
+  if (lastPlayed === today) return getStreak(); // Already counted today
 
-  const today = getToday();
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toISOString().split("T")[0];
 
-  if (!lastPlayed) {
-    localStorage.setItem(LAST_PLAY_KEY, today);
-    localStorage.setItem(STREAK_KEY, '1');
-    return 1;
-  }
+  const currentStreak = getStreak();
+  const newStreak = lastPlayed === yesterdayStr ? currentStreak + 1 : 1;
 
-  const lastDate = new Date(lastPlayed);
-  const diff = (new Date(today).getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24);
+  localStorage.setItem(STREAK_KEY, String(newStreak));
+  localStorage.setItem(LAST_PLAYED_KEY, today);
+  return newStreak;
+}
 
-  if (diff === 0) return streak; // already played today
-  if (diff === 1) {
-    const newStreak = streak + 1;
-    localStorage.setItem(STREAK_KEY, newStreak.toString());
-    localStorage.setItem(LAST_PLAY_KEY, today);
-    return newStreak;
-  }
-
-  // missed a day → reset
-  localStorage.setItem(STREAK_KEY, '1');
-  localStorage.setItem(LAST_PLAY_KEY, today);
-  return 1;
+export function alreadyPlayedToday(): boolean {
+  const today = new Date().toISOString().split("T")[0];
+  return localStorage.getItem(LAST_PLAYED_KEY) === today;
 }

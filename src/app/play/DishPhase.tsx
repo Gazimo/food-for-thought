@@ -18,6 +18,7 @@ export function DishPhase({ isComplete }: DishPhaseProps) {
             placeholder="Enter a dish name..."
             onGuess={guessDish}
             previousGuesses={dishGuesses}
+            isComplete={isComplete}
           />
           <Button
             className="mt-2"

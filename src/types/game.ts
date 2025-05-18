@@ -18,6 +18,7 @@ export interface CountryGuessResult {
 }
 
 export interface GameState {
+  restoreGameStateFromStorage: () => void;
   currentDish: Dish | null;
   dishes: Dish[];
   loadDishes: () => Promise<void>;

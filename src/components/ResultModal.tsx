@@ -2,9 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { useGameStore } from "@/store/gameStore";
-import React from "react";
+import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { generateShareText } from "../utils/shareText";
+import { RecipeModal } from "./RecipeModal";
 
 export const ResultModal: React.FC = () => {
   const {
@@ -15,6 +16,7 @@ export const ResultModal: React.FC = () => {
     toggleModal,
     streak,
   } = useGameStore();
+  const [showRecipe, setShowRecipe] = useState(false);
 
   if (gamePhase !== "complete" || !currentDish || !modalVisible) return null;
 
@@ -66,27 +68,21 @@ export const ResultModal: React.FC = () => {
             {currentDish.name}
           </p>
           <p className="text-gray-600">from {currentDish.country}</p>
-
           {currentDish.recipe && (
-            <div className="mt-4">
-              <p className="font-semibold">Recipe:</p>
-              <div className="mb-2">
-                <span className="font-semibold">Ingredients:</span>
-                <ul className="list-disc list-inside text-gray-700 text-sm sm:text-base">
-                  {currentDish.recipe.ingredients?.map((item, idx) => (
-                    <li key={idx}>{item}</li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <span className="font-semibold">Instructions:</span>
-                <ol className="list-decimal list-inside text-gray-700 text-sm sm:text-base">
-                  {currentDish.recipe.instructions?.map((step, idx) => (
-                    <li key={idx}>{step}</li>
-                  ))}
-                </ol>
-              </div>
-            </div>
+            <>
+              <Button
+                onClick={() => setShowRecipe(true)}
+                className="mt-2 px-4 py-2 text-sm bg-amber-500 text-white rounded hover:bg-amber-600 transition-colors"
+              >
+                🍽️ View Recipe
+              </Button>
+
+              <RecipeModal
+                open={showRecipe}
+                onOpenChange={setShowRecipe}
+                dish={currentDish}
+              />
+            </>
           )}
         </div>
 
