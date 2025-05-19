@@ -2,11 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { useGameStore } from "@/store/gameStore";
-import Image from "next/image";
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { generateShareText } from "../utils/shareText";
 import { RecipeModal } from "./RecipeModal";
+import Image from "next/image";
 
 export const ResultModal: React.FC = () => {
   const {
@@ -60,6 +60,8 @@ export const ResultModal: React.FC = () => {
             src={currentDish.imageUrl}
             alt={currentDish.name}
             className="rounded-lg w-full object-cover max-h-52"
+            width={1000}
+            height={1000}
           />
         )}
 
