@@ -71,11 +71,18 @@ module.exports = {
           '25%': { transform: 'translateX(-5px)' },
           '75%': { transform: 'translateX(5px)' },
         },
+        pulseCorrect: {
+          '0%': { transform: 'scale(1)', opacity: 1 },
+          '50%': { transform: 'scale(1.4)', opacity: 0.6 },
+          '100%': { transform: 'scale(1)', opacity: 1 },
+        },
       },
       animation: {
         'streak-pop': 'streak-pop 0.3s ease-in-out',
         'shake': 'shake 0.3s ease-in-out',
+        'pulseCorrect': 'pulseCorrect 1.2s ease-in-out infinite',
       },
+
     }
   },
   plugins: [require("tailwindcss-animate")],

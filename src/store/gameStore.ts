@@ -157,7 +157,6 @@ export const useGameStore = create<GameState>((set, get) => ({
     if (gamePhase === "country") {
       const isCorrect =
         normalizedGuess === normalizeString(currentDish.country);
-      // const newGuesses = [...get().gameResults.countryGuesses, normalizedGuess];
 
       const newGuesses = [...get().countryGuesses, normalizedGuess];
       const results = get().countryGuessResults;

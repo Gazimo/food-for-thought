@@ -19,7 +19,6 @@ export default function GamePage() {
     modalVisible,
     toggleModal,
     startNewGame,
-    revealedTiles,
     resetCountryGuesses,
     activePhase,
     setActivePhase,

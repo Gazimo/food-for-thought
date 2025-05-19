@@ -9,7 +9,7 @@ export function updateStreak(): number {
   const today = new Date().toISOString().split("T")[0];
   const lastPlayed = localStorage.getItem(LAST_PLAYED_KEY);
 
-  if (lastPlayed === today) return getStreak(); // Already counted today
+  if (lastPlayed === today) return getStreak();
 
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);

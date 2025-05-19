@@ -1,14 +1,14 @@
-// components/MapGuessVisualizer.tsx
-
 "use client";
 
 import worldData from "@/data/world-110m.json";
+import { getColorForDistance } from "@/utils/colors";
 import { geoMercator, geoPath } from "d3-geo";
-import { FeatureCollection, Geometry } from "geojson";
+import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { feature } from "topojson-client";
-import { getColorForDistance } from "../utils/colors";
-import { motion } from "framer-motion";
+
+import type { Feature, FeatureCollection, Geometry } from "geojson";
+import type { GeometryCollection, Topology } from "topojson-specification";
 
 interface Guess {
   lat: number;
@@ -32,19 +32,14 @@ export const MapGuessVisualizer = ({ guesses }: MapGuessVisualizerProps) => {
 
   const pathGenerator = geoPath().projection(projection);
 
-  const geoJsonResult = feature(
-    worldData as any,
-    (worldData as any).objects.countries
-  );
+  const world = worldData as unknown as Topology<{
+    countries: GeometryCollection;
+  }>;
 
-  const geoJson: FeatureCollection<Geometry> =
-    geoJsonResult && (geoJsonResult as any).type === "FeatureCollection"
-      ? (geoJsonResult as unknown as FeatureCollection<Geometry>)
-      : ({
-          type: "FeatureCollection",
-          features: [geoJsonResult as any],
-        } as FeatureCollection<Geometry>);
-  console.log("GeoJSON features:", geoJson.features.length, geoJson);
+  const geoJson = feature(
+    world,
+    world.objects.countries
+  ) as unknown as FeatureCollection<Geometry>;
 
   useEffect(() => {
     const resize = () => {
@@ -66,8 +61,8 @@ export const MapGuessVisualizer = ({ guesses }: MapGuessVisualizerProps) => {
         height={dimensions.height}
         viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
       >
-        {/* Base Map */}
-        {geoJson.features.map((feature: any, i: number) => (
+        {/* 🌍 Render Countries */}
+        {geoJson.features.map((feature: Feature<Geometry>, i: number) => (
           <path
             key={i}
             d={pathGenerator(feature) || ""}
@@ -77,6 +72,7 @@ export const MapGuessVisualizer = ({ guesses }: MapGuessVisualizerProps) => {
           />
         ))}
 
+        {/* 📍 Render Guesses */}
         {guesses.map((guess, i) => {
           const [x, y] = projection([guess.lng, guess.lat]) || [0, 0];
           return (
@@ -91,6 +87,7 @@ export const MapGuessVisualizer = ({ guesses }: MapGuessVisualizerProps) => {
               fill={getColorForDistance(guess.distance)}
               stroke="#fff"
               strokeWidth={1.5}
+              className={guess.isCorrect ? "animate-pulseCorrect" : ""}
             >
               <title>{guess.country}</title>
             </motion.circle>

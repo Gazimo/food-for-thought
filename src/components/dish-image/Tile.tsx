@@ -23,7 +23,7 @@ export function Tile({
   useEffect(() => {
     setImgSrc(imageUrl);
   }, [imageUrl]);
-  // Handle image load error by switching to fallback
+
   const handleImageError = () => {
     console.warn(`Failed to load image: ${imgSrc}`);
     setImgSrc(FALLBACK_IMAGE);
@@ -64,7 +64,7 @@ export function Tile({
               height={height}
               className="w-full h-full object-cover"
               onError={handleImageError}
-              priority={true} // Load this image with priority
+              priority={true}
             />
           </div>
         </div>

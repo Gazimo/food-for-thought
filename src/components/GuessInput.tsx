@@ -66,7 +66,6 @@ export const GuessInput: React.FC<GuessInputProps> = ({
     .filter((s) => s.toLowerCase().includes(input.toLowerCase()))
     .filter((s) => !previousGuesses.includes(s));
 
-  // ✅ Case: fallback to plain input + button
   if (suggestions.length === 0) {
     return (
       <div className="w-full flex gap-2">

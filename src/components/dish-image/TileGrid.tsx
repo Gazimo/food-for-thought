@@ -7,8 +7,6 @@ export function TileGrid({
   imageUrl: string;
   revealedTiles: boolean[];
 }) {
-  // Responsive: use 100vw - 32px for mobile, 500px for desktop
-  // 3:2 aspect ratio
   const width =
     typeof window !== "undefined" ? Math.min(window.innerWidth - 32, 500) : 500;
   const height = (width / 3) * 2;
