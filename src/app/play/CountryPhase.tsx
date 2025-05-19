@@ -2,8 +2,9 @@ import { CountryGuessFeedback } from "@/components/CountryGuessFeedback";
 import { GuessFeedback } from "@/components/GuessFeedback";
 import { GuessInput } from "@/components/GuessInput";
 import { useGameStore } from "@/store/gameStore";
+import { MapGuessVisualizer } from "../../components/MapGuessVisualizer";
 import { Button } from "../../components/ui/button";
-import { getCountryNames } from "../../utils/countries";
+import { getCountryCoordsMap, getCountryNames } from "../../utils/countries";
 
 interface CountryPhaseProps {
   isComplete?: boolean;
@@ -18,10 +19,21 @@ export function CountryPhase({ isComplete }: CountryPhaseProps) {
     countryGuesses,
   } = useGameStore();
   const countryNames = getCountryNames();
+  const countryCoords = getCountryCoordsMap();
+
+  const enrichedGuesses = countryGuessResults.map((g) => ({
+    country: g.country,
+    isCorrect: g.isCorrect,
+    lat: countryCoords[g.country.toLowerCase()]?.lat || 0,
+    lng: countryCoords[g.country.toLowerCase()]?.lng || 0,
+    distance: g.distance,
+  }));
+
   return (
-    <>
+    <div className="flex flex-col gap-4">
+      <MapGuessVisualizer guesses={enrichedGuesses} />
       {!isComplete && (
-        <>
+        <div className="flex flex-col gap-4">
           <GuessInput
             placeholder="Enter a country name..."
             onGuess={guessCountry}
@@ -39,10 +51,10 @@ export function CountryPhase({ isComplete }: CountryPhaseProps) {
           >
             Give Up 😩
           </Button>
-        </>
+        </div>
       )}
       <CountryGuessFeedback guessResults={countryGuessResults} />
       <GuessFeedback />
-    </>
+    </div>
   );
 }

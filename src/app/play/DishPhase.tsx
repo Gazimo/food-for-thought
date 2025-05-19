@@ -1,6 +1,7 @@
 import { GuessFeedback } from "@/components/GuessFeedback";
 import { GuessInput } from "@/components/GuessInput";
 import { useGameStore } from "@/store/gameStore";
+import { TileGrid } from "../../components/dish-image/TileGrid";
 import { Button } from "../../components/ui/button";
 
 interface DishPhaseProps {
@@ -8,10 +9,22 @@ interface DishPhaseProps {
 }
 
 export function DishPhase({ isComplete }: DishPhaseProps) {
-  const { guessDish, revealAllTiles, moveToCountryPhase, dishGuesses } =
-    useGameStore();
+  const {
+    guessDish,
+    revealAllTiles,
+    moveToCountryPhase,
+    dishGuesses,
+    currentDish,
+    revealedTiles,
+  } = useGameStore();
   return (
     <>
+      {currentDish?.imageUrl && (
+        <TileGrid
+          imageUrl={currentDish.imageUrl}
+          revealedTiles={revealedTiles}
+        />
+      )}
       {!isComplete && (
         <>
           <GuessInput

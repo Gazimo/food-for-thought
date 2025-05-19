@@ -4,7 +4,6 @@ import { GameFooter } from "@/components/GameFooter";
 import { GameHeader } from "@/components/GameHeader";
 import { PhaseContainer } from "@/components/PhaseContainer";
 import { ResultModal } from "@/components/ResultModal";
-import { TileGrid } from "@/components/dish-image/TileGrid";
 import { useGameStore } from "@/store/gameStore";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
@@ -65,13 +64,6 @@ export default function GamePage() {
     <main className="p-4 sm:p-6 max-w-full sm:max-w-xl mx-auto">
       <IntroModal />
       <GameHeader />
-
-      {currentDish?.imageUrl && (
-        <TileGrid
-          imageUrl={currentDish.imageUrl}
-          revealedTiles={revealedTiles}
-        />
-      )}
 
       <PhaseContainer>
         <AnimatePresence mode="wait">
