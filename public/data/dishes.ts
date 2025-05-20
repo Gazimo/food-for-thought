@@ -15,6 +15,7 @@ export interface Dish {
     lng: number;
   };
   region?: string;
+  releaseDate?: string;
 }
 
 // Utility to enrich dishes with coordinates from a country map

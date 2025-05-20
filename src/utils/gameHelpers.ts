@@ -75,7 +75,7 @@ export async function loadDishes(): Promise<Dish[]> {
 
   const allDishes = await res.json();
   const today = new Date().toISOString().split("T")[0];
-  const todayDish = allDishes.find((dish: any) => dish.releaseDate === today);
+  const todayDish = allDishes.find((dish: Dish) => dish.releaseDate === today);
 
   return todayDish ? [todayDish] : [];
 }

@@ -103,7 +103,7 @@ export default function GamePage() {
               >
                 {gamePhase === "complete"
                   ? "Review your country guess"
-                  : "Try the next round"}
+                  : "Guess where it's from"}
               </button>
             </div>
           )}
