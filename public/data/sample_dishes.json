@@ -1,10 +1,20 @@
 [
   {
     "name": "Khachapuri",
-    "acceptableGuesses": ["khachapuri", "georgian cheese bread"],
+    "acceptableGuesses": [
+      "khachapuri",
+      "georgian cheese bread"
+    ],
     "country": "Georgia",
     "imageUrl": "/images/dishes/khachapuri.png",
-    "ingredients": ["flour", "yeast", "milk", "eggs", "cheese", "butter"],
+    "ingredients": [
+      "flour",
+      "yeast",
+      "milk",
+      "eggs",
+      "cheese",
+      "butter"
+    ],
     "blurb": "A warm, boat-shaped bread filled with melted cheese and topped with a runny egg.",
     "recipe": {
       "ingredients": [
@@ -24,11 +34,19 @@
         "Top with a pat of butter and serve hot."
       ]
     },
-    "tags": ["vegetarian", "bread", "main"]
+    "tags": [
+      "vegetarian",
+      "bread",
+      "main"
+    ],
+    "releaseDate": "2025-05-20"
   },
   {
     "name": "Injera with Stew",
-    "acceptableGuesses": ["injera", "injera with stew"],
+    "acceptableGuesses": [
+      "injera",
+      "injera with stew"
+    ],
     "country": "Ethiopia",
     "imageUrl": "/images/dishes/injera.png",
     "ingredients": [
@@ -57,11 +75,19 @@
         "Serve lentil stew over injera flatbreads."
       ]
     },
-    "tags": ["vegan", "main", "fermented"]
+    "tags": [
+      "vegan",
+      "main",
+      "fermented"
+    ],
+    "releaseDate": "2025-05-21"
   },
   {
     "name": "Okonomiyaki",
-    "acceptableGuesses": ["okonomiyaki", "japanese pancake"],
+    "acceptableGuesses": [
+      "okonomiyaki",
+      "japanese pancake"
+    ],
     "country": "Japan",
     "imageUrl": "/images/dishes/okonomiyaki.png",
     "ingredients": [
@@ -89,11 +115,18 @@
         "Repeat for second pancake. Drizzle with okonomiyaki sauce and mayonnaise before serving."
       ]
     },
-    "tags": ["meat", "main", "grilled"]
+    "tags": [
+      "meat",
+      "main",
+      "grilled"
+    ],
+    "releaseDate": "2025-05-22"
   },
   {
     "name": "Feijoada",
-    "acceptableGuesses": ["feijoada"],
+    "acceptableGuesses": [
+      "feijoada"
+    ],
     "country": "Brazil",
     "imageUrl": "/images/dishes/feijoada.png",
     "ingredients": [
@@ -121,11 +154,18 @@
         "Season with salt and pepper. Serve hot with rice and orange slices if desired."
       ]
     },
-    "tags": ["meat", "main", "stew"]
+    "tags": [
+      "meat",
+      "main",
+      "stew"
+    ],
+    "releaseDate": "2025-05-23"
   },
   {
     "name": "Mansaf",
-    "acceptableGuesses": ["mansaf"],
+    "acceptableGuesses": [
+      "mansaf"
+    ],
     "country": "Jordan",
     "imageUrl": "/images/dishes/mansaf.png",
     "ingredients": [
@@ -154,11 +194,20 @@
         "To serve, spread rice on a platter, top with lamb and sauce, and garnish with almonds and parsley."
       ]
     },
-    "tags": ["meat", "main", "fermented"]
+    "tags": [
+      "meat",
+      "main",
+      "fermented"
+    ],
+    "releaseDate": "2025-05-24"
   },
   {
     "name": "Gado-Gado",
-    "acceptableGuesses": ["gado-gado", "gado gado", "indonesian salad"],
+    "acceptableGuesses": [
+      "gado-gado",
+      "gado gado",
+      "indonesian salad"
+    ],
     "country": "Indonesia",
     "imageUrl": "/images/dishes/gado-gado.png",
     "ingredients": [
@@ -185,11 +234,18 @@
         "Drizzle generously with peanut sauce and serve."
       ]
     },
-    "tags": ["vegetarian", "salad", "main"]
+    "tags": [
+      "vegetarian",
+      "salad",
+      "main"
+    ],
+    "releaseDate": "2025-05-25"
   },
   {
     "name": "Shakshuka",
-    "acceptableGuesses": ["shakshuka"],
+    "acceptableGuesses": [
+      "shakshuka"
+    ],
     "country": "Tunisia",
     "imageUrl": "/images/dishes/shakshuka.jpg",
     "ingredients": [
@@ -217,14 +273,29 @@
         "Serve hot with crusty bread."
       ]
     },
-    "tags": ["vegetarian", "breakfast", "one-pan"]
+    "tags": [
+      "vegetarian",
+      "breakfast",
+      "one-pan"
+    ],
+    "releaseDate": "2025-05-26"
   },
   {
     "name": "Schnitzel",
-    "acceptableGuesses": ["schnitzel", "wiener schnitzel"],
+    "acceptableGuesses": [
+      "schnitzel",
+      "wiener schnitzel"
+    ],
     "country": "Austria",
     "imageUrl": "/images/dishes/schnitzel.png",
-    "ingredients": ["veal", "breadcrumbs", "flour", "egg", "lemon", "oil"],
+    "ingredients": [
+      "veal",
+      "breadcrumbs",
+      "flour",
+      "egg",
+      "lemon",
+      "oil"
+    ],
     "blurb": "A thin cutlet breaded and fried until golden, served with a squeeze of lemon.",
     "recipe": {
       "ingredients": [
@@ -241,11 +312,19 @@
         "Drain on paper towels and serve with lemon wedges."
       ]
     },
-    "tags": ["meat", "main", "fried"]
+    "tags": [
+      "meat",
+      "main",
+      "fried"
+    ],
+    "releaseDate": "2025-05-27"
   },
   {
     "name": "Kimchi Jjigae",
-    "acceptableGuesses": ["kimchi jjigae", "kimchi stew"],
+    "acceptableGuesses": [
+      "kimchi jjigae",
+      "kimchi stew"
+    ],
     "country": "South Korea",
     "imageUrl": "/images/dishes/kimchi-jjigae.png",
     "ingredients": [
@@ -256,7 +335,6 @@
       "gochujang",
       "green onion"
     ],
-
     "blurb": "A fiery stew of aged kimchi, pork slices, and soft tofu in a bold broth.",
     "recipe": {
       "ingredients": [
@@ -274,11 +352,18 @@
         "Serve hot with steamed rice."
       ]
     },
-    "tags": ["meat", "spicy", "stew"]
+    "tags": [
+      "meat",
+      "spicy",
+      "stew"
+    ],
+    "releaseDate": "2025-05-28"
   },
   {
     "name": "Ceviche",
-    "acceptableGuesses": ["ceviche"],
+    "acceptableGuesses": [
+      "ceviche"
+    ],
     "country": "Peru",
     "imageUrl": "/images/dishes/ceviche.png",
     "ingredients": [
@@ -304,11 +389,19 @@
         "Chill for another 10 minutes before serving."
       ]
     },
-    "tags": ["seafood", "starter", "raw"]
+    "tags": [
+      "seafood",
+      "starter",
+      "raw"
+    ],
+    "releaseDate": "2025-05-29"
   },
   {
     "name": "Pierogi",
-    "acceptableGuesses": ["pierogi", "polish dumplings"],
+    "acceptableGuesses": [
+      "pierogi",
+      "polish dumplings"
+    ],
     "country": "Poland",
     "imageUrl": "/images/dishes/pierogi.png",
     "ingredients": [
@@ -319,7 +412,6 @@
       "sour cream",
       "egg"
     ],
-
     "blurb": "Soft dumplings filled with mashed potatoes and cheese, served boiled or fried.",
     "recipe": {
       "ingredients": [
@@ -337,11 +429,19 @@
         "Boil pierogi in salted water until they float, about 3-4 minutes. Optionally, fry in butter with onions before serving."
       ]
     },
-    "tags": ["vegetarian", "dumplings", "comfort"]
+    "tags": [
+      "vegetarian",
+      "dumplings",
+      "comfort"
+    ],
+    "releaseDate": "2025-05-30"
   },
   {
     "name": "Biryani",
-    "acceptableGuesses": ["biryani", "chicken biryani"],
+    "acceptableGuesses": [
+      "biryani",
+      "chicken biryani"
+    ],
     "country": "India",
     "imageUrl": "/images/dishes/biryani.png",
     "ingredients": [
@@ -369,12 +469,19 @@
         "Cover and steam on low heat for 25 minutes. Fluff and serve hot."
       ]
     },
-    "tags": ["meat", "main", "rice"]
+    "tags": [
+      "meat",
+      "main",
+      "rice"
+    ],
+    "releaseDate": "2025-05-31"
   },
-
   {
     "name": "Masgouf",
-    "acceptableGuesses": ["masgouf", "iraqi grilled fish"],
+    "acceptableGuesses": [
+      "masgouf",
+      "iraqi grilled fish"
+    ],
     "country": "Iraq",
     "imageUrl": "/images/dishes/masgouf.png",
     "ingredients": [
@@ -406,11 +513,20 @@
         "Serve hot with sliced lemons, tomatoes, and fresh herbs."
       ]
     },
-    "tags": ["seafood", "grilled", "main", "national dish"]
+    "tags": [
+      "seafood",
+      "grilled",
+      "main",
+      "national dish"
+    ],
+    "releaseDate": "2025-06-01"
   },
   {
     "name": "Butter Chicken",
-    "acceptableGuesses": ["butter chicken", "murgh makhani"],
+    "acceptableGuesses": [
+      "butter chicken",
+      "murgh makhani"
+    ],
     "country": "India",
     "imageUrl": "/images/dishes/butter-chicken.png",
     "ingredients": [
@@ -448,11 +564,20 @@
         "Garnish with fresh cilantro and serve with rice or naan."
       ]
     },
-    "tags": ["chicken", "curry", "creamy", "main"]
+    "tags": [
+      "chicken",
+      "curry",
+      "creamy",
+      "main"
+    ],
+    "releaseDate": "2025-06-02"
   },
   {
     "name": "Kimchi",
-    "acceptableGuesses": ["kimchi", "fermented cabbage"],
+    "acceptableGuesses": [
+      "kimchi",
+      "fermented cabbage"
+    ],
     "country": "South Korea",
     "imageUrl": "/images/dishes/kimchi.png",
     "ingredients": [
@@ -488,11 +613,22 @@
         "Ferment at room temperature for 1-5 days, then refrigerate. Best after 2 weeks."
       ]
     },
-    "tags": ["fermented", "vegetable", "spicy", "side dish", "vegan"]
+    "tags": [
+      "fermented",
+      "vegetable",
+      "spicy",
+      "side dish",
+      "vegan"
+    ],
+    "releaseDate": "2025-06-03"
   },
   {
     "name": "Tamiya",
-    "acceptableGuesses": ["tamiya", "fava bean fritters", "egyptian falafel"],
+    "acceptableGuesses": [
+      "tamiya",
+      "fava bean fritters",
+      "egyptian falafel"
+    ],
     "country": "Egypt",
     "imageUrl": "/images/dishes/tamiya.png",
     "ingredients": [
@@ -530,11 +666,21 @@
         "Drain on paper towels and serve hot in pita bread with tahini sauce and vegetables."
       ]
     },
-    "tags": ["vegetarian", "fritters", "legumes", "street food"]
+    "tags": [
+      "vegetarian",
+      "fritters",
+      "legumes",
+      "street food"
+    ],
+    "releaseDate": "2025-06-04"
   },
   {
     "name": "Okro Soup",
-    "acceptableGuesses": ["okro soup", "okra soup", "nigerian okra soup"],
+    "acceptableGuesses": [
+      "okro soup",
+      "okra soup",
+      "nigerian okra soup"
+    ],
     "country": "Nigeria",
     "imageUrl": "/images/dishes/okro-soup.png",
     "ingredients": [
@@ -570,11 +716,21 @@
         "Serve hot with fufu, pounded yam, or garri."
       ]
     },
-    "tags": ["soup", "seafood", "meat", "vegetables", "spicy"]
+    "tags": [
+      "soup",
+      "seafood",
+      "meat",
+      "vegetables",
+      "spicy"
+    ],
+    "releaseDate": "2025-06-05"
   },
   {
     "name": "Ema Datshi",
-    "acceptableGuesses": ["ema datshi", "chili cheese stew"],
+    "acceptableGuesses": [
+      "ema datshi",
+      "chili cheese stew"
+    ],
     "country": "Bhutan",
     "imageUrl": "/images/dishes/ema-datshi.png",
     "ingredients": [
@@ -606,11 +762,22 @@
         "Serve hot with steamed rice."
       ]
     },
-    "tags": ["vegetarian", "spicy", "cheese", "stew", "main"]
+    "tags": [
+      "vegetarian",
+      "spicy",
+      "cheese",
+      "stew",
+      "main"
+    ],
+    "releaseDate": "2025-06-06"
   },
   {
     "name": "Cepelinai",
-    "acceptableGuesses": ["cepelinai", "potato dumplings", "zeppelins"],
+    "acceptableGuesses": [
+      "cepelinai",
+      "potato dumplings",
+      "zeppelins"
+    ],
     "country": "Lithuania",
     "imageUrl": "/images/dishes/cepelinai.png",
     "ingredients": [
@@ -643,11 +810,22 @@
         "Serve dumplings topped with bacon and sour cream sauce."
       ]
     },
-    "tags": ["dumplings", "meat", "potatoes", "main", "comfort food"]
+    "tags": [
+      "dumplings",
+      "meat",
+      "potatoes",
+      "main",
+      "comfort food"
+    ],
+    "releaseDate": "2025-06-07"
   },
   {
     "name": "Maraq",
-    "acceptableGuesses": ["maraq", "somali soup", "meat soup"],
+    "acceptableGuesses": [
+      "maraq",
+      "somali soup",
+      "meat soup"
+    ],
     "country": "Somalia",
     "imageUrl": "/images/dishes/maraq.png",
     "ingredients": [
@@ -688,11 +866,22 @@
         "Garnish with cilantro and serve hot with flatbread."
       ]
     },
-    "tags": ["soup", "meat", "vegetables", "main", "spiced"]
+    "tags": [
+      "soup",
+      "meat",
+      "vegetables",
+      "main",
+      "spiced"
+    ],
+    "releaseDate": "2025-06-08"
   },
   {
     "name": "Meat Pie",
-    "acceptableGuesses": ["meat pie", "aussie meat pie", "savory pie"],
+    "acceptableGuesses": [
+      "meat pie",
+      "aussie meat pie",
+      "savory pie"
+    ],
     "country": "Australia",
     "imageUrl": "/images/dishes/meat-pie.png",
     "ingredients": [
@@ -731,14 +920,31 @@
         "Serve hot with tomato sauce."
       ]
     },
-    "tags": ["baked", "pastry", "meat", "handheld", "savory"]
+    "tags": [
+      "baked",
+      "pastry",
+      "meat",
+      "handheld",
+      "savory"
+    ],
+    "releaseDate": "2025-06-09"
   },
   {
     "name": "Arepas",
-    "acceptableGuesses": ["arepas", "corn cakes", "corn patties"],
+    "acceptableGuesses": [
+      "arepas",
+      "corn cakes",
+      "corn patties"
+    ],
     "country": "Venezuela",
     "imageUrl": "/images/dishes/arepas.png",
-    "ingredients": ["corn flour", "water", "salt", "oil", "fillings"],
+    "ingredients": [
+      "corn flour",
+      "water",
+      "salt",
+      "oil",
+      "fillings"
+    ],
     "blurb": "Round, flat patties made from corn flour, grilled or fried until crispy outside and fluffy inside, often split and filled with various ingredients.",
     "recipe": {
       "ingredients": [
@@ -760,11 +966,22 @@
         "Split horizontally and fill with desired ingredients."
       ]
     },
-    "tags": ["bread", "corn", "vegetarian", "stuffed", "handheld"]
+    "tags": [
+      "bread",
+      "corn",
+      "vegetarian",
+      "stuffed",
+      "handheld"
+    ],
+    "releaseDate": "2025-06-10"
   },
   {
     "name": "Dal Bhat",
-    "acceptableGuesses": ["dal bhat", "lentil rice", "dhal bhat"],
+    "acceptableGuesses": [
+      "dal bhat",
+      "lentil rice",
+      "dhal bhat"
+    ],
     "country": "Nepal",
     "imageUrl": "/images/dishes/dal-bhat.png",
     "ingredients": [
@@ -803,11 +1020,22 @@
         "Serve hot dal alongside rice with optional vegetable sides and pickles."
       ]
     },
-    "tags": ["vegetarian", "lentils", "rice", "main", "healthy"]
+    "tags": [
+      "vegetarian",
+      "lentils",
+      "rice",
+      "main",
+      "healthy"
+    ],
+    "releaseDate": "2025-06-11"
   },
   {
     "name": "Pad Thai",
-    "acceptableGuesses": ["pad thai", "phad thai", "thai stir-fried noodles"],
+    "acceptableGuesses": [
+      "pad thai",
+      "phad thai",
+      "thai stir-fried noodles"
+    ],
     "country": "Thailand",
     "imageUrl": "/images/dishes/pad-thai.png",
     "ingredients": [
@@ -847,11 +1075,22 @@
         "Serve hot, garnished with remaining green onions, crushed peanuts, lime wedges, and chili flakes."
       ]
     },
-    "tags": ["noodles", "stir-fried", "seafood", "street food", "savory-sweet"]
+    "tags": [
+      "noodles",
+      "stir-fried",
+      "seafood",
+      "street food",
+      "savory-sweet"
+    ],
+    "releaseDate": "2025-06-12"
   },
   {
     "name": "Momo",
-    "acceptableGuesses": ["momo", "dumplings", "nepalese dumplings"],
+    "acceptableGuesses": [
+      "momo",
+      "dumplings",
+      "nepalese dumplings"
+    ],
     "country": "Nepal",
     "imageUrl": "/images/dishes/momo.png",
     "ingredients": [
@@ -888,11 +1127,22 @@
         "Serve hot with a spicy tomato-based or sesame dipping sauce."
       ]
     },
-    "tags": ["dumplings", "steamed", "meat", "appetizer", "street food"]
+    "tags": [
+      "dumplings",
+      "steamed",
+      "meat",
+      "appetizer",
+      "street food"
+    ],
+    "releaseDate": "2025-06-13"
   },
   {
     "name": "Tam Mak Hoong",
-    "acceptableGuesses": ["tam mak hoong", "green papaya salad", "som tam"],
+    "acceptableGuesses": [
+      "tam mak hoong",
+      "green papaya salad",
+      "som tam"
+    ],
     "country": "Laos",
     "imageUrl": "/images/dishes/tam-mak-hoong.png",
     "ingredients": [
@@ -929,14 +1179,30 @@
         "Transfer to a serving dish and sprinkle with crushed peanuts."
       ]
     },
-    "tags": ["salad", "spicy", "vegetable", "fresh", "appetizer"]
+    "tags": [
+      "salad",
+      "spicy",
+      "vegetable",
+      "fresh",
+      "appetizer"
+    ],
+    "releaseDate": "2025-06-14"
   },
   {
     "name": "Fufu",
-    "acceptableGuesses": ["fufu", "foofoo", "african pounded yam"],
+    "acceptableGuesses": [
+      "fufu",
+      "foofoo",
+      "african pounded yam"
+    ],
     "country": "Togo",
     "imageUrl": "/images/dishes/fufu.png",
-    "ingredients": ["cassava", "plantain", "yam", "water"],
+    "ingredients": [
+      "cassava",
+      "plantain",
+      "yam",
+      "water"
+    ],
     "blurb": "A starchy, dough-like side dish made by boiling and pounding starchy vegetables into a smooth, elastic consistency.",
     "recipe": {
       "ingredients": [
@@ -956,7 +1222,13 @@
         "To eat, pinch off a small piece, make an indentation, and use it to scoop up sauce."
       ]
     },
-    "tags": ["staple", "starchy", "side dish", "vegan"]
+    "tags": [
+      "staple",
+      "starchy",
+      "side dish",
+      "vegan"
+    ],
+    "releaseDate": "2025-06-15"
   },
   {
     "name": "Solomillo al Whisky",
@@ -1000,11 +1272,22 @@
         "Garnish with parsley and serve with crusty bread to soak up the sauce."
       ]
     },
-    "tags": ["pork", "whisky", "sauce", "main", "quick"]
+    "tags": [
+      "pork",
+      "whisky",
+      "sauce",
+      "main",
+      "quick"
+    ],
+    "releaseDate": "2025-06-16"
   },
   {
     "name": "Laksa",
-    "acceptableGuesses": ["laksa", "curry noodle soup", "spicy coconut soup"],
+    "acceptableGuesses": [
+      "laksa",
+      "curry noodle soup",
+      "spicy coconut soup"
+    ],
     "country": "Malaysia",
     "imageUrl": "/images/dishes/laksa.png",
     "ingredients": [
@@ -1043,7 +1326,14 @@
         "Top with bean sprouts, fresh herbs, and serve with lime wedges."
       ]
     },
-    "tags": ["soup", "noodles", "spicy", "coconut", "seafood"]
+    "tags": [
+      "soup",
+      "noodles",
+      "spicy",
+      "coconut",
+      "seafood"
+    ],
+    "releaseDate": "2025-06-17"
   },
   {
     "name": "Callaloo",
@@ -1089,7 +1379,14 @@
         "Season with salt and pepper, serve hot with rice or bread."
       ]
     },
-    "tags": ["soup", "greens", "seafood", "vegetable", "spicy"]
+    "tags": [
+      "soup",
+      "greens",
+      "seafood",
+      "vegetable",
+      "spicy"
+    ],
+    "releaseDate": "2025-06-18"
   },
   {
     "name": "Ikan Bakar",
@@ -1136,11 +1433,22 @@
         "Serve hot with lime wedges and rice."
       ]
     },
-    "tags": ["seafood", "grilled", "spicy", "main", "aromatic"]
+    "tags": [
+      "seafood",
+      "grilled",
+      "spicy",
+      "main",
+      "aromatic"
+    ],
+    "releaseDate": "2025-06-19"
   },
   {
     "name": "Qurutob",
-    "acceptableGuesses": ["qurutob", "fatir with qurut", "tajik bread dish"],
+    "acceptableGuesses": [
+      "qurutob",
+      "fatir with qurut",
+      "tajik bread dish"
+    ],
     "country": "Tajikistan",
     "imageUrl": "/images/dishes/qurutob.png",
     "ingredients": [
@@ -1173,7 +1481,14 @@
         "Traditionally served communally from one large plate."
       ]
     },
-    "tags": ["bread", "dairy", "vegetarian", "main", "communal"]
+    "tags": [
+      "bread",
+      "dairy",
+      "vegetarian",
+      "main",
+      "communal"
+    ],
+    "releaseDate": "2025-06-20"
   },
   {
     "name": "Colcannon",
@@ -1214,11 +1529,21 @@
         "Melt remaining butter and pour into the well. Garnish with parsley."
       ]
     },
-    "tags": ["vegetarian", "side dish", "comfort food", "potatoes", "greens"]
+    "tags": [
+      "vegetarian",
+      "side dish",
+      "comfort food",
+      "potatoes",
+      "greens"
+    ],
+    "releaseDate": "2025-06-21"
   },
   {
     "name": "Koshari",
-    "acceptableGuesses": ["koshari", "kushari"],
+    "acceptableGuesses": [
+      "koshari",
+      "kushari"
+    ],
     "country": "Egypt",
     "imageUrl": "/images/dishes/koshari.png",
     "ingredients": [
@@ -1255,11 +1580,22 @@
         "To serve: Layer rice, lentils, pasta, and chickpeas. Top with tomato sauce, dakka sauce, and crispy onions."
       ]
     },
-    "tags": ["vegetarian", "street food", "grain", "legumes", "main"]
+    "tags": [
+      "vegetarian",
+      "street food",
+      "grain",
+      "legumes",
+      "main"
+    ],
+    "releaseDate": "2025-06-22"
   },
   {
     "name": "Pizza",
-    "acceptableGuesses": ["pizza", "pizza margherita", "neapolitan pizza"],
+    "acceptableGuesses": [
+      "pizza",
+      "pizza margherita",
+      "neapolitan pizza"
+    ],
     "country": "Italy",
     "imageUrl": "/images/dishes/pizza.jpg",
     "ingredients": [
@@ -1298,11 +1634,20 @@
         "Remove from oven, top with fresh basil and a drizzle of olive oil."
       ]
     },
-    "tags": ["baked", "cheese", "tomato", "bread", "classic"]
+    "tags": [
+      "baked",
+      "cheese",
+      "tomato",
+      "bread",
+      "classic"
+    ],
+    "releaseDate": "2025-06-23"
   },
   {
     "name": "Falafel",
-    "acceptableGuesses": ["falafel"],
+    "acceptableGuesses": [
+      "falafel"
+    ],
     "country": "Israel",
     "imageUrl": "/images/dishes/falafel.png",
     "ingredients": [
@@ -1333,11 +1678,20 @@
         "Drain on paper towels and serve warm."
       ]
     },
-    "tags": ["fried", "vegan", "crispy", "street food", "legume"]
+    "tags": [
+      "fried",
+      "vegan",
+      "crispy",
+      "street food",
+      "legume"
+    ],
+    "releaseDate": "2025-06-24"
   },
   {
     "name": "Sushi",
-    "acceptableGuesses": ["sushi"],
+    "acceptableGuesses": [
+      "sushi"
+    ],
     "country": "Japan",
     "imageUrl": "/images/dishes/sushi.jpg",
     "ingredients": [
@@ -1368,14 +1722,30 @@
         "Serve with wasabi and soy sauce."
       ]
     },
-    "tags": ["raw", "rice", "fish", "rolled", "finger food"]
+    "tags": [
+      "raw",
+      "rice",
+      "fish",
+      "rolled",
+      "finger food"
+    ],
+    "releaseDate": "2025-06-25"
   },
   {
     "name": "Croissant",
-    "acceptableGuesses": ["croissant"],
+    "acceptableGuesses": [
+      "croissant"
+    ],
     "country": "France",
     "imageUrl": "/images/dishes/croissant.png",
-    "ingredients": ["butter", "flour", "yeast", "milk", "sugar", "salt"],
+    "ingredients": [
+      "butter",
+      "flour",
+      "yeast",
+      "milk",
+      "sugar",
+      "salt"
+    ],
     "blurb": "Flaky, golden layers of laminated dough form a light, buttery crescent-shaped pastry that's both airy and rich.",
     "recipe": {
       "ingredients": [
@@ -1395,14 +1765,30 @@
         "Cool slightly before serving."
       ]
     },
-    "tags": ["baked", "pastry", "flaky", "buttery", "breakfast"]
+    "tags": [
+      "baked",
+      "pastry",
+      "flaky",
+      "buttery",
+      "breakfast"
+    ],
+    "releaseDate": "2025-06-26"
   },
   {
     "name": "Tacos",
-    "acceptableGuesses": ["tacos"],
+    "acceptableGuesses": [
+      "tacos"
+    ],
     "country": "Mexico",
     "imageUrl": "/images/dishes/tacos.jpg",
-    "ingredients": ["tortilla", "meat", "onion", "cilantro", "lime", "chili"],
+    "ingredients": [
+      "tortilla",
+      "meat",
+      "onion",
+      "cilantro",
+      "lime",
+      "chili"
+    ],
     "blurb": "A handheld delight built on a soft or crispy shell and layered with savory fillings, fresh toppings, and a squeeze of citrus.",
     "recipe": {
       "ingredients": [
@@ -1420,11 +1806,20 @@
         "Optional: Add avocado or cheese."
       ]
     },
-    "tags": ["handheld", "spicy", "street food", "fresh", "grilled"]
+    "tags": [
+      "handheld",
+      "spicy",
+      "street food",
+      "fresh",
+      "grilled"
+    ],
+    "releaseDate": "2025-06-27"
   },
   {
     "name": "Chakalaka",
-    "acceptableGuesses": ["chakalaka"],
+    "acceptableGuesses": [
+      "chakalaka"
+    ],
     "country": "South Africa",
     "imageUrl": "/images/dishes/chakalaka.png",
     "ingredients": [
@@ -1454,11 +1849,21 @@
         "Serve warm or chilled."
       ]
     },
-    "tags": ["vegetarian", "spicy", "simmered", "colorful", "side dish"]
+    "tags": [
+      "vegetarian",
+      "spicy",
+      "simmered",
+      "colorful",
+      "side dish"
+    ],
+    "releaseDate": "2025-06-28"
   },
   {
     "name": "Chicken Adobo",
-    "acceptableGuesses": ["chicken adobo", "adobo"],
+    "acceptableGuesses": [
+      "chicken adobo",
+      "adobo"
+    ],
     "country": "Philippines",
     "imageUrl": "/images/dishes/chicken-adobo.png",
     "ingredients": [
@@ -1489,11 +1894,20 @@
         "Serve hot with rice."
       ]
     },
-    "tags": ["braised", "tangy", "savory", "comfort food", "glazed"]
+    "tags": [
+      "braised",
+      "tangy",
+      "savory",
+      "comfort food",
+      "glazed"
+    ],
+    "releaseDate": "2025-06-29"
   },
   {
     "name": "Khinkali",
-    "acceptableGuesses": ["khinkali"],
+    "acceptableGuesses": [
+      "khinkali"
+    ],
     "country": "Georgia",
     "imageUrl": "/images/dishes/khinkali.png",
     "ingredients": [
@@ -1525,11 +1939,20 @@
         "Serve hot, traditionally eaten by hand."
       ]
     },
-    "tags": ["dumpling", "boiled", "savory", "juicy", "handheld"]
+    "tags": [
+      "dumpling",
+      "boiled",
+      "savory",
+      "juicy",
+      "handheld"
+    ],
+    "releaseDate": "2025-06-30"
   },
   {
     "name": "Poutine",
-    "acceptableGuesses": ["poutine"],
+    "acceptableGuesses": [
+      "poutine"
+    ],
     "country": "Canada",
     "imageUrl": "/images/dishes/poutine.png",
     "ingredients": [
@@ -1558,14 +1981,30 @@
         "Pour hot gravy over the top and serve immediately."
       ]
     },
-    "tags": ["comfort food", "fried", "cheesy", "saucy", "indulgent"]
+    "tags": [
+      "comfort food",
+      "fried",
+      "cheesy",
+      "saucy",
+      "indulgent"
+    ],
+    "releaseDate": "2025-07-01"
   },
   {
     "name": "Empanadas",
-    "acceptableGuesses": ["empanadas"],
+    "acceptableGuesses": [
+      "empanadas"
+    ],
     "country": "Argentina",
     "imageUrl": "/images/dishes/empanadas.png",
-    "ingredients": ["flour", "beef", "onion", "paprika", "egg", "olive oil"],
+    "ingredients": [
+      "flour",
+      "beef",
+      "onion",
+      "paprika",
+      "egg",
+      "olive oil"
+    ],
     "blurb": "Golden pastry pockets filled with a flavorful mix of seasoned meat and vegetables, often baked or fried for a crispy shell.",
     "recipe": {
       "ingredients": [
@@ -1587,11 +2026,20 @@
         "Serve warm."
       ]
     },
-    "tags": ["baked", "filled", "handheld", "savory", "street food"]
+    "tags": [
+      "baked",
+      "filled",
+      "handheld",
+      "savory",
+      "street food"
+    ],
+    "releaseDate": "2025-07-02"
   },
   {
     "name": "Ropa Vieja",
-    "acceptableGuesses": ["ropa vieja"],
+    "acceptableGuesses": [
+      "ropa vieja"
+    ],
     "country": "Cuba",
     "imageUrl": "/images/dishes/ropa-vieja.png",
     "ingredients": [
@@ -1622,11 +2070,21 @@
         "Serve with rice or plantains."
       ]
     },
-    "tags": ["shredded", "braised", "savory", "slow-cooked", "comfort food"]
+    "tags": [
+      "shredded",
+      "braised",
+      "savory",
+      "slow-cooked",
+      "comfort food"
+    ],
+    "releaseDate": "2025-07-03"
   },
   {
     "name": "Tom Yum Soup",
-    "acceptableGuesses": ["tom yum", "tom yum soup"],
+    "acceptableGuesses": [
+      "tom yum",
+      "tom yum soup"
+    ],
     "country": "Thailand",
     "imageUrl": "/images/dishes/tom-yum-soup.png",
     "ingredients": [
@@ -1656,11 +2114,20 @@
         "Serve hot with cilantro garnish."
       ]
     },
-    "tags": ["soup", "spicy", "sour", "herbal", "seafood"]
+    "tags": [
+      "soup",
+      "spicy",
+      "sour",
+      "herbal",
+      "seafood"
+    ],
+    "releaseDate": "2025-07-04"
   },
   {
     "name": "Bibimbap",
-    "acceptableGuesses": ["bibimbap"],
+    "acceptableGuesses": [
+      "bibimbap"
+    ],
     "country": "South Korea",
     "imageUrl": "/images/dishes/bibimbap.png",
     "ingredients": [
@@ -1691,11 +2158,21 @@
         "Mix everything thoroughly before eating."
       ]
     },
-    "tags": ["rice bowl", "vegetables", "spicy", "colorful", "mix"]
+    "tags": [
+      "rice bowl",
+      "vegetables",
+      "spicy",
+      "colorful",
+      "mix"
+    ],
+    "releaseDate": "2025-07-05"
   },
   {
     "name": "Jollof Rice",
-    "acceptableGuesses": ["jollof rice", "jollof"],
+    "acceptableGuesses": [
+      "jollof rice",
+      "jollof"
+    ],
     "country": "Nigeria",
     "imageUrl": "/images/dishes/jollof-rice.png",
     "ingredients": [
@@ -1726,6 +2203,13 @@
         "Stir occasionally to prevent burning."
       ]
     },
-    "tags": ["rice", "one-pot", "spicy", "tomato-based", "festive"]
+    "tags": [
+      "rice",
+      "one-pot",
+      "spicy",
+      "tomato-based",
+      "festive"
+    ],
+    "releaseDate": "2025-07-06"
   }
 ]

@@ -58,10 +58,14 @@ export const useGameStore = create<GameState>((set, get) => ({
   currentDish: null,
   dishes: [],
   loadDishes: async () => {
-    const rawDishes = await fetchDishes();
+    const rawDishes = await fetchDishes(); // now returns only today's dish (or [])
     const countryCoords = getCountryCoordsMap();
     const enriched = enrichDishesWithCoords(rawDishes, countryCoords);
-    set({ dishes: enriched });
+    const todayDish = enriched[0] || null;
+    set({
+      dishes: enriched,
+      currentDish: todayDish,
+    });
   },
   gamePhase: "dish",
   revealedIngredients: 1,

@@ -72,5 +72,10 @@ export function capitalizeFirst(str: string) {
 export async function loadDishes(): Promise<Dish[]> {
   const res = await fetch("/data/sample_dishes.json");
   if (!res.ok) throw new Error("Failed to load dishes");
-  return res.json();
+
+  const allDishes = await res.json();
+  const today = new Date().toISOString().split("T")[0];
+  const todayDish = allDishes.find((dish: any) => dish.releaseDate === today);
+
+  return todayDish ? [todayDish] : [];
 }
