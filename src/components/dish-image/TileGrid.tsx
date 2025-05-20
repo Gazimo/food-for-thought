@@ -16,7 +16,7 @@ export function TileGrid({
 
   return (
     <div
-      className={`grid grid-cols-3 grid-rows-2 mx-auto mb-4 max-w-full`}
+      className={`grid grid-cols-3 grid-rows-2 mx-auto  max-w-full`}
       style={{ width: `${width}px`, maxWidth: "100vw" }}
     >
       {Array.from({ length: 6 }).map((_, index) => {

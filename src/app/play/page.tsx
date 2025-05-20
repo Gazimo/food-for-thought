@@ -73,8 +73,9 @@ export default function GamePage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
+              className="flex flex-col gap-4"
             >
-              <h2 className="text-xl font-semibold mb-3">🍽️ Guess the Dish</h2>
+              <h2 className="text-xl font-semibold">🍽️ Guess the Dish</h2>
               <DishPhase isComplete={gamePhase !== "dish"} />
             </motion.div>
           )}
@@ -87,7 +88,7 @@ export default function GamePage() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
             >
-              <h2 className="text-xl font-semibold mb-3">
+              <h2 className="text-xl font-semibold">
                 🌍 Guess the Country of Origin
               </h2>
               <CountryPhase isComplete={gamePhase === "complete"} />
@@ -108,7 +109,7 @@ export default function GamePage() {
             </div>
           )}
         {activePhase === "country" && (
-          <div className="text-left mt-2 mb-4">
+          <div className="text-left mt-2">
             <button
               onClick={() => setActivePhase("dish")}
               className="px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors"

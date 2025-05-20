@@ -2,11 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { useGameStore } from "@/store/gameStore";
+import Image from "next/image";
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { generateShareText } from "../utils/shareText";
-import { RecipeModal } from "./RecipeModal";
-import Image from "next/image";
 
 export const ResultModal: React.FC = () => {
   const {
@@ -71,22 +70,6 @@ export const ResultModal: React.FC = () => {
             {currentDish.name}
           </p>
           <p className="text-gray-600">from {currentDish.country}</p>
-          {currentDish.recipe && (
-            <>
-              <Button
-                onClick={() => setShowRecipe(true)}
-                className="mt-2 px-4 py-2 text-sm bg-amber-500 text-white rounded hover:bg-amber-600 transition-colors"
-              >
-                🍽️ View Recipe
-              </Button>
-
-              <RecipeModal
-                open={showRecipe}
-                onOpenChange={setShowRecipe}
-                dish={currentDish}
-              />
-            </>
-          )}
         </div>
 
         <div className="space-y-2">
@@ -119,15 +102,59 @@ export const ResultModal: React.FC = () => {
               {gameResults.countryGuessSuccess ? "✓" : "✗"}
             </span>
           </div>
+          <div className="flex justify-between gap-2">
+            <Button
+              onClick={() => setShowRecipe(!showRecipe)}
+              className="mt-2 px-4 py-2 text-sm bg-amber-500 text-white rounded hover:bg-amber-600 transition-colors flex-1"
+            >
+              {showRecipe ? "Close" : "🍽️ View Recipe"}
+            </Button>
+            <Button
+              onClick={handleCopyResults}
+              variant="fun"
+              className="flex-1 mt-2"
+            >
+              📋 Share Your Results
+            </Button>
+          </div>
+          {currentDish.recipe && (
+            <>
+              {showRecipe && (
+                <div className="relative p-4">
+                  <span className="absolute text-[120px] opacity-10 right-5 select-none pointer-events-none">
+                    👨🏻‍🍳
+                  </span>
 
-          <Button
-            onClick={handleCopyResults}
-            variant="fun"
-            className="w-full mt-2"
-          >
-            📋 Share Your Results
-          </Button>
+                  <div className="text-2xl font-bold">
+                    🍽️ {currentDish.name}
+                  </div>
 
+                  <div className="space-y-4 max-h-[60vh] overflow-y-auto relative z-10">
+                    <div>
+                      <p className="text-gray-600 text-sm mb-2 italic">
+                        Here&apos;s how you make {currentDish.name} — straight
+                        from {currentDish.country}.
+                      </p>
+                      <p className="font-semibold">Ingredients:</p>
+                      <ul className="list-disc list-inside text-gray-700">
+                        {currentDish.recipe.ingredients.map((item, idx) => (
+                          <li key={idx}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <p className="font-semibold">Instructions:</p>
+                      <ol className="list-decimal list-inside text-gray-700 space-y-1">
+                        {currentDish.recipe.instructions.map((step, idx) => (
+                          <li key={idx}>{step}</li>
+                        ))}
+                      </ol>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
           <p className="text-center text-gray-500 text-sm mt-4">
             Come back tomorrow for a new challenge!
           </p>

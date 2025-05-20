@@ -26,7 +26,7 @@ export function DishPhase({ isComplete }: DishPhaseProps) {
         />
       )}
       {!isComplete && (
-        <>
+        <div className="flex flex-col gap-4">
           <GuessInput
             placeholder="Enter a dish name..."
             onGuess={guessDish}
@@ -34,7 +34,7 @@ export function DishPhase({ isComplete }: DishPhaseProps) {
             isComplete={isComplete}
           />
           <Button
-            className="mt-2"
+            className=""
             variant="fun"
             onClick={() => {
               revealAllTiles();
@@ -43,9 +43,9 @@ export function DishPhase({ isComplete }: DishPhaseProps) {
           >
             Give Up 😩
           </Button>
-        </>
+        </div>
       )}
-      <GuessFeedback alwaysShowIngredients />
+      <GuessFeedback />
     </>
   );
 }
