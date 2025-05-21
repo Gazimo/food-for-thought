@@ -2,7 +2,7 @@
 
 import worldData from "@/data/world-110m.json";
 import { getColorForDistance } from "@/utils/colors";
-import { geoMercator, geoPath } from "d3-geo";
+import { geoNaturalEarth1, geoPath } from "d3-geo";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { feature } from "topojson-client";
@@ -26,9 +26,10 @@ export const MapGuessVisualizer = ({ guesses }: MapGuessVisualizerProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const [dimensions, setDimensions] = useState({ width: 700, height: 350 });
 
-  const projection = geoMercator()
+  const projection = geoNaturalEarth1()
     .scale(100)
-    .translate([dimensions.width / 2, dimensions.height / 1.5]);
+    .translate([dimensions.width / 2.2, dimensions.height / 1.9])
+    .rotate([-30, 0]);
 
   const pathGenerator = geoPath().projection(projection);
 
