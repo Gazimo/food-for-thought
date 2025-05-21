@@ -42,8 +42,8 @@ export function CountryPhase({ isComplete }: CountryPhaseProps) {
             isComplete={isComplete}
           />
           <Button
-            className="mt-2"
-            variant="fun"
+            className="mt-2 w-1/4"
+            variant="danger"
             onClick={() => {
               revealAllTiles();
               completeGame();

@@ -34,8 +34,8 @@ export function DishPhase({ isComplete }: DishPhaseProps) {
             isComplete={isComplete}
           />
           <Button
-            className=""
-            variant="fun"
+            className="mt-2 w-1/4"
+            variant="danger"
             onClick={() => {
               revealAllTiles();
               moveToCountryPhase();

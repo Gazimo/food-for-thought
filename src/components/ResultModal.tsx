@@ -105,15 +105,11 @@ export const ResultModal: React.FC = () => {
           <div className="flex justify-between gap-2">
             <Button
               onClick={() => setShowRecipe(!showRecipe)}
-              className="mt-2 px-4 py-2 text-sm bg-amber-500 text-white rounded hover:bg-amber-600 transition-colors flex-1"
+              variant="neutral"
             >
               {showRecipe ? "Close" : "🍽️ View Recipe"}
             </Button>
-            <Button
-              onClick={handleCopyResults}
-              variant="fun"
-              className="flex-1 mt-2"
-            >
+            <Button onClick={handleCopyResults} variant="share">
               📋 Share Your Results
             </Button>
           </div>

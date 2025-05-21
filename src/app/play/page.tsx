@@ -8,6 +8,7 @@ import { useGameStore } from "@/store/gameStore";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
 import { IntroModal } from "../../components/IntroModal";
+import { Button } from "../../components/ui/button";
 import { alreadyPlayedToday, getStreak } from "../../utils/streak";
 import { CountryPhase } from "./CountryPhase";
 import { DishPhase } from "./DishPhase";
@@ -98,35 +99,38 @@ export default function GamePage() {
         {activePhase === "dish" &&
           (gamePhase === "country" || gamePhase === "complete") && (
             <div className="text-center mt-4">
-              <button
+              <Button
                 onClick={() => setActivePhase("country")}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="px-4 py-2 rounded-lg"
+                variant="phase"
               >
                 {gamePhase === "complete"
                   ? "Review your country guess"
                   : "Guess where it's from"}
-              </button>
+              </Button>
             </div>
           )}
         {activePhase === "country" && (
           <div className="text-left mt-2">
-            <button
+            <Button
               onClick={() => setActivePhase("dish")}
-              className="px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors"
+              className="px-3 py-1 rounded"
+              variant="neutral"
             >
               ← Back to Dish
-            </button>
+            </Button>
           </div>
         )}
-        {/* Show Results button after completion */}
+
         {gamePhase === "complete" && !modalVisible && (
           <div className="text-center mt-4">
-            <button
+            <Button
               onClick={() => toggleModal(true)}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="px-4 py-2"
+              variant="secondary"
             >
               Show Results
-            </button>
+            </Button>
           </div>
         )}
       </PhaseContainer>

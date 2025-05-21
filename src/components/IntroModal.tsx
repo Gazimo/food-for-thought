@@ -38,8 +38,8 @@ export const IntroModal = () => {
             <p>🎯 Each wrong guess reveals part of the dish image!</p>
           </DialogDescription>
         </DialogHeader>
-        <Button onClick={handleClose} className="mt-4 w-full">
-          Let’s Go!
+        <Button onClick={handleClose} variant="cta">
+          Let&apos;s Go!
         </Button>
       </DialogContent>
     </Dialog>

@@ -86,10 +86,9 @@ export const GuessInput: React.FC<GuessInputProps> = ({
           disabled={isComplete}
         />
         <Button
-          variant="fun"
+          variant="primary"
           disabled={!input.trim() || isComplete}
           onClick={() => handleGuess(input)}
-          className="bg-green-300 hover:bg-green-400 text-white"
         >
           Submit
         </Button>
@@ -121,10 +120,9 @@ export const GuessInput: React.FC<GuessInputProps> = ({
           </Button>
         </PopoverTrigger>
         <Button
-          variant="fun"
+          variant="primary"
           onClick={() => handleGuess(value)}
           disabled={!value.trim() || isComplete}
-          className="bg-green-300 hover:bg-green-400 text-white"
         >
           Submit
         </Button>
