@@ -8,16 +8,16 @@ interface CountryGuessFeedbackProps {
 export const CountryGuessFeedback: React.FC<CountryGuessFeedbackProps> = ({
   guessResults,
 }) => {
-  // Function to determine color based on distance
   const getColorForDistance = (distance: number): string => {
     if (distance === 0) return "bg-green-500";
     if (distance < 500) return "bg-green-400";
-    if (distance < 750) return "bg-green-300";
-    if (distance < 1000) return "bg-yellow-400";
-    if (distance < 1500) return "bg-orange-400";
-    if (distance < 2000) return "bg-red-300";
+    if (distance < 1000) return "bg-green-300";
+    if (distance < 2000) return "bg-yellow-300";
+    if (distance < 3500) return "bg-orange-300";
+    if (distance < 6000) return "bg-red-300";
     return "bg-red-500";
   };
+
 
   if (guessResults.length === 0) return null;
 
