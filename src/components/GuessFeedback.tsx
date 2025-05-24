@@ -12,7 +12,7 @@ export const GuessFeedback = () => {
 
   return (
     <div className="mt-4">
-      {(gamePhase === "dish" || revealedIngredients >= 1) && (
+      {gamePhase !== "country" && revealedIngredients >= 1 && (
         <div className="space-y-2">
           <h3 className="font-semibold text-lg">Revealed Ingredients:</h3>
           <ul className="space-y-1">

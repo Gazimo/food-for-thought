@@ -9,6 +9,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
 import { IntroModal } from "../../components/IntroModal";
 import { Button } from "../../components/ui/button";
+import { cn } from "../../lib/utils";
 import { alreadyPlayedToday, getStreak } from "../../utils/streak";
 import { CountryPhase } from "./CountryPhase";
 import { DishPhase } from "./DishPhase";
@@ -101,7 +102,10 @@ export default function GamePage() {
             <div className="text-center mt-4">
               <Button
                 onClick={() => setActivePhase("country")}
-                className="px-4 py-2 rounded-lg"
+                className={cn(
+                  "px-4 py-2 rounded-lg",
+                  gamePhase !== "complete" && "animate-pulse"
+                )}
                 variant="phase"
               >
                 {gamePhase === "complete"

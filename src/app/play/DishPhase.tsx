@@ -16,6 +16,7 @@ export function DishPhase({ isComplete }: DishPhaseProps) {
     dishGuesses,
     currentDish,
     revealedTiles,
+    gameResults
   } = useGameStore();
   return (
     <>
@@ -33,6 +34,9 @@ export function DishPhase({ isComplete }: DishPhaseProps) {
             previousGuesses={dishGuesses}
             isComplete={isComplete}
           />
+          <div className="text-sm text-gray-600 mt-1">
+            Guesses: {gameResults.dishGuesses.length} of 6
+          </div>
           <Button
             className="mt-2 w-1/4"
             variant="danger"
