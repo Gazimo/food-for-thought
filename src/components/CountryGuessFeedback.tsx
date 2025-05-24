@@ -1,3 +1,6 @@
+"use client";
+
+import { motion } from "framer-motion";
 import React from "react";
 import { CountryGuessResult } from "../types/game";
 
@@ -18,48 +21,48 @@ export const CountryGuessFeedback: React.FC<CountryGuessFeedbackProps> = ({
     return "bg-red-500";
   };
 
-
   if (guessResults.length === 0) return null;
 
-  // Sort by distance, closest first, NaN/Invalid at the end
-  const sortedResults = [...guessResults].sort((a, b) => {
+  const lastGuess = guessResults[guessResults.length - 1];
+  const previousGuesses = [...guessResults.slice(0, -1)].sort((a, b) => {
     if (isNaN(a.distance)) return 1;
     if (isNaN(b.distance)) return -1;
     return a.distance - b.distance;
   });
 
+  const renderGuess = (result: CountryGuessResult, animated = false) => (
+    <motion.div
+      key={result.country + result.distance}
+      initial={animated ? { opacity: 0, y: 10 } : false}
+      animate={animated ? { opacity: 1, y: 0 } : undefined}
+      transition={animated ? { duration: 0.3 } : undefined}
+      className={`p-3 rounded-lg border ${
+        result.isCorrect ? "border-green-500 bg-green-50" : "border-gray-200"
+      }`}
+    >
+      <div className="flex justify-between items-center">
+        <span className="font-medium">{result.country}</span>
+        {!result.isCorrect && (
+          <div className="flex items-center gap-2">
+            <span className="text-sm">{Math.round(result.distance)} km</span>
+            <span className="text-sm">{result.direction}</span>
+            <div
+              className={`w-4 h-4 rounded-full ${getColorForDistance(
+                result.distance
+              )}`}
+            />
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+
   return (
     <div className="mt-4">
       <h3 className="font-semibold text-lg mb-2">Previous Guesses:</h3>
       <div className="space-y-2">
-        {sortedResults.map((result, index) => (
-          <div
-            key={index}
-            className={`p-3 rounded-lg border ${
-              result.isCorrect
-                ? "border-green-500 bg-green-50"
-                : "border-gray-200"
-            }`}
-          >
-            <div className="flex justify-between items-center">
-              <span className="font-medium">{result.country}</span>
-              {!result.isCorrect && (
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">
-                    {Math.round(result.distance)} km
-                  </span>
-                  <span className="text-sm">{result.direction}</span>
-                  <div
-                    className={`w-4 h-4 rounded-full ${getColorForDistance(
-                      result.distance
-                    )}`}
-                    title={`Distance: ${Math.round(result.distance)} km`}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
+        {renderGuess(lastGuess, true)}
+        {previousGuesses.map((g) => renderGuess(g))}
       </div>
     </div>
   );
