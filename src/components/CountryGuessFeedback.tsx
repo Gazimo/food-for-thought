@@ -21,16 +21,16 @@ export const CountryGuessFeedback: React.FC<CountryGuessFeedbackProps> = ({
     if (distance < 6000) return "bg-red-300";
     return "bg-red-500";
   };
+  const lastGuess = guessResults[guessResults.length - 1];
+  const countUpDistance = useCountUp(0, Math.round(lastGuess.distance), 1000);
 
   if (guessResults.length === 0) return null;
 
-  const lastGuess = guessResults[guessResults.length - 1];
   const previousGuesses = [...guessResults.slice(0, -1)].sort((a, b) => {
     if (isNaN(a.distance)) return 1;
     if (isNaN(b.distance)) return -1;
     return a.distance - b.distance;
   });
-
   const renderGuess = (
     result: CountryGuessResult,
     animated = false,
@@ -38,7 +38,7 @@ export const CountryGuessFeedback: React.FC<CountryGuessFeedbackProps> = ({
   ) => {
     const animatedDistance =
       animated && !result.isCorrect
-        ? useCountUp(0, Math.round(result.distance), 1000)
+        ? countUpDistance
         : Math.round(result.distance);
 
     return (
