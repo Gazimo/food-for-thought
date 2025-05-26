@@ -15,6 +15,7 @@ export const ResultModal: React.FC = () => {
     modalVisible,
     toggleModal,
     streak,
+    countryGuessResults,
   } = useGameStore();
   const [showRecipe, setShowRecipe] = useState(false);
 
@@ -23,7 +24,11 @@ export const ResultModal: React.FC = () => {
   const handleCopyResults = () => {
     const text = generateShareText({
       dishGuesses: gameResults.dishGuesses,
-      countryGuesses: gameResults.countryGuesses,
+      countryGuesses: countryGuessResults.map((g) => ({
+        name: g.country,
+        distance: g.distance,
+        direction: g.direction,
+      })),
       dish: currentDish.name,
       country: currentDish.country,
       streak,
