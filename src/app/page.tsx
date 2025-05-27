@@ -1,13 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import GamePage from "./play/page";
 
 export default function Home() {
-  const router = useRouter();
-  useEffect(() => {
-    router.push("/play");
-  }, [router]);
-
-  return <div>Redirecting...</div>;
+  return <GamePage />;
 }

@@ -48,7 +48,7 @@ export function generateShareText({
 🍽️ ${dishTiles}  ${dishGuesses.length}/6
 🌍 ${countryTiles}  ${countryGuesses.length}
 
-https://foodforthought.game`;
+https://f4t.xyz`;
 }
 
 function getGameDayNumber(): string {
