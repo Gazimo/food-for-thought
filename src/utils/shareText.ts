@@ -12,7 +12,7 @@ export function generateShareText({
   streak: number;
 }) {
   const dayNumber = getGameDayNumber();
-  const today = new Date().toLocaleDateString("en-GB"); // 26.05.2025
+  const today = new Date().toLocaleDateString("en-GB");
 
   const dishTiles = dishGuesses
     .map((g) => (g.toLowerCase() === dish.toLowerCase() ? "🟩" : "🟥"))
@@ -27,12 +27,7 @@ export function generateShareText({
     return "⬜";
   };
 
-  const countryTiles = countryGuesses
-    .map((g) => {
-      if (g.name.toLowerCase() === country.toLowerCase()) return "🎯";
-      return getColor(g.distance);
-    })
-    .join("");
+  const countryTiles = countryGuesses.map((g) => getColor(g.distance)).join("");
 
   return `#FoodForThought ${dayNumber} (${today}) ${dishGuesses.length}/6
 🔥 Streak: ${streak} days
@@ -44,7 +39,7 @@ https://foodforthought.game`;
 }
 
 function getGameDayNumber(): string {
-  const launchDate = new Date("2025-05-10");
+  const launchDate = new Date("2025-05-10"); // TODO: change this to the actual launch date
   const today = new Date();
   const diff = Math.floor(
     (today.getTime() - launchDate.getTime()) / (1000 * 60 * 60 * 24)

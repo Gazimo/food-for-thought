@@ -2,8 +2,8 @@
 
 import { motion } from "framer-motion";
 import React from "react";
-import { useCountUp } from "../hooks/useCountUp"; // adjust path as needed
 import { CountryGuessResult } from "../types/game";
+import { useCountUp } from "../hooks/useCountUp";
 
 interface CountryGuessFeedbackProps {
   guessResults: CountryGuessResult[];
@@ -21,8 +21,10 @@ export const CountryGuessFeedback: React.FC<CountryGuessFeedbackProps> = ({
     if (distance < 6000) return "bg-red-300";
     return "bg-red-500";
   };
-  const lastGuess = guessResults[guessResults.length - 1];
-  const countUpDistance = useCountUp(0, Math.round(lastGuess.distance), 1000);
+
+  // Default to 0 to avoid breaking hooks order
+  const lastGuess = guessResults[guessResults.length - 1] ?? { distance: 0 };
+  const animatedDistance = useCountUp(0, Math.round(lastGuess.distance), 1000);
 
   if (guessResults.length === 0) return null;
 
@@ -31,14 +33,15 @@ export const CountryGuessFeedback: React.FC<CountryGuessFeedbackProps> = ({
     if (isNaN(b.distance)) return -1;
     return a.distance - b.distance;
   });
+
   const renderGuess = (
     result: CountryGuessResult,
     animated = false,
     index: number
   ) => {
-    const animatedDistance =
+    const distanceValue =
       animated && !result.isCorrect
-        ? countUpDistance
+        ? animatedDistance
         : Math.round(result.distance);
 
     return (
@@ -55,9 +58,7 @@ export const CountryGuessFeedback: React.FC<CountryGuessFeedbackProps> = ({
           <span className="font-medium">{result.country}</span>
           {!result.isCorrect && (
             <div className="flex items-center gap-2">
-              <span className="text-sm">
-                {animatedDistance.toLocaleString()} km
-              </span>
+              <span className="text-sm">{distanceValue.toLocaleString()} km</span>
               <span className="text-sm">{result.direction}</span>
               <div
                 className={`w-4 h-4 rounded-full ${getColorForDistance(
