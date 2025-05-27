@@ -16,8 +16,12 @@ export function generateShareText({
 
   const dishTiles = dishGuesses
     .map((g) => (g.toLowerCase() === dish.toLowerCase() ? "🟩" : "🟥"))
+    .map((g, i, arr) => {
+      const isLast = i === arr.length - 1;
+      const isCorrect = g.toLowerCase() === dish.toLowerCase();
+      if (isLast && !isCorrect) return "🏳️";
+    })
     .join("");
-
   const getColor = (distance: number) => {
     if (distance === 0) return "🟩";
     if (distance < 500) return "🟨";
@@ -27,7 +31,14 @@ export function generateShareText({
     return "⬜";
   };
 
-  const countryTiles = countryGuesses.map((g) => getColor(g.distance)).join("");
+  const countryTiles = countryGuesses
+    .map((g, i, arr) => {
+      const isLast = i === arr.length - 1;
+      const isCorrect = g.name.toLowerCase() === country.toLowerCase();
+      if (isLast && !isCorrect) return "🏳️";
+      return getColor(g.distance);
+    })
+    .join("");
 
   return `#FoodForThought ${dayNumber} (${today}) ${dishGuesses.length}/6
 🔥 Streak: ${streak} days
