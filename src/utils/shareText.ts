@@ -15,13 +15,15 @@ export function generateShareText({
   const today = new Date().toLocaleDateString("en-GB");
 
   const dishTiles = dishGuesses
-    .map((g) => (g.toLowerCase() === dish.toLowerCase() ? "🟩" : "🟥"))
-    .map((g, i, arr) => {
+    .map((guess, i, arr) => {
+      const isCorrect = guess.toLowerCase() === dish.toLowerCase();
       const isLast = i === arr.length - 1;
-      const isCorrect = g.toLowerCase() === dish.toLowerCase();
-      if (isLast && !isCorrect) return "🏳️";
+      if (isCorrect) return "🟩";
+      if (isLast) return "🏳️";
+      return "🟥";
     })
     .join("");
+
   const getColor = (distance: number) => {
     if (distance === 0) return "🟩";
     if (distance < 500) return "🟨";
