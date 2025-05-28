@@ -39,7 +39,7 @@
       "bread",
       "main"
     ],
-    "releaseDate": "2025-05-20"
+    "releaseDate": "2025-05-28"
   },
   {
     "name": "Injera with Stew",
@@ -80,7 +80,7 @@
       "main",
       "fermented"
     ],
-    "releaseDate": "2025-05-21"
+    "releaseDate": "2025-05-29"
   },
   {
     "name": "Okonomiyaki",
@@ -120,7 +120,7 @@
       "main",
       "grilled"
     ],
-    "releaseDate": "2025-05-22"
+    "releaseDate": "2025-05-30"
   },
   {
     "name": "Feijoada",
@@ -159,7 +159,7 @@
       "main",
       "stew"
     ],
-    "releaseDate": "2025-05-23"
+    "releaseDate": "2025-05-31"
   },
   {
     "name": "Mansaf",
@@ -199,7 +199,7 @@
       "main",
       "fermented"
     ],
-    "releaseDate": "2025-05-24"
+    "releaseDate": "2025-06-01"
   },
   {
     "name": "Gado-Gado",
@@ -239,7 +239,7 @@
       "salad",
       "main"
     ],
-    "releaseDate": "2025-05-25"
+    "releaseDate": "2025-06-02"
   },
   {
     "name": "Shakshuka",
@@ -278,7 +278,7 @@
       "breakfast",
       "one-pan"
     ],
-    "releaseDate": "2025-05-26"
+    "releaseDate": "2025-06-03"
   },
   {
     "name": "Schnitzel",
@@ -317,7 +317,7 @@
       "main",
       "fried"
     ],
-    "releaseDate": "2025-05-27"
+    "releaseDate": "2025-06-04"
   },
   {
     "name": "Kimchi Jjigae",
@@ -357,7 +357,7 @@
       "spicy",
       "stew"
     ],
-    "releaseDate": "2025-05-28"
+    "releaseDate": "2025-06-05"
   },
   {
     "name": "Ceviche",
@@ -394,7 +394,7 @@
       "starter",
       "raw"
     ],
-    "releaseDate": "2025-05-29"
+    "releaseDate": "2025-06-06"
   },
   {
     "name": "Pierogi",
@@ -434,7 +434,7 @@
       "dumplings",
       "comfort"
     ],
-    "releaseDate": "2025-05-30"
+    "releaseDate": "2025-06-07"
   },
   {
     "name": "Biryani",
@@ -474,7 +474,7 @@
       "main",
       "rice"
     ],
-    "releaseDate": "2025-05-31"
+    "releaseDate": "2025-06-08"
   },
   {
     "name": "Masgouf",
@@ -519,7 +519,7 @@
       "main",
       "national dish"
     ],
-    "releaseDate": "2025-06-01"
+    "releaseDate": "2025-06-09"
   },
   {
     "name": "Butter Chicken",
@@ -570,7 +570,7 @@
       "creamy",
       "main"
     ],
-    "releaseDate": "2025-06-02"
+    "releaseDate": "2025-06-10"
   },
   {
     "name": "Kimchi",
@@ -620,7 +620,7 @@
       "side dish",
       "vegan"
     ],
-    "releaseDate": "2025-06-03"
+    "releaseDate": "2025-06-11"
   },
   {
     "name": "Tamiya",
@@ -672,7 +672,7 @@
       "legumes",
       "street food"
     ],
-    "releaseDate": "2025-06-04"
+    "releaseDate": "2025-06-12"
   },
   {
     "name": "Okro Soup",
@@ -723,7 +723,7 @@
       "vegetables",
       "spicy"
     ],
-    "releaseDate": "2025-06-05"
+    "releaseDate": "2025-06-13"
   },
   {
     "name": "Ema Datshi",
@@ -769,7 +769,7 @@
       "stew",
       "main"
     ],
-    "releaseDate": "2025-06-06"
+    "releaseDate": "2025-06-14"
   },
   {
     "name": "Cepelinai",
@@ -817,7 +817,7 @@
       "main",
       "comfort food"
     ],
-    "releaseDate": "2025-06-07"
+    "releaseDate": "2025-06-15"
   },
   {
     "name": "Maraq",
@@ -873,7 +873,7 @@
       "main",
       "spiced"
     ],
-    "releaseDate": "2025-06-08"
+    "releaseDate": "2025-06-16"
   },
   {
     "name": "Meat Pie",
@@ -927,7 +927,7 @@
       "handheld",
       "savory"
     ],
-    "releaseDate": "2025-06-09"
+    "releaseDate": "2025-06-17"
   },
   {
     "name": "Arepas",
@@ -973,7 +973,7 @@
       "stuffed",
       "handheld"
     ],
-    "releaseDate": "2025-06-10"
+    "releaseDate": "2025-06-18"
   },
   {
     "name": "Dal Bhat",
@@ -1027,7 +1027,7 @@
       "main",
       "healthy"
     ],
-    "releaseDate": "2025-06-11"
+    "releaseDate": "2025-06-19"
   },
   {
     "name": "Pad Thai",
@@ -1082,7 +1082,7 @@
       "street food",
       "savory-sweet"
     ],
-    "releaseDate": "2025-06-12"
+    "releaseDate": "2025-06-20"
   },
   {
     "name": "Momo",
@@ -1134,7 +1134,7 @@
       "appetizer",
       "street food"
     ],
-    "releaseDate": "2025-06-13"
+    "releaseDate": "2025-06-21"
   },
   {
     "name": "Tam Mak Hoong",
@@ -1186,7 +1186,7 @@
       "fresh",
       "appetizer"
     ],
-    "releaseDate": "2025-06-14"
+    "releaseDate": "2025-06-22"
   },
   {
     "name": "Fufu",
@@ -1228,7 +1228,7 @@
       "side dish",
       "vegan"
     ],
-    "releaseDate": "2025-06-15"
+    "releaseDate": "2025-06-23"
   },
   {
     "name": "Solomillo al Whisky",
@@ -1279,7 +1279,7 @@
       "main",
       "quick"
     ],
-    "releaseDate": "2025-06-16"
+    "releaseDate": "2025-06-24"
   },
   {
     "name": "Laksa",
@@ -1333,7 +1333,7 @@
       "coconut",
       "seafood"
     ],
-    "releaseDate": "2025-06-17"
+    "releaseDate": "2025-06-25"
   },
   {
     "name": "Callaloo",
@@ -1386,7 +1386,7 @@
       "vegetable",
       "spicy"
     ],
-    "releaseDate": "2025-06-18"
+    "releaseDate": "2025-06-26"
   },
   {
     "name": "Ikan Bakar",
@@ -1440,7 +1440,7 @@
       "main",
       "aromatic"
     ],
-    "releaseDate": "2025-06-19"
+    "releaseDate": "2025-06-27"
   },
   {
     "name": "Qurutob",
@@ -1488,7 +1488,7 @@
       "main",
       "communal"
     ],
-    "releaseDate": "2025-06-20"
+    "releaseDate": "2025-06-28"
   },
   {
     "name": "Colcannon",
@@ -1536,7 +1536,7 @@
       "potatoes",
       "greens"
     ],
-    "releaseDate": "2025-06-21"
+    "releaseDate": "2025-06-29"
   },
   {
     "name": "Koshari",
@@ -1587,7 +1587,7 @@
       "legumes",
       "main"
     ],
-    "releaseDate": "2025-06-22"
+    "releaseDate": "2025-06-30"
   },
   {
     "name": "Pizza",
@@ -1641,7 +1641,7 @@
       "bread",
       "classic"
     ],
-    "releaseDate": "2025-06-23"
+    "releaseDate": "2025-07-01"
   },
   {
     "name": "Falafel",
@@ -1685,7 +1685,7 @@
       "street food",
       "legume"
     ],
-    "releaseDate": "2025-06-24"
+    "releaseDate": "2025-07-02"
   },
   {
     "name": "Sushi",
@@ -1729,7 +1729,7 @@
       "rolled",
       "finger food"
     ],
-    "releaseDate": "2025-06-25"
+    "releaseDate": "2025-07-03"
   },
   {
     "name": "Croissant",
@@ -1772,7 +1772,7 @@
       "buttery",
       "breakfast"
     ],
-    "releaseDate": "2025-06-26"
+    "releaseDate": "2025-07-04"
   },
   {
     "name": "Tacos",
@@ -1813,7 +1813,7 @@
       "fresh",
       "grilled"
     ],
-    "releaseDate": "2025-06-27"
+    "releaseDate": "2025-07-05"
   },
   {
     "name": "Chakalaka",
@@ -1856,7 +1856,7 @@
       "colorful",
       "side dish"
     ],
-    "releaseDate": "2025-06-28"
+    "releaseDate": "2025-07-06"
   },
   {
     "name": "Chicken Adobo",
@@ -1901,7 +1901,7 @@
       "comfort food",
       "glazed"
     ],
-    "releaseDate": "2025-06-29"
+    "releaseDate": "2025-07-07"
   },
   {
     "name": "Khinkali",
@@ -1946,7 +1946,7 @@
       "juicy",
       "handheld"
     ],
-    "releaseDate": "2025-06-30"
+    "releaseDate": "2025-07-08"
   },
   {
     "name": "Poutine",
@@ -1988,7 +1988,7 @@
       "saucy",
       "indulgent"
     ],
-    "releaseDate": "2025-07-01"
+    "releaseDate": "2025-07-09"
   },
   {
     "name": "Empanadas",
@@ -2033,7 +2033,7 @@
       "savory",
       "street food"
     ],
-    "releaseDate": "2025-07-02"
+    "releaseDate": "2025-07-10"
   },
   {
     "name": "Ropa Vieja",
@@ -2077,7 +2077,7 @@
       "slow-cooked",
       "comfort food"
     ],
-    "releaseDate": "2025-07-03"
+    "releaseDate": "2025-07-11"
   },
   {
     "name": "Tom Yum Soup",
@@ -2121,7 +2121,7 @@
       "herbal",
       "seafood"
     ],
-    "releaseDate": "2025-07-04"
+    "releaseDate": "2025-07-12"
   },
   {
     "name": "Bibimbap",
@@ -2165,7 +2165,7 @@
       "colorful",
       "mix"
     ],
-    "releaseDate": "2025-07-05"
+    "releaseDate": "2025-07-13"
   },
   {
     "name": "Jollof Rice",
@@ -2210,6 +2210,6 @@
       "tomato-based",
       "festive"
     ],
-    "releaseDate": "2025-07-06"
+    "releaseDate": "2025-07-14"
   }
 ]

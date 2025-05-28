@@ -6,7 +6,7 @@ const dishesPath = path.join(__dirname, '..', 'public', 'data', 'sample_dishes.j
 const dishes = JSON.parse(fs.readFileSync(dishesPath, 'utf8'));
 
 // Start date (editable if needed)
-const startDate = new Date('2025-05-20');
+const startDate = new Date('2025-05-28');
 
 const updatedDishes = dishes.map((dish, index) => {
   const releaseDate = new Date(startDate);
