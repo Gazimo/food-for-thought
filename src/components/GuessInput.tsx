@@ -68,7 +68,7 @@ export const GuessInput: React.FC<GuessInputProps> = ({
 
   if (suggestions.length === 0) {
     return (
-      <div className="w-full flex gap-2">
+      <div className="w-full flex gap-2 items-center">
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}

@@ -1,3 +1,4 @@
+import Fuse from "fuse.js";
 import { Dish } from "../../public/data/dishes";
 
 export function calculateDistance(
@@ -70,7 +71,7 @@ export function capitalizeFirst(str: string) {
 }
 
 export async function loadDishes(): Promise<Dish[]> {
-  const res = await fetch("/data/sample_dishes.json");
+  const res = await fetch("/api/dishes");
   if (!res.ok) throw new Error("Failed to load dishes");
 
   const allDishes = await res.json();
@@ -78,4 +79,16 @@ export async function loadDishes(): Promise<Dish[]> {
   const todayDish = allDishes.find((dish: Dish) => dish.releaseDate === today);
 
   return todayDish ? [todayDish] : [];
+}
+
+export function getClosestGuess(
+  input: string,
+  options: string[]
+): string | null {
+  const fuse = new Fuse(options, {
+    threshold: 0.4,
+    includeScore: true,
+  });
+  const result = fuse.search(input);
+  return result.length > 0 ? result[0].item : null;
 }

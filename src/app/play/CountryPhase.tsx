@@ -40,19 +40,19 @@ export function CountryPhase({ isComplete }: CountryPhaseProps) {
             previousGuesses={countryGuesses}
             isComplete={isComplete}
           />
-          <Button
-            className="mt-2 w-1/4"
-            variant="danger"
-            onClick={() => {
-              revealAllTiles();
-              completeGame();
-            }}
-          >
-            Give Up 😩
-          </Button>
         </div>
       )}
       <CountryGuessFeedback guessResults={countryGuessResults} />
+      <Button
+        className="w-1/6"
+        variant="danger"
+        onClick={() => {
+          revealAllTiles();
+          completeGame();
+        }}
+      >
+        Give Up 😩
+      </Button>
     </div>
   );
 }

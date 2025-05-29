@@ -11,10 +11,10 @@ export const GuessFeedback = () => {
   if (gamePhase === "dish" && revealedIngredients <= 1) return null;
 
   return (
-    <div className="mt-4">
+    <>
       {gamePhase !== "country" && revealedIngredients >= 1 && (
-        <div className="space-y-2">
-          <h3 className="font-semibold text-lg">Revealed Ingredients:</h3>
+        <div className="flex flex-col items-left">
+          <h3 className="font-semibold text-md">Revealed Ingredients:</h3>
           <ul className="space-y-1">
             <AnimatePresence initial={false}>
               {currentDish.ingredients
@@ -42,6 +42,6 @@ export const GuessFeedback = () => {
           <p className="text-gray-700">{currentDish.blurb}</p>
         </div>
       )}
-    </div>
+    </>
   );
 };

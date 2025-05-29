@@ -2,8 +2,8 @@
 
 import { motion } from "framer-motion";
 import React from "react";
-import { CountryGuessResult } from "../types/game";
 import { useCountUp } from "../hooks/useCountUp";
+import { CountryGuessResult } from "../types/game";
 
 interface CountryGuessFeedbackProps {
   guessResults: CountryGuessResult[];
@@ -58,7 +58,9 @@ export const CountryGuessFeedback: React.FC<CountryGuessFeedbackProps> = ({
           <span className="font-medium">{result.country}</span>
           {!result.isCorrect && (
             <div className="flex items-center gap-2">
-              <span className="text-sm">{distanceValue.toLocaleString()} km</span>
+              <span className="text-sm">
+                {distanceValue.toLocaleString()} km
+              </span>
               <span className="text-sm">{result.direction}</span>
               <div
                 className={`w-4 h-4 rounded-full ${getColorForDistance(
@@ -73,12 +75,12 @@ export const CountryGuessFeedback: React.FC<CountryGuessFeedbackProps> = ({
   };
 
   return (
-    <div className="mt-4">
+    <>
       <h3 className="font-semibold text-lg mb-2">Previous Guesses:</h3>
       <div className="space-y-2">
         {renderGuess(lastGuess, true, -1)}
         {previousGuesses.map((g, i) => renderGuess(g, false, i))}
       </div>
-    </div>
+    </>
   );
 };

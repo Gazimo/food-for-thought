@@ -16,7 +16,7 @@ export function DishPhase({ isComplete }: DishPhaseProps) {
     dishGuesses,
     currentDish,
     revealedTiles,
-    gameResults
+    gameResults,
   } = useGameStore();
   return (
     <>
@@ -27,18 +27,20 @@ export function DishPhase({ isComplete }: DishPhaseProps) {
         />
       )}
       {!isComplete && (
-        <div className="flex flex-col gap-4">
-          <GuessInput
-            placeholder="Enter a dish name..."
-            onGuess={guessDish}
-            previousGuesses={dishGuesses}
-            isComplete={isComplete}
-          />
-          <div className="text-sm text-gray-600 mt-1">
-            Guesses: {gameResults.dishGuesses.length} of 6
+        <div className="flex flex-col gap-2">
+          <div>
+            <GuessInput
+              placeholder="Enter a dish name..."
+              onGuess={guessDish}
+              previousGuesses={dishGuesses}
+              isComplete={isComplete}
+            />
+            <div className="text-sm text-gray-600 mt-1">
+              Guesses: {gameResults.dishGuesses.length} of 6
+            </div>
           </div>
           <Button
-            className="mt-2 w-1/4"
+            className="w-1/6"
             variant="danger"
             onClick={() => {
               revealAllTiles();
