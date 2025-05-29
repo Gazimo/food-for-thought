@@ -44,7 +44,7 @@ export function CountryPhase({ isComplete }: CountryPhaseProps) {
       )}
       <CountryGuessFeedback guessResults={countryGuessResults} />
       <Button
-        className="w-1/6"
+        className="w-1/4"
         variant="danger"
         onClick={() => {
           revealAllTiles();
