@@ -34,6 +34,7 @@ export function DishPhase({ isComplete }: DishPhaseProps) {
               onGuess={guessDish}
               previousGuesses={dishGuesses}
               isComplete={isComplete}
+              acceptableGuesses={currentDish?.acceptableGuesses}
             />
             <div className="text-sm text-gray-600 mt-1">
               Guesses: {gameResults.dishGuesses.length} of 6

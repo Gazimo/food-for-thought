@@ -13,6 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { getClosestGuess } from "@/utils/gameHelpers"; // adjust path as needed
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { cn } from "../lib/utils";
@@ -23,6 +24,7 @@ interface GuessInputProps {
   suggestions?: string[];
   previousGuesses?: string[];
   isComplete?: boolean;
+  acceptableGuesses?: string[];
 }
 
 export const GuessInput: React.FC<GuessInputProps> = ({
@@ -31,6 +33,7 @@ export const GuessInput: React.FC<GuessInputProps> = ({
   suggestions = [],
   previousGuesses = [],
   isComplete = false,
+  acceptableGuesses = [],
 }) => {
   const [input, setInput] = useState("");
   const [open, setOpen] = useState(false);
@@ -47,13 +50,38 @@ export const GuessInput: React.FC<GuessInputProps> = ({
 
   const handleGuess = (guess: string) => {
     const trimmed = guess.trim().toLowerCase();
-
     if (!trimmed) return;
 
     if (previousGuesses.includes(trimmed)) {
       triggerShake();
       toast.error("You already guessed that!");
       return;
+    }
+
+    const isCorrect = acceptableGuesses
+      .map((s) => s.toLowerCase())
+      .includes(trimmed);
+
+    if (!isCorrect) {
+      const suggestion = getClosestGuess(trimmed, acceptableGuesses);
+      if (suggestion) {
+        toast((t) => (
+          <span>
+            Did you mean{" "}
+            <button
+              className="text-blue-600 underline"
+              onClick={() => {
+                toast.dismiss(t.id);
+                handleGuess(suggestion);
+              }}
+            >
+              {suggestion}
+            </button>
+            ?
+          </span>
+        ));
+        return;
+      }
     }
 
     onGuess(trimmed);

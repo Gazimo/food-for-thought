@@ -3,8 +3,8 @@ import {
   calculateDirection,
   calculateDistance,
   capitalizeFirst,
-  loadDishes as fetchDishes,
   isDishGuessCorrect,
+  loadDishes,
   normalizeString,
 } from "@/utils/gameHelpers";
 import confetti from "canvas-confetti";
@@ -58,7 +58,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   currentDish: null,
   dishes: [],
   loadDishes: async () => {
-    const rawDishes = await fetchDishes(); // now returns only today's dish (or [])
+    const rawDishes = await loadDishes();
     const countryCoords = getCountryCoordsMap();
     const enriched = enrichDishesWithCoords(rawDishes, countryCoords);
     const todayDish = enriched[0] || null;
