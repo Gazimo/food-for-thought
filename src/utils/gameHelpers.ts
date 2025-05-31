@@ -86,7 +86,7 @@ export function getClosestGuess(
   options: string[]
 ): string | null {
   const fuse = new Fuse(options, {
-    threshold: 0.3,
+    threshold: 0.2,
     includeScore: true,
   });
   const result = fuse.search(input);
