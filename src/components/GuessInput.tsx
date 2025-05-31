@@ -96,7 +96,11 @@ export const GuessInput: React.FC<GuessInputProps> = ({
 
   const handleGiveUp = () => {
     revealAllTiles();
-    activePhase === "dish" ? moveToCountryPhase() : completeGame();
+    if (activePhase === "dish") {
+      moveToCountryPhase();
+    } else {
+      completeGame();
+    }
   };
 
   const filtered = suggestions
