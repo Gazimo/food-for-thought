@@ -2,22 +2,14 @@ import { GuessFeedback } from "@/components/GuessFeedback";
 import { GuessInput } from "@/components/GuessInput";
 import { useGameStore } from "@/store/gameStore";
 import { TileGrid } from "../../components/dish-image/TileGrid";
-import { Button } from "../../components/ui/button";
 
 interface DishPhaseProps {
   isComplete?: boolean;
 }
 
 export function DishPhase({ isComplete }: DishPhaseProps) {
-  const {
-    guessDish,
-    revealAllTiles,
-    moveToCountryPhase,
-    dishGuesses,
-    currentDish,
-    revealedTiles,
-    gameResults,
-  } = useGameStore();
+  const { guessDish, dishGuesses, currentDish, revealedTiles, gameResults } =
+    useGameStore();
   return (
     <>
       {currentDish?.imageUrl && (
@@ -39,17 +31,20 @@ export function DishPhase({ isComplete }: DishPhaseProps) {
             <div className="text-sm text-gray-600 mt-1">
               Guesses: {gameResults.dishGuesses.length} of 6
             </div>
+            {gameResults.dishGuesses.length > 0 &&
+              !gameResults.dishGuessSuccess && (
+                <div className="flex flex-wrap gap-1">
+                  {gameResults.dishGuesses.map((guess, index) => (
+                    <span
+                      key={index}
+                      className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded border"
+                    >
+                      {guess}
+                    </span>
+                  ))}
+                </div>
+              )}
           </div>
-          <Button
-            className="w-1/4"
-            variant="danger"
-            onClick={() => {
-              revealAllTiles();
-              moveToCountryPhase();
-            }}
-          >
-            Give Up 😩
-          </Button>
         </div>
       )}
       <GuessFeedback />

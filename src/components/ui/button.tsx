@@ -22,7 +22,8 @@ const buttonVariants = cva(
         fun: "bg-yellow-400 text-black hover:bg-yellow-300 font-bold shadow-lg",
         primary:
           "bg-green-600 hover:bg-green-700 text-white focus:ring-green-500",
-        danger: "bg-red-500 hover:bg-red-600 text-white focus:ring-red-500",
+        danger: "bg-red-100 hover:bg-red-300 border border-red-500 text-white focus:ring-red-500", // #ff000040
+
         secondary:
           "bg-gray-700 hover:bg-gray-800 text-white focus:ring-gray-500",
         neutral:

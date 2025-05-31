@@ -14,9 +14,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { getClosestGuess } from "@/utils/gameHelpers"; // adjust path as needed
+import Image from "next/image";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { cn } from "../lib/utils";
+import { useGameStore } from "../store/gameStore";
 
 interface GuessInputProps {
   placeholder: string;
@@ -39,6 +41,8 @@ export const GuessInput: React.FC<GuessInputProps> = ({
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   const [shake, setShake] = useState(false);
+  const { revealAllTiles, completeGame, moveToCountryPhase, activePhase } =
+    useGameStore();
 
   const triggerShake = () => {
     setShake(false);
@@ -90,13 +94,18 @@ export const GuessInput: React.FC<GuessInputProps> = ({
     setOpen(false);
   };
 
+  const handleGiveUp = () => {
+    revealAllTiles();
+    activePhase === "dish" ? moveToCountryPhase() : completeGame();
+  };
+
   const filtered = suggestions
     .filter((s) => s.toLowerCase().includes(input.toLowerCase()))
     .filter((s) => !previousGuesses.includes(s));
 
-  if (suggestions.length === 0) {
-    return (
-      <div className="w-full flex gap-2 items-center">
+  const renderInputField = () => {
+    if (suggestions.length === 0) {
+      return (
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -113,20 +122,11 @@ export const GuessInput: React.FC<GuessInputProps> = ({
           )}
           disabled={isComplete}
         />
-        <Button
-          variant="primary"
-          disabled={!input.trim() || isComplete}
-          onClick={() => handleGuess(input)}
-        >
-          Submit
-        </Button>
-      </div>
-    );
-  }
+      );
+    }
 
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <div className="flex justify-between gap-2">
+    return (
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
@@ -147,40 +147,64 @@ export const GuessInput: React.FC<GuessInputProps> = ({
             {value || placeholder}
           </Button>
         </PopoverTrigger>
-        <Button
-          variant="primary"
-          onClick={() => handleGuess(value)}
-          disabled={!value.trim() || isComplete}
-        >
-          Submit
-        </Button>
-      </div>
-      <PopoverContent align="start" side="bottom" className="p-0">
-        <Command>
-          <CommandInput
-            placeholder={placeholder}
-            className="h-9"
-            disabled={isComplete}
+        <PopoverContent align="start" side="bottom" className="p-0">
+          <Command>
+            <CommandInput
+              placeholder={placeholder}
+              className="h-9"
+              disabled={isComplete}
+              onValueChange={setInput}
+            />
+            <CommandList>
+              <CommandEmpty>No match found.</CommandEmpty>
+              <CommandGroup>
+                {filtered.map((item) => (
+                  <CommandItem
+                    key={item}
+                    value={item}
+                    onSelect={(v) => {
+                      setValue(v);
+                      setOpen(false);
+                    }}
+                  >
+                    {item}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+    );
+  };
+
+  const currentGuess = suggestions.length === 0 ? input : value;
+
+  return (
+    <div className="w-full flex gap-2 items-center">
+      <Button
+        className="p-1 sm:p-1.5 md:p-2"
+        variant="danger"
+        onClick={handleGiveUp}
+      >
+        <div className="w-5 h-5 sm:w-4 sm:h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 relative">
+          <Image
+            src="/images/give-up.png"
+            alt="Give Up"
+            fill
+            className="object-contain"
           />
-          <CommandList>
-            <CommandEmpty>No match found.</CommandEmpty>
-            <CommandGroup>
-              {filtered.map((item) => (
-                <CommandItem
-                  key={item}
-                  value={item}
-                  onSelect={(v) => {
-                    setValue(v);
-                    setOpen(false);
-                  }}
-                >
-                  {item}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+        </div>
+      </Button>
+
+      {renderInputField()}
+      <Button
+        variant="primary"
+        onClick={() => handleGuess(currentGuess)}
+        disabled={!currentGuess.trim() || isComplete}
+      >
+        Submit
+      </Button>
+    </div>
   );
 };

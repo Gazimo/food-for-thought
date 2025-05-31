@@ -6,9 +6,16 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  // Set headers to hide from devtools and prevent caching
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  
   const filePath = path.join(process.cwd(), "src/data/sample_dishes.json");
   const fileContents = await fs.readFile(filePath, "utf8");
   const dishes = JSON.parse(fileContents);
 
   res.status(200).json(dishes);
 }
+

@@ -2,7 +2,6 @@ import { CountryGuessFeedback } from "@/components/CountryGuessFeedback";
 import { GuessInput } from "@/components/GuessInput";
 import { useGameStore } from "@/store/gameStore";
 import { MapGuessVisualizer } from "../../components/MapGuessVisualizer";
-import { Button } from "../../components/ui/button";
 import { getCountryCoordsMap, getCountryNames } from "../../utils/countries";
 
 interface CountryPhaseProps {
@@ -10,13 +9,7 @@ interface CountryPhaseProps {
 }
 
 export function CountryPhase({ isComplete }: CountryPhaseProps) {
-  const {
-    guessCountry,
-    countryGuessResults,
-    revealAllTiles,
-    completeGame,
-    countryGuesses,
-  } = useGameStore();
+  const { guessCountry, countryGuessResults, countryGuesses } = useGameStore();
   const countryNames = getCountryNames();
   const countryCoords = getCountryCoordsMap();
 
@@ -43,16 +36,6 @@ export function CountryPhase({ isComplete }: CountryPhaseProps) {
         </div>
       )}
       <CountryGuessFeedback guessResults={countryGuessResults} />
-      <Button
-        className="w-1/4"
-        variant="danger"
-        onClick={() => {
-          revealAllTiles();
-          completeGame();
-        }}
-      >
-        Give Up 😩
-      </Button>
     </div>
   );
 }

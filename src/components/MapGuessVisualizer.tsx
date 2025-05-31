@@ -25,11 +25,34 @@ interface MapGuessVisualizerProps {
 export const MapGuessVisualizer = ({ guesses }: MapGuessVisualizerProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const [dimensions, setDimensions] = useState({ width: 700, height: 350 });
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      const userAgent = navigator.userAgent.toLowerCase();
+      const isMobileDevice =
+        /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/.test(
+          userAgent
+        );
+      const isTouchDevice =
+        "ontouchstart" in window || navigator.maxTouchPoints > 0;
+      const isSmallScreen = window.innerWidth < 768;
+
+      setIsMobile(isMobileDevice || isTouchDevice || isSmallScreen);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const projection = geoNaturalEarth1()
-    .scale(100)
-    .translate([dimensions.width / 2.2, dimensions.height / 1.9])
-    .rotate([-30, 0]);
+    .scale(isMobile ? 80 : 100)
+    .translate([
+      dimensions.width / (isMobile ? 2.0 : 2.2),
+      dimensions.height / (isMobile ? 1.7 : 1.9),
+    ])
+    .rotate(isMobile ? [0, 0] : [-30, 0]);
 
   const pathGenerator = geoPath().projection(projection);
 
@@ -46,13 +69,14 @@ export const MapGuessVisualizer = ({ guesses }: MapGuessVisualizerProps) => {
     const resize = () => {
       if (svgRef.current) {
         const width = svgRef.current.clientWidth;
-        setDimensions({ width, height: width / 2 });
+        const height = isMobile ? width / 1.8 : width / 2;
+        setDimensions({ width, height });
       }
     };
     resize();
     window.addEventListener("resize", resize);
     return () => window.removeEventListener("resize", resize);
-  }, []);
+  }, [isMobile]);
 
   return (
     <div className="w-full overflow-hidden rounded border shadow">
@@ -62,18 +86,16 @@ export const MapGuessVisualizer = ({ guesses }: MapGuessVisualizerProps) => {
         height={dimensions.height}
         viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
       >
-        {/* 🌍 Render Countries */}
         {geoJson.features.map((feature: Feature<Geometry>, i: number) => (
           <path
             key={i}
             d={pathGenerator(feature) || ""}
             fill="#f0f0f0"
             stroke="#ccc"
-            strokeWidth={0.5}
+            strokeWidth={isMobile ? 0.3 : 0.5}
           />
         ))}
 
-        {/* 📍 Render Guesses */}
         {guesses.map((guess, i) => {
           const [x, y] = projection([guess.lng, guess.lat]) || [0, 0];
           return (
@@ -84,10 +106,10 @@ export const MapGuessVisualizer = ({ guesses }: MapGuessVisualizerProps) => {
               transition={{ duration: 0.4, delay: i * 0.05 }}
               cx={x}
               cy={y}
-              r={6}
+              r={isMobile ? 4 : 6}
               fill={getColorForDistance(guess.distance)}
               stroke="#fff"
-              strokeWidth={1.5}
+              strokeWidth={isMobile ? 1 : 1.5}
               className={guess.isCorrect ? "animate-pulseCorrect" : ""}
             >
               <title>{guess.country}</title>
