@@ -1,21 +1,12 @@
 [
   {
     "name": "Khachapuri",
-    "acceptableGuesses": [
-      "khachapuri",
-      "georgian cheese bread"
-    ],
+    "acceptableGuesses": ["khachapuri", "georgian cheese bread"],
     "country": "Georgia",
     "imageUrl": "/images/dishes/khachapuri.png",
-    "ingredients": [
-      "flour",
-      "yeast",
-      "milk",
-      "eggs",
-      "cheese",
-      "butter"
-    ],
+    "ingredients": ["flour", "yeast", "milk", "eggs", "cheese", "butter"],
     "blurb": "A warm, boat-shaped bread filled with melted cheese and topped with a runny egg.",
+    "proteinPerServing": 22,
     "recipe": {
       "ingredients": [
         "3 cups flour",
@@ -34,19 +25,12 @@
         "Top with a pat of butter and serve hot."
       ]
     },
-    "tags": [
-      "vegetarian",
-      "bread",
-      "main"
-    ],
+    "tags": ["vegetarian", "bread", "main"],
     "releaseDate": "2025-05-28"
   },
   {
     "name": "Injera with Stew",
-    "acceptableGuesses": [
-      "injera",
-      "injera with stew"
-    ],
+    "acceptableGuesses": ["injera", "injera with stew"],
     "country": "Ethiopia",
     "imageUrl": "/images/dishes/injera.png",
     "ingredients": [
@@ -58,6 +42,7 @@
       "berbere spice"
     ],
     "blurb": "A spongy flatbread used to scoop up richly spiced lentils and stew.",
+    "proteinPerServing": 18,
     "recipe": {
       "ingredients": [
         "2 cups teff flour",
@@ -75,19 +60,12 @@
         "Serve lentil stew over injera flatbreads."
       ]
     },
-    "tags": [
-      "vegan",
-      "main",
-      "fermented"
-    ],
+    "tags": ["vegan", "main", "fermented"],
     "releaseDate": "2025-05-29"
   },
   {
     "name": "Okonomiyaki",
-    "acceptableGuesses": [
-      "okonomiyaki",
-      "japanese pancake"
-    ],
+    "acceptableGuesses": ["okonomiyaki", "japanese pancake"],
     "country": "Japan",
     "imageUrl": "/images/dishes/okonomiyaki.png",
     "ingredients": [
@@ -99,6 +77,7 @@
       "okonomiyaki sauce"
     ],
     "blurb": "A savory pancake layered with cabbage and toppings, grilled to crispy perfection.",
+    "proteinPerServing": 28,
     "recipe": {
       "ingredients": [
         "2 cups shredded cabbage",
@@ -115,18 +94,12 @@
         "Repeat for second pancake. Drizzle with okonomiyaki sauce and mayonnaise before serving."
       ]
     },
-    "tags": [
-      "meat",
-      "main",
-      "grilled"
-    ],
+    "tags": ["meat", "main", "grilled"],
     "releaseDate": "2025-05-30"
   },
   {
     "name": "Feijoada",
-    "acceptableGuesses": [
-      "feijoada"
-    ],
+    "acceptableGuesses": ["feijoada"],
     "country": "Brazil",
     "imageUrl": "/images/dishes/feijoada.png",
     "ingredients": [
@@ -138,6 +111,7 @@
       "bay leaves"
     ],
     "blurb": "A hearty stew of black beans simmered with various cuts of meat and aromatic spices.",
+    "proteinPerServing": 45,
     "recipe": {
       "ingredients": [
         "2 cups dried black beans",
@@ -154,18 +128,12 @@
         "Season with salt and pepper. Serve hot with rice and orange slices if desired."
       ]
     },
-    "tags": [
-      "meat",
-      "main",
-      "stew"
-    ],
+    "tags": ["meat", "main", "stew"],
     "releaseDate": "2025-05-31"
   },
   {
     "name": "Mansaf",
-    "acceptableGuesses": [
-      "mansaf"
-    ],
+    "acceptableGuesses": ["mansaf"],
     "country": "Jordan",
     "imageUrl": "/images/dishes/mansaf.png",
     "ingredients": [
@@ -178,6 +146,7 @@
       "greek yogurt"
     ],
     "blurb": "A rich, comforting rice and lamb dish with a tangy fermented yogurt sauce.",
+    "proteinPerServing": 52,
     "recipe": {
       "ingredients": [
         "1 kg lamb, cut into chunks",
@@ -194,20 +163,12 @@
         "To serve, spread rice on a platter, top with lamb and sauce, and garnish with almonds and parsley."
       ]
     },
-    "tags": [
-      "meat",
-      "main",
-      "fermented"
-    ],
+    "tags": ["meat", "main", "fermented"],
     "releaseDate": "2025-06-01"
   },
   {
     "name": "Gado-Gado",
-    "acceptableGuesses": [
-      "gado-gado",
-      "gado gado",
-      "indonesian salad"
-    ],
+    "acceptableGuesses": ["gado-gado", "gado gado", "indonesian salad"],
     "country": "Indonesia",
     "imageUrl": "/images/dishes/gado-gado.png",
     "ingredients": [
@@ -219,6 +180,7 @@
       "spinach"
     ],
     "blurb": "A colorful platter of cooked vegetables, tofu, and eggs served with a rich peanut dressing.",
+    "proteinPerServing": 16,
     "recipe": {
       "ingredients": [
         "2 medium potatoes, peeled and cubed",
@@ -234,18 +196,12 @@
         "Drizzle generously with peanut sauce and serve."
       ]
     },
-    "tags": [
-      "vegetarian",
-      "salad",
-      "main"
-    ],
+    "tags": ["vegetarian", "salad", "main"],
     "releaseDate": "2025-06-02"
   },
   {
     "name": "Shakshuka",
-    "acceptableGuesses": [
-      "shakshuka"
-    ],
+    "acceptableGuesses": ["shakshuka"],
     "country": "Tunisia",
     "imageUrl": "/images/dishes/shakshuka.jpg",
     "ingredients": [
@@ -257,6 +213,7 @@
       "cumin"
     ],
     "blurb": "Poached eggs nestle in a simmering sauce of tomatoes, peppers, and spices.",
+    "proteinPerServing": 25,
     "recipe": {
       "ingredients": [
         "4 large eggs",
@@ -273,30 +230,17 @@
         "Serve hot with crusty bread."
       ]
     },
-    "tags": [
-      "vegetarian",
-      "breakfast",
-      "one-pan"
-    ],
+    "tags": ["vegetarian", "breakfast", "one-pan"],
     "releaseDate": "2025-06-03"
   },
   {
     "name": "Schnitzel",
-    "acceptableGuesses": [
-      "schnitzel",
-      "wiener schnitzel"
-    ],
+    "acceptableGuesses": ["schnitzel", "wiener schnitzel"],
     "country": "Austria",
     "imageUrl": "/images/dishes/schnitzel.png",
-    "ingredients": [
-      "veal",
-      "breadcrumbs",
-      "flour",
-      "egg",
-      "lemon",
-      "oil"
-    ],
+    "ingredients": ["veal", "breadcrumbs", "flour", "egg", "lemon", "oil"],
     "blurb": "A thin cutlet breaded and fried until golden, served with a squeeze of lemon.",
+    "proteinPerServing": 32,
     "recipe": {
       "ingredients": [
         "4 veal cutlets (about 120g each)",
@@ -312,19 +256,12 @@
         "Drain on paper towels and serve with lemon wedges."
       ]
     },
-    "tags": [
-      "meat",
-      "main",
-      "fried"
-    ],
+    "tags": ["meat", "main", "fried"],
     "releaseDate": "2025-06-04"
   },
   {
     "name": "Kimchi Jjigae",
-    "acceptableGuesses": [
-      "kimchi jjigae",
-      "kimchi stew"
-    ],
+    "acceptableGuesses": ["kimchi jjigae", "kimchi stew"],
     "country": "South Korea",
     "imageUrl": "/images/dishes/kimchi-jjigae.png",
     "ingredients": [
@@ -336,6 +273,7 @@
       "green onion"
     ],
     "blurb": "A fiery stew of aged kimchi, pork slices, and soft tofu in a bold broth.",
+    "proteinPerServing": 24,
     "recipe": {
       "ingredients": [
         "1 1/2 cups kimchi, chopped",
@@ -352,18 +290,12 @@
         "Serve hot with steamed rice."
       ]
     },
-    "tags": [
-      "meat",
-      "spicy",
-      "stew"
-    ],
+    "tags": ["meat", "spicy", "stew"],
     "releaseDate": "2025-06-05"
   },
   {
     "name": "Ceviche",
-    "acceptableGuesses": [
-      "ceviche"
-    ],
+    "acceptableGuesses": ["ceviche"],
     "country": "Peru",
     "imageUrl": "/images/dishes/ceviche.png",
     "ingredients": [
@@ -375,6 +307,7 @@
       "chili pepper"
     ],
     "blurb": "Fresh fish marinated in citrus and mixed with herbs and a touch of heat.",
+    "proteinPerServing": 35,
     "recipe": {
       "ingredients": [
         "300g white fish fillet, cut into 1/2-inch cubes",
@@ -389,19 +322,12 @@
         "Chill for another 10 minutes before serving."
       ]
     },
-    "tags": [
-      "seafood",
-      "starter",
-      "raw"
-    ],
+    "tags": ["seafood", "starter", "raw"],
     "releaseDate": "2025-06-06"
   },
   {
     "name": "Pierogi",
-    "acceptableGuesses": [
-      "pierogi",
-      "polish dumplings"
-    ],
+    "acceptableGuesses": ["pierogi", "polish dumplings"],
     "country": "Poland",
     "imageUrl": "/images/dishes/pierogi.png",
     "ingredients": [
@@ -413,6 +339,7 @@
       "egg"
     ],
     "blurb": "Soft dumplings filled with mashed potatoes and cheese, served boiled or fried.",
+    "proteinPerServing": 14,
     "recipe": {
       "ingredients": [
         "2 cups all-purpose flour",
@@ -429,19 +356,12 @@
         "Boil pierogi in salted water until they float, about 3-4 minutes. Optionally, fry in butter with onions before serving."
       ]
     },
-    "tags": [
-      "vegetarian",
-      "dumplings",
-      "comfort"
-    ],
+    "tags": ["vegetarian", "dumplings", "comfort"],
     "releaseDate": "2025-06-07"
   },
   {
     "name": "Biryani",
-    "acceptableGuesses": [
-      "biryani",
-      "chicken biryani"
-    ],
+    "acceptableGuesses": ["biryani", "chicken biryani"],
     "country": "India",
     "imageUrl": "/images/dishes/biryani.png",
     "ingredients": [
@@ -453,6 +373,7 @@
       "spices"
     ],
     "blurb": "A fragrant rice dish layered with marinated meat, herbs, and deep spices.",
+    "proteinPerServing": 42,
     "recipe": {
       "ingredients": [
         "2 cups basmati rice",
@@ -469,19 +390,12 @@
         "Cover and steam on low heat for 25 minutes. Fluff and serve hot."
       ]
     },
-    "tags": [
-      "meat",
-      "main",
-      "rice"
-    ],
+    "tags": ["meat", "main", "rice"],
     "releaseDate": "2025-06-08"
   },
   {
     "name": "Masgouf",
-    "acceptableGuesses": [
-      "masgouf",
-      "iraqi grilled fish"
-    ],
+    "acceptableGuesses": ["masgouf", "iraqi grilled fish"],
     "country": "Iraq",
     "imageUrl": "/images/dishes/masgouf.png",
     "ingredients": [
@@ -494,6 +408,7 @@
       "turmeric"
     ],
     "blurb": "A delicious preparation of freshwater fish that is butterflied and slow-grilled over an open fire, creating a tender and smoky flavor.",
+    "proteinPerServing": 55,
     "recipe": {
       "ingredients": [
         "1 whole carp or other freshwater fish (about 2-3 lbs)",
@@ -513,20 +428,12 @@
         "Serve hot with sliced lemons, tomatoes, and fresh herbs."
       ]
     },
-    "tags": [
-      "seafood",
-      "grilled",
-      "main",
-      "national dish"
-    ],
+    "tags": ["seafood", "grilled", "main", "national dish"],
     "releaseDate": "2025-06-09"
   },
   {
     "name": "Butter Chicken",
-    "acceptableGuesses": [
-      "butter chicken",
-      "murgh makhani"
-    ],
+    "acceptableGuesses": ["butter chicken", "murgh makhani"],
     "country": "India",
     "imageUrl": "/images/dishes/butter-chicken.png",
     "ingredients": [
@@ -539,6 +446,7 @@
       "ginger"
     ],
     "blurb": "A rich and creamy curry made with tender chicken in a mildly spiced tomato sauce, enriched with butter and cream.",
+    "proteinPerServing": 38,
     "recipe": {
       "ingredients": [
         "1.5 lbs boneless chicken thighs, cut into pieces",
@@ -564,20 +472,12 @@
         "Garnish with fresh cilantro and serve with rice or naan."
       ]
     },
-    "tags": [
-      "chicken",
-      "curry",
-      "creamy",
-      "main"
-    ],
+    "tags": ["chicken", "curry", "creamy", "main"],
     "releaseDate": "2025-06-10"
   },
   {
     "name": "Kimchi",
-    "acceptableGuesses": [
-      "kimchi",
-      "fermented cabbage"
-    ],
+    "acceptableGuesses": ["kimchi", "fermented cabbage"],
     "country": "South Korea",
     "imageUrl": "/images/dishes/kimchi.png",
     "ingredients": [
@@ -590,6 +490,7 @@
       "fish sauce"
     ],
     "blurb": "A flavorful fermented vegetable dish, typically made with cabbage and radish, seasoned with a spicy and savory paste that develops complex flavors over time.",
+    "proteinPerServing": 3,
     "recipe": {
       "ingredients": [
         "1 large napa cabbage",
@@ -613,22 +514,12 @@
         "Ferment at room temperature for 1-5 days, then refrigerate. Best after 2 weeks."
       ]
     },
-    "tags": [
-      "fermented",
-      "vegetable",
-      "spicy",
-      "side dish",
-      "vegan"
-    ],
+    "tags": ["fermented", "vegetable", "spicy", "side dish", "vegan"],
     "releaseDate": "2025-06-11"
   },
   {
     "name": "Tamiya",
-    "acceptableGuesses": [
-      "tamiya",
-      "fava bean fritters",
-      "egyptian falafel"
-    ],
+    "acceptableGuesses": ["tamiya", "fava bean fritters", "egyptian falafel"],
     "country": "Egypt",
     "imageUrl": "/images/dishes/tamiya.png",
     "ingredients": [
@@ -641,6 +532,7 @@
       "cumin"
     ],
     "blurb": "Crispy fritters made from ground fava beans mixed with fresh herbs and aromatic spices, deep-fried to perfection.",
+    "proteinPerServing": 12,
     "recipe": {
       "ingredients": [
         "2 cups dried peeled fava beans, soaked overnight",
@@ -666,21 +558,12 @@
         "Drain on paper towels and serve hot in pita bread with tahini sauce and vegetables."
       ]
     },
-    "tags": [
-      "vegetarian",
-      "fritters",
-      "legumes",
-      "street food"
-    ],
+    "tags": ["vegetarian", "fritters", "legumes", "street food"],
     "releaseDate": "2025-06-12"
   },
   {
     "name": "Okro Soup",
-    "acceptableGuesses": [
-      "okro soup",
-      "okra soup",
-      "nigerian okra soup"
-    ],
+    "acceptableGuesses": ["okro soup", "okra soup", "nigerian okra soup"],
     "country": "Nigeria",
     "imageUrl": "/images/dishes/okro-soup.png",
     "ingredients": [
@@ -693,6 +576,7 @@
       "vegetables"
     ],
     "blurb": "A hearty and mucilaginous soup featuring sliced okra, meat, fish, and aromatic spices, often enjoyed with a starchy side dish.",
+    "proteinPerServing": 38,
     "recipe": {
       "ingredients": [
         "2 lbs fresh okra, sliced",
@@ -716,21 +600,12 @@
         "Serve hot with fufu, pounded yam, or garri."
       ]
     },
-    "tags": [
-      "soup",
-      "seafood",
-      "meat",
-      "vegetables",
-      "spicy"
-    ],
+    "tags": ["soup", "seafood", "meat", "vegetables", "spicy"],
     "releaseDate": "2025-06-13"
   },
   {
     "name": "Ema Datshi",
-    "acceptableGuesses": [
-      "ema datshi",
-      "chili cheese stew"
-    ],
+    "acceptableGuesses": ["ema datshi", "chili cheese stew"],
     "country": "Bhutan",
     "imageUrl": "/images/dishes/ema-datshi.png",
     "ingredients": [
@@ -742,6 +617,7 @@
       "tomatoes"
     ],
     "blurb": "A simple yet flavorful stew made primarily of hot chilies and cheese, creating a spicy, rich and comforting dish.",
+    "proteinPerServing": 8,
     "recipe": {
       "ingredients": [
         "2 cups green or red chilies, sliced lengthwise",
@@ -762,22 +638,12 @@
         "Serve hot with steamed rice."
       ]
     },
-    "tags": [
-      "vegetarian",
-      "spicy",
-      "cheese",
-      "stew",
-      "main"
-    ],
+    "tags": ["vegetarian", "spicy", "cheese", "stew", "main"],
     "releaseDate": "2025-06-14"
   },
   {
     "name": "Cepelinai",
-    "acceptableGuesses": [
-      "cepelinai",
-      "potato dumplings",
-      "zeppelins"
-    ],
+    "acceptableGuesses": ["cepelinai", "potato dumplings", "zeppelins"],
     "country": "Lithuania",
     "imageUrl": "/images/dishes/cepelinai.png",
     "ingredients": [
@@ -789,6 +655,7 @@
       "butter"
     ],
     "blurb": "Large oval-shaped potato dumplings filled with ground meat and served with sour cream and bacon sauce.",
+    "proteinPerServing": 26,
     "recipe": {
       "ingredients": [
         "5 lbs potatoes (2/3 raw, 1/3 boiled)",
@@ -810,22 +677,12 @@
         "Serve dumplings topped with bacon and sour cream sauce."
       ]
     },
-    "tags": [
-      "dumplings",
-      "meat",
-      "potatoes",
-      "main",
-      "comfort food"
-    ],
+    "tags": ["dumplings", "meat", "potatoes", "main", "comfort food"],
     "releaseDate": "2025-06-15"
   },
   {
     "name": "Maraq",
-    "acceptableGuesses": [
-      "maraq",
-      "somali soup",
-      "meat soup"
-    ],
+    "acceptableGuesses": ["maraq", "somali soup", "meat soup"],
     "country": "Somalia",
     "imageUrl": "/images/dishes/maraq.png",
     "ingredients": [
@@ -837,6 +694,7 @@
       "spices"
     ],
     "blurb": "A nourishing meat soup with vegetables and aromatic spices, typically served with flatbread for dipping.",
+    "proteinPerServing": 32,
     "recipe": {
       "ingredients": [
         "1 lb lamb or goat meat, cut into cubes",
@@ -866,22 +724,12 @@
         "Garnish with cilantro and serve hot with flatbread."
       ]
     },
-    "tags": [
-      "soup",
-      "meat",
-      "vegetables",
-      "main",
-      "spiced"
-    ],
+    "tags": ["soup", "meat", "vegetables", "main", "spiced"],
     "releaseDate": "2025-06-16"
   },
   {
     "name": "Meat Pie",
-    "acceptableGuesses": [
-      "meat pie",
-      "aussie meat pie",
-      "savory pie"
-    ],
+    "acceptableGuesses": ["meat pie", "aussie meat pie", "savory pie"],
     "country": "Australia",
     "imageUrl": "/images/dishes/meat-pie.png",
     "ingredients": [
@@ -893,6 +741,7 @@
       "flour"
     ],
     "blurb": "A handheld savory pie filled with minced meat and gravy encased in golden flaky pastry.",
+    "proteinPerServing": 22,
     "recipe": {
       "ingredients": [
         "2 sheets frozen puff pastry, thawed",
@@ -920,32 +769,17 @@
         "Serve hot with tomato sauce."
       ]
     },
-    "tags": [
-      "baked",
-      "pastry",
-      "meat",
-      "handheld",
-      "savory"
-    ],
+    "tags": ["baked", "pastry", "meat", "handheld", "savory"],
     "releaseDate": "2025-06-17"
   },
   {
     "name": "Arepas",
-    "acceptableGuesses": [
-      "arepas",
-      "corn cakes",
-      "corn patties"
-    ],
+    "acceptableGuesses": ["arepas", "corn cakes", "corn patties"],
     "country": "Venezuela",
     "imageUrl": "/images/dishes/arepas.png",
-    "ingredients": [
-      "corn flour",
-      "water",
-      "salt",
-      "oil",
-      "fillings"
-    ],
+    "ingredients": ["corn flour", "water", "salt", "oil", "fillings"],
     "blurb": "Round, flat patties made from corn flour, grilled or fried until crispy outside and fluffy inside, often split and filled with various ingredients.",
+    "proteinPerServing": 8,
     "recipe": {
       "ingredients": [
         "2 cups pre-cooked white corn meal (P.A.N.)",
@@ -966,22 +800,12 @@
         "Split horizontally and fill with desired ingredients."
       ]
     },
-    "tags": [
-      "bread",
-      "corn",
-      "vegetarian",
-      "stuffed",
-      "handheld"
-    ],
+    "tags": ["bread", "corn", "vegetarian", "stuffed", "handheld"],
     "releaseDate": "2025-06-18"
   },
   {
     "name": "Dal Bhat",
-    "acceptableGuesses": [
-      "dal bhat",
-      "lentil rice",
-      "dhal bhat"
-    ],
+    "acceptableGuesses": ["dal bhat", "lentil rice", "dhal bhat"],
     "country": "Nepal",
     "imageUrl": "/images/dishes/dal-bhat.png",
     "ingredients": [
@@ -994,6 +818,7 @@
       "turmeric"
     ],
     "blurb": "A hearty combination of lentil soup and steamed rice, often served with various vegetable curries and pickles.",
+    "proteinPerServing": 16,
     "recipe": {
       "ingredients": [
         "1 cup yellow or red lentils, rinsed",
@@ -1020,22 +845,12 @@
         "Serve hot dal alongside rice with optional vegetable sides and pickles."
       ]
     },
-    "tags": [
-      "vegetarian",
-      "lentils",
-      "rice",
-      "main",
-      "healthy"
-    ],
+    "tags": ["vegetarian", "lentils", "rice", "main", "healthy"],
     "releaseDate": "2025-06-19"
   },
   {
     "name": "Pad Thai",
-    "acceptableGuesses": [
-      "pad thai",
-      "phad thai",
-      "thai stir-fried noodles"
-    ],
+    "acceptableGuesses": ["pad thai", "phad thai", "thai stir-fried noodles"],
     "country": "Thailand",
     "imageUrl": "/images/dishes/pad-thai.png",
     "ingredients": [
@@ -1048,6 +863,7 @@
       "peanuts"
     ],
     "blurb": "Stir-fried rice noodles with a perfect balance of sweet, sour, and savory flavors, typically combined with eggs, tofu, bean sprouts, and crushed peanuts.",
+    "proteinPerServing": 28,
     "recipe": {
       "ingredients": [
         "8 oz flat rice noodles",
@@ -1075,22 +891,12 @@
         "Serve hot, garnished with remaining green onions, crushed peanuts, lime wedges, and chili flakes."
       ]
     },
-    "tags": [
-      "noodles",
-      "stir-fried",
-      "seafood",
-      "street food",
-      "savory-sweet"
-    ],
+    "tags": ["noodles", "stir-fried", "seafood", "street food", "savory-sweet"],
     "releaseDate": "2025-06-20"
   },
   {
     "name": "Momo",
-    "acceptableGuesses": [
-      "momo",
-      "dumplings",
-      "nepalese dumplings"
-    ],
+    "acceptableGuesses": ["momo", "dumplings", "nepalese dumplings"],
     "country": "Nepal",
     "imageUrl": "/images/dishes/momo.png",
     "ingredients": [
@@ -1102,6 +908,7 @@
       "spices"
     ],
     "blurb": "Delicate steamed dumplings filled with spiced meat or vegetables, served with a spicy dipping sauce.",
+    "proteinPerServing": 20,
     "recipe": {
       "ingredients": [
         "2 cups all-purpose flour",
@@ -1127,22 +934,12 @@
         "Serve hot with a spicy tomato-based or sesame dipping sauce."
       ]
     },
-    "tags": [
-      "dumplings",
-      "steamed",
-      "meat",
-      "appetizer",
-      "street food"
-    ],
+    "tags": ["dumplings", "steamed", "meat", "appetizer", "street food"],
     "releaseDate": "2025-06-21"
   },
   {
     "name": "Tam Mak Hoong",
-    "acceptableGuesses": [
-      "tam mak hoong",
-      "green papaya salad",
-      "som tam"
-    ],
+    "acceptableGuesses": ["tam mak hoong", "green papaya salad", "som tam"],
     "country": "Laos",
     "imageUrl": "/images/dishes/tam-mak-hoong.png",
     "ingredients": [
@@ -1155,6 +952,7 @@
       "peanuts"
     ],
     "blurb": "A vibrant, spicy salad featuring shredded unripe papaya, with a perfect balance of sour, sweet, salty, and spicy flavors.",
+    "proteinPerServing": 6,
     "recipe": {
       "ingredients": [
         "1 green (unripe) papaya, peeled and shredded",
@@ -1179,31 +977,17 @@
         "Transfer to a serving dish and sprinkle with crushed peanuts."
       ]
     },
-    "tags": [
-      "salad",
-      "spicy",
-      "vegetable",
-      "fresh",
-      "appetizer"
-    ],
+    "tags": ["salad", "spicy", "vegetable", "fresh", "appetizer"],
     "releaseDate": "2025-06-22"
   },
   {
     "name": "Fufu",
-    "acceptableGuesses": [
-      "fufu",
-      "foofoo",
-      "african pounded yam"
-    ],
+    "acceptableGuesses": ["fufu", "foofoo", "african pounded yam"],
     "country": "Togo",
     "imageUrl": "/images/dishes/fufu.png",
-    "ingredients": [
-      "cassava",
-      "plantain",
-      "yam",
-      "water"
-    ],
+    "ingredients": ["cassava", "plantain", "yam", "water"],
     "blurb": "A starchy, dough-like side dish made by boiling and pounding starchy vegetables into a smooth, elastic consistency.",
+    "proteinPerServing": 4,
     "recipe": {
       "ingredients": [
         "2 cups cassava flour or 2 large yams",
@@ -1222,12 +1006,7 @@
         "To eat, pinch off a small piece, make an indentation, and use it to scoop up sauce."
       ]
     },
-    "tags": [
-      "staple",
-      "starchy",
-      "side dish",
-      "vegan"
-    ],
+    "tags": ["staple", "starchy", "side dish", "vegan"],
     "releaseDate": "2025-06-23"
   },
   {
@@ -1249,6 +1028,7 @@
       "stock"
     ],
     "blurb": "Tender pork medallions cooked in a rich and flavorful whisky-based sauce with garlic.",
+    "proteinPerServing": 35,
     "recipe": {
       "ingredients": [
         "1 lb pork tenderloin, cut into medallions",
@@ -1272,22 +1052,12 @@
         "Garnish with parsley and serve with crusty bread to soak up the sauce."
       ]
     },
-    "tags": [
-      "pork",
-      "whisky",
-      "sauce",
-      "main",
-      "quick"
-    ],
+    "tags": ["pork", "whisky", "sauce", "main", "quick"],
     "releaseDate": "2025-06-24"
   },
   {
     "name": "Laksa",
-    "acceptableGuesses": [
-      "laksa",
-      "curry noodle soup",
-      "spicy coconut soup"
-    ],
+    "acceptableGuesses": ["laksa", "curry noodle soup", "spicy coconut soup"],
     "country": "Malaysia",
     "imageUrl": "/images/dishes/laksa.png",
     "ingredients": [
@@ -1300,6 +1070,7 @@
       "bean sprouts"
     ],
     "blurb": "A spicy noodle soup with a rich and aromatic coconut curry broth, topped with seafood, chicken, or tofu.",
+    "proteinPerServing": 26,
     "recipe": {
       "ingredients": [
         "8 oz rice noodles or vermicelli",
@@ -1326,13 +1097,7 @@
         "Top with bean sprouts, fresh herbs, and serve with lime wedges."
       ]
     },
-    "tags": [
-      "soup",
-      "noodles",
-      "spicy",
-      "coconut",
-      "seafood"
-    ],
+    "tags": ["soup", "noodles", "spicy", "coconut", "seafood"],
     "releaseDate": "2025-06-25"
   },
   {
@@ -1354,6 +1119,7 @@
       "onions"
     ],
     "blurb": "A velvety green soup made from leafy vegetables, okra, and often coconut milk, sometimes including crab or other seafood for added flavor.",
+    "proteinPerServing": 18,
     "recipe": {
       "ingredients": [
         "2 bunches callaloo leaves or spinach, chopped",
@@ -1379,13 +1145,7 @@
         "Season with salt and pepper, serve hot with rice or bread."
       ]
     },
-    "tags": [
-      "soup",
-      "greens",
-      "seafood",
-      "vegetable",
-      "spicy"
-    ],
+    "tags": ["soup", "greens", "seafood", "vegetable", "spicy"],
     "releaseDate": "2025-06-26"
   },
   {
@@ -1407,6 +1167,7 @@
       "lime"
     ],
     "blurb": "Aromatic grilled fish marinated in a spice paste and typically wrapped in banana leaves while cooking to enhance flavor.",
+    "proteinPerServing": 48,
     "recipe": {
       "ingredients": [
         "2 whole fish (such as snapper or mackerel), cleaned",
@@ -1433,22 +1194,12 @@
         "Serve hot with lime wedges and rice."
       ]
     },
-    "tags": [
-      "seafood",
-      "grilled",
-      "spicy",
-      "main",
-      "aromatic"
-    ],
+    "tags": ["seafood", "grilled", "spicy", "main", "aromatic"],
     "releaseDate": "2025-06-27"
   },
   {
     "name": "Qurutob",
-    "acceptableGuesses": [
-      "qurutob",
-      "fatir with qurut",
-      "tajik bread dish"
-    ],
+    "acceptableGuesses": ["qurutob", "fatir with qurut", "tajik bread dish"],
     "country": "Tajikistan",
     "imageUrl": "/images/dishes/qurutob.png",
     "ingredients": [
@@ -1459,6 +1210,7 @@
       "herbs"
     ],
     "blurb": "A layered dish featuring torn flatbread soaked in a tangy, reconstituted dried cheese sauce, topped with fried onions and fresh herbs.",
+    "proteinPerServing": 12,
     "recipe": {
       "ingredients": [
         "2 large flatbreads (such as fatir or mountain bread)",
@@ -1481,13 +1233,7 @@
         "Traditionally served communally from one large plate."
       ]
     },
-    "tags": [
-      "bread",
-      "dairy",
-      "vegetarian",
-      "main",
-      "communal"
-    ],
+    "tags": ["bread", "dairy", "vegetarian", "main", "communal"],
     "releaseDate": "2025-06-28"
   },
   {
@@ -1508,6 +1254,7 @@
       "green onions"
     ],
     "blurb": "A creamy mashed potato dish mixed with sautéed greens and scallions, finished with a pool of melted butter in the center.",
+    "proteinPerServing": 6,
     "recipe": {
       "ingredients": [
         "2 lbs potatoes, peeled and cut into chunks",
@@ -1529,21 +1276,12 @@
         "Melt remaining butter and pour into the well. Garnish with parsley."
       ]
     },
-    "tags": [
-      "vegetarian",
-      "side dish",
-      "comfort food",
-      "potatoes",
-      "greens"
-    ],
+    "tags": ["vegetarian", "side dish", "comfort food", "potatoes", "greens"],
     "releaseDate": "2025-06-29"
   },
   {
     "name": "Koshari",
-    "acceptableGuesses": [
-      "koshari",
-      "kushari"
-    ],
+    "acceptableGuesses": ["koshari", "kushari"],
     "country": "Egypt",
     "imageUrl": "/images/dishes/koshari.png",
     "ingredients": [
@@ -1555,6 +1293,7 @@
       "fried onions"
     ],
     "blurb": "A hearty street food dish combining rice, lentils, pasta, and chickpeas, topped with spiced tomato sauce and crispy fried onions.",
+    "proteinPerServing": 18,
     "recipe": {
       "ingredients": [
         "1 cup rice",
@@ -1580,22 +1319,12 @@
         "To serve: Layer rice, lentils, pasta, and chickpeas. Top with tomato sauce, dakka sauce, and crispy onions."
       ]
     },
-    "tags": [
-      "vegetarian",
-      "street food",
-      "grain",
-      "legumes",
-      "main"
-    ],
+    "tags": ["vegetarian", "street food", "grain", "legumes", "main"],
     "releaseDate": "2025-06-30"
   },
   {
     "name": "Pizza",
-    "acceptableGuesses": [
-      "pizza",
-      "pizza margherita",
-      "neapolitan pizza"
-    ],
+    "acceptableGuesses": ["pizza", "pizza margherita", "neapolitan pizza"],
     "country": "Italy",
     "imageUrl": "/images/dishes/pizza.jpg",
     "ingredients": [
@@ -1608,6 +1337,7 @@
       "yeast"
     ],
     "blurb": "A round flatbread topped with tomato sauce and cheese, baked at a high temperature until the crust is crisp and the cheese melted and bubbly.",
+    "proteinPerServing": 14,
     "recipe": {
       "ingredients": [
         "3 1/2 cups all-purpose flour",
@@ -1634,20 +1364,12 @@
         "Remove from oven, top with fresh basil and a drizzle of olive oil."
       ]
     },
-    "tags": [
-      "baked",
-      "cheese",
-      "tomato",
-      "bread",
-      "classic"
-    ],
+    "tags": ["baked", "cheese", "tomato", "bread", "classic"],
     "releaseDate": "2025-07-01"
   },
   {
     "name": "Falafel",
-    "acceptableGuesses": [
-      "falafel"
-    ],
+    "acceptableGuesses": ["falafel"],
     "country": "Israel",
     "imageUrl": "/images/dishes/falafel.png",
     "ingredients": [
@@ -1659,6 +1381,7 @@
       "flour"
     ],
     "blurb": "Crispy golden orbs made from a blend of legumes and herbs, often enjoyed tucked into warm flatbreads with fresh vegetables.",
+    "proteinPerServing": 12,
     "recipe": {
       "ingredients": [
         "1 cup dried chickpeas, soaked overnight",
@@ -1678,20 +1401,12 @@
         "Drain on paper towels and serve warm."
       ]
     },
-    "tags": [
-      "fried",
-      "vegan",
-      "crispy",
-      "street food",
-      "legume"
-    ],
+    "tags": ["fried", "vegan", "crispy", "street food", "legume"],
     "releaseDate": "2025-07-02"
   },
   {
     "name": "Sushi",
-    "acceptableGuesses": [
-      "sushi"
-    ],
+    "acceptableGuesses": ["sushi"],
     "country": "Japan",
     "imageUrl": "/images/dishes/sushi.jpg",
     "ingredients": [
@@ -1703,6 +1418,7 @@
       "soy sauce"
     ],
     "blurb": "Small, artfully crafted rolls combining seasoned rice with delicate slices of fish or vegetables, often dipped in a salty-savory condiment.",
+    "proteinPerServing": 18,
     "recipe": {
       "ingredients": [
         "2 cups sushi rice",
@@ -1722,31 +1438,17 @@
         "Serve with wasabi and soy sauce."
       ]
     },
-    "tags": [
-      "raw",
-      "rice",
-      "fish",
-      "rolled",
-      "finger food"
-    ],
+    "tags": ["raw", "rice", "fish", "rolled", "finger food"],
     "releaseDate": "2025-07-03"
   },
   {
     "name": "Croissant",
-    "acceptableGuesses": [
-      "croissant"
-    ],
+    "acceptableGuesses": ["croissant"],
     "country": "France",
     "imageUrl": "/images/dishes/croissant.png",
-    "ingredients": [
-      "butter",
-      "flour",
-      "yeast",
-      "milk",
-      "sugar",
-      "salt"
-    ],
+    "ingredients": ["butter", "flour", "yeast", "milk", "sugar", "salt"],
     "blurb": "Flaky, golden layers of laminated dough form a light, buttery crescent-shaped pastry that's both airy and rich.",
+    "proteinPerServing": 8,
     "recipe": {
       "ingredients": [
         "4 cups flour",
@@ -1765,31 +1467,17 @@
         "Cool slightly before serving."
       ]
     },
-    "tags": [
-      "baked",
-      "pastry",
-      "flaky",
-      "buttery",
-      "breakfast"
-    ],
+    "tags": ["baked", "pastry", "flaky", "buttery", "breakfast"],
     "releaseDate": "2025-07-04"
   },
   {
     "name": "Tacos",
-    "acceptableGuesses": [
-      "tacos"
-    ],
+    "acceptableGuesses": ["tacos"],
     "country": "Mexico",
     "imageUrl": "/images/dishes/tacos.jpg",
-    "ingredients": [
-      "tortilla",
-      "meat",
-      "onion",
-      "cilantro",
-      "lime",
-      "chili"
-    ],
+    "ingredients": ["tortilla", "meat", "onion", "cilantro", "lime", "chili"],
     "blurb": "A handheld delight built on a soft or crispy shell and layered with savory fillings, fresh toppings, and a squeeze of citrus.",
+    "proteinPerServing": 24,
     "recipe": {
       "ingredients": [
         "8 corn tortillas",
@@ -1806,20 +1494,12 @@
         "Optional: Add avocado or cheese."
       ]
     },
-    "tags": [
-      "handheld",
-      "spicy",
-      "street food",
-      "fresh",
-      "grilled"
-    ],
+    "tags": ["handheld", "spicy", "street food", "fresh", "grilled"],
     "releaseDate": "2025-07-05"
   },
   {
     "name": "Chakalaka",
-    "acceptableGuesses": [
-      "chakalaka"
-    ],
+    "acceptableGuesses": ["chakalaka"],
     "country": "South Africa",
     "imageUrl": "/images/dishes/chakalaka.png",
     "ingredients": [
@@ -1831,6 +1511,7 @@
       "garlic"
     ],
     "blurb": "A vibrant vegetable medley simmered with spices, often served as a flavorful companion to grilled dishes or starches.",
+    "proteinPerServing": 8,
     "recipe": {
       "ingredients": [
         "1 onion, chopped",
@@ -1849,21 +1530,12 @@
         "Serve warm or chilled."
       ]
     },
-    "tags": [
-      "vegetarian",
-      "spicy",
-      "simmered",
-      "colorful",
-      "side dish"
-    ],
+    "tags": ["vegetarian", "spicy", "simmered", "colorful", "side dish"],
     "releaseDate": "2025-07-06"
   },
   {
     "name": "Chicken Adobo",
-    "acceptableGuesses": [
-      "chicken adobo",
-      "adobo"
-    ],
+    "acceptableGuesses": ["chicken adobo", "adobo"],
     "country": "Philippines",
     "imageUrl": "/images/dishes/chicken-adobo.png",
     "ingredients": [
@@ -1875,6 +1547,7 @@
       "black pepper"
     ],
     "blurb": "A comforting dish featuring tender meat simmered slowly in a tangy, garlicky marinade that reduces into a rich glaze.",
+    "proteinPerServing": 45,
     "recipe": {
       "ingredients": [
         "2 lbs chicken thighs",
@@ -1894,20 +1567,12 @@
         "Serve hot with rice."
       ]
     },
-    "tags": [
-      "braised",
-      "tangy",
-      "savory",
-      "comfort food",
-      "glazed"
-    ],
+    "tags": ["braised", "tangy", "savory", "comfort food", "glazed"],
     "releaseDate": "2025-07-07"
   },
   {
     "name": "Khinkali",
-    "acceptableGuesses": [
-      "khinkali"
-    ],
+    "acceptableGuesses": ["khinkali"],
     "country": "Georgia",
     "imageUrl": "/images/dishes/khinkali.png",
     "ingredients": [
@@ -1919,6 +1584,7 @@
       "coriander"
     ],
     "blurb": "Hand-shaped dumplings with a juicy filling inside, traditionally eaten by hand and known for their signature twist at the top.",
+    "proteinPerServing": 22,
     "recipe": {
       "ingredients": [
         "3 cups flour",
@@ -1939,20 +1605,12 @@
         "Serve hot, traditionally eaten by hand."
       ]
     },
-    "tags": [
-      "dumpling",
-      "boiled",
-      "savory",
-      "juicy",
-      "handheld"
-    ],
+    "tags": ["dumpling", "boiled", "savory", "juicy", "handheld"],
     "releaseDate": "2025-07-08"
   },
   {
     "name": "Poutine",
-    "acceptableGuesses": [
-      "poutine"
-    ],
+    "acceptableGuesses": ["poutine"],
     "country": "Canada",
     "imageUrl": "/images/dishes/poutine.png",
     "ingredients": [
@@ -1964,6 +1622,7 @@
       "beef broth"
     ],
     "blurb": "A hearty dish built around golden fries smothered in warm, savory sauce and soft, slightly squeaky dairy morsels.",
+    "proteinPerServing": 12,
     "recipe": {
       "ingredients": [
         "4 cups French fries, freshly cooked",
@@ -1981,31 +1640,17 @@
         "Pour hot gravy over the top and serve immediately."
       ]
     },
-    "tags": [
-      "comfort food",
-      "fried",
-      "cheesy",
-      "saucy",
-      "indulgent"
-    ],
+    "tags": ["comfort food", "fried", "cheesy", "saucy", "indulgent"],
     "releaseDate": "2025-07-09"
   },
   {
     "name": "Empanadas",
-    "acceptableGuesses": [
-      "empanadas"
-    ],
+    "acceptableGuesses": ["empanadas"],
     "country": "Argentina",
     "imageUrl": "/images/dishes/empanadas.png",
-    "ingredients": [
-      "flour",
-      "beef",
-      "onion",
-      "paprika",
-      "egg",
-      "olive oil"
-    ],
+    "ingredients": ["flour", "beef", "onion", "paprika", "egg", "olive oil"],
     "blurb": "Golden pastry pockets filled with a flavorful mix of seasoned meat and vegetables, often baked or fried for a crispy shell.",
+    "proteinPerServing": 18,
     "recipe": {
       "ingredients": [
         "2 1/2 cups flour",
@@ -2026,20 +1671,12 @@
         "Serve warm."
       ]
     },
-    "tags": [
-      "baked",
-      "filled",
-      "handheld",
-      "savory",
-      "street food"
-    ],
+    "tags": ["baked", "filled", "handheld", "savory", "street food"],
     "releaseDate": "2025-07-10"
   },
   {
     "name": "Ropa Vieja",
-    "acceptableGuesses": [
-      "ropa vieja"
-    ],
+    "acceptableGuesses": ["ropa vieja"],
     "country": "Cuba",
     "imageUrl": "/images/dishes/ropa-vieja.png",
     "ingredients": [
@@ -2051,6 +1688,7 @@
       "olive oil"
     ],
     "blurb": "Tender strands of meat simmered with vegetables in a rich, aromatic sauce that's both rustic and deeply comforting.",
+    "proteinPerServing": 42,
     "recipe": {
       "ingredients": [
         "2 lbs flank steak",
@@ -2070,21 +1708,12 @@
         "Serve with rice or plantains."
       ]
     },
-    "tags": [
-      "shredded",
-      "braised",
-      "savory",
-      "slow-cooked",
-      "comfort food"
-    ],
+    "tags": ["shredded", "braised", "savory", "slow-cooked", "comfort food"],
     "releaseDate": "2025-07-11"
   },
   {
     "name": "Tom Yum Soup",
-    "acceptableGuesses": [
-      "tom yum",
-      "tom yum soup"
-    ],
+    "acceptableGuesses": ["tom yum", "tom yum soup"],
     "country": "Thailand",
     "imageUrl": "/images/dishes/tom-yum-soup.png",
     "ingredients": [
@@ -2096,6 +1725,7 @@
       "fish sauce"
     ],
     "blurb": "A hot and sour soup bursting with herbal aroma and a fiery tang, often served with tender seafood or mushrooms.",
+    "proteinPerServing": 22,
     "recipe": {
       "ingredients": [
         "1/2 lb shrimp, peeled and deveined",
@@ -2114,20 +1744,12 @@
         "Serve hot with cilantro garnish."
       ]
     },
-    "tags": [
-      "soup",
-      "spicy",
-      "sour",
-      "herbal",
-      "seafood"
-    ],
+    "tags": ["soup", "spicy", "sour", "herbal", "seafood"],
     "releaseDate": "2025-07-12"
   },
   {
     "name": "Bibimbap",
-    "acceptableGuesses": [
-      "bibimbap"
-    ],
+    "acceptableGuesses": ["bibimbap"],
     "country": "South Korea",
     "imageUrl": "/images/dishes/bibimbap.png",
     "ingredients": [
@@ -2139,6 +1761,7 @@
       "gochujang"
     ],
     "blurb": "A vibrant bowl layered with assorted vegetables, protein, and a spicy sauce, all mixed together just before eating.",
+    "proteinPerServing": 12,
     "recipe": {
       "ingredients": [
         "2 cups cooked rice",
@@ -2158,21 +1781,12 @@
         "Mix everything thoroughly before eating."
       ]
     },
-    "tags": [
-      "rice bowl",
-      "vegetables",
-      "spicy",
-      "colorful",
-      "mix"
-    ],
+    "tags": ["rice bowl", "vegetables", "spicy", "colorful", "mix"],
     "releaseDate": "2025-07-13"
   },
   {
     "name": "Jollof Rice",
-    "acceptableGuesses": [
-      "jollof rice",
-      "jollof"
-    ],
+    "acceptableGuesses": ["jollof rice", "jollof"],
     "country": "Nigeria",
     "imageUrl": "/images/dishes/jollof-rice.png",
     "ingredients": [
@@ -2184,6 +1798,7 @@
       "vegetable oil"
     ],
     "blurb": "A bold and vibrant one-pot rice dish simmered in a rich tomato base and spiced with peppers and herbs.",
+    "proteinPerServing": 8,
     "recipe": {
       "ingredients": [
         "2 cups long-grain rice",
@@ -2203,13 +1818,7 @@
         "Stir occasionally to prevent burning."
       ]
     },
-    "tags": [
-      "rice",
-      "one-pot",
-      "spicy",
-      "tomato-based",
-      "festive"
-    ],
+    "tags": ["rice", "one-pot", "spicy", "tomato-based", "festive"],
     "releaseDate": "2025-07-14"
   }
 ]

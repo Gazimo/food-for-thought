@@ -22,7 +22,6 @@ export const CountryGuessFeedback: React.FC<CountryGuessFeedbackProps> = ({
     return "bg-red-500";
   };
 
-  // Default to 0 to avoid breaking hooks order
   const lastGuess = guessResults[guessResults.length - 1] ?? { distance: 0 };
   const animatedDistance = useCountUp(0, Math.round(lastGuess.distance), 1000);
 

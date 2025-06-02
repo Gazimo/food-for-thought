@@ -27,7 +27,7 @@ export const metadata = {
         url: "/og-image.jpeg",
         width: 1200,
         height: 630,
-        alt: "Cartoon chef holding a world map with “Food for Thought” logo",
+        alt: 'Cartoon chef holding a world map with "Food for Thought" logo',
       },
     ],
     type: "website",
@@ -55,7 +55,17 @@ export default function RootLayout({
         className={`bg-white text-black font-sans ${geistSans.variable} ${geistMono.variable}`}
       >
         {children}
-        <Toaster position="top-center" />
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            duration: 2000,
+            style: {
+              borderRadius: "8px",
+              background: "#333",
+              color: "#fff",
+            },
+          }}
+        />
       </body>
     </html>
   );

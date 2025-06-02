@@ -1,12 +1,14 @@
 export function generateShareText({
   dishGuesses,
   countryGuesses,
+  proteinGuesses,
   dish,
   country,
   streak,
 }: {
   dishGuesses: string[];
   countryGuesses: { name: string; distance: number; direction: string }[];
+  proteinGuesses?: { guess: number; actualProtein: number }[];
   dish: string;
   country: string;
   streak: number;
@@ -42,11 +44,37 @@ export function generateShareText({
     })
     .join("");
 
+  const proteinLine =
+    proteinGuesses && proteinGuesses.length > 0
+      ? (() => {
+          const actualProtein =
+            proteinGuesses[proteinGuesses.length - 1]?.actualProtein;
+          const arrows = proteinGuesses
+            .map((pg, i, arr) => {
+              const isLast = i === arr.length - 1;
+              if (isLast && pg.guess === actualProtein) return "🎉";
+              if (pg.guess < actualProtein) return "⬆️";
+              if (pg.guess > actualProtein) return "⬇️";
+              return "";
+            })
+            .join("");
+
+          const lastGuess = proteinGuesses[proteinGuesses.length - 1];
+          const diff = Math.abs(lastGuess.guess - actualProtein);
+          const result =
+            lastGuess.guess === actualProtein ? "" : `: ${diff}g off`;
+
+          return `💪 ${arrows}${result}`;
+        })()
+      : "";
+
   return `#FoodForThought ${dayNumber} (${today}) ${dishGuesses.length}/6
 🔥 Streak: ${streak} days
 
 🍽️ ${dishTiles}  ${dishGuesses.length}/6
-🌍 ${countryTiles}  ${countryGuesses.length}
+🌍 ${countryTiles}  ${countryGuesses.length}${
+    proteinLine ? `\n${proteinLine}` : ""
+  }
 
 https://f4t.xyz`;
 }

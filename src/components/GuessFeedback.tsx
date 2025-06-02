@@ -18,7 +18,7 @@ export const GuessFeedback = () => {
           <ul className="space-y-1">
             <AnimatePresence initial={false}>
               {currentDish.ingredients
-                .slice(0, revealedIngredients - 1) // Subtract 1 since we start with 1 but no ingredients
+                .slice(0, revealedIngredients - 1)
                 .map((ingredient, index) => (
                   <motion.li
                     key={index}

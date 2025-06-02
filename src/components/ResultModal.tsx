@@ -29,6 +29,10 @@ export const ResultModal: React.FC = () => {
         distance: g.distance,
         direction: g.direction,
       })),
+      proteinGuesses: gameResults.proteinGuesses.map((guess) => ({
+        guess,
+        actualProtein: currentDish?.proteinPerServing || 0,
+      })),
       dish: currentDish.name,
       country: currentDish.country,
       streak,
@@ -107,6 +111,37 @@ export const ResultModal: React.FC = () => {
               {gameResults.countryGuessSuccess ? "✓" : "✗"}
             </span>
           </div>
+
+          {currentDish.proteinPerServing && (
+            <div className="flex flex-wrap items-center gap-2 text-sm sm:text-base">
+              <span className="text-gray-700">Protein phase:</span>
+              <span className="font-semibold">
+                {gameResults.proteinGuesses.length} guesses
+              </span>
+              <span
+                className={
+                  gameResults.proteinGuessSuccess
+                    ? "text-green-600"
+                    : "text-red-600"
+                }
+              >
+                {gameResults.proteinGuessSuccess ? "✓" : "✗"}
+              </span>
+              {gameResults.proteinGuesses.length > 0 &&
+                !gameResults.proteinGuessSuccess && (
+                  <span className="text-gray-600 text-xs">
+                    (closest:{" "}
+                    {Math.abs(
+                      gameResults.proteinGuesses[
+                        gameResults.proteinGuesses.length - 1
+                      ] - currentDish.proteinPerServing
+                    )}
+                    g off)
+                  </span>
+                )}
+            </div>
+          )}
+
           <div className="flex justify-between gap-2">
             <Button
               onClick={() => setShowRecipe(!showRecipe)}

@@ -5,6 +5,7 @@ export interface Dish {
   country: string;
   blurb: string;
   imageUrl: string;
+  proteinPerServing?: number;
   recipe: {
     ingredients: string[];
     instructions: string[];
