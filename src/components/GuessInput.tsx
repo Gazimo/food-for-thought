@@ -19,6 +19,13 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { cn } from "../lib/utils";
 import { useGameStore } from "../store/gameStore";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
 
 interface GuessInputProps {
   placeholder: string;
@@ -39,6 +46,7 @@ export const GuessInput: React.FC<GuessInputProps> = ({
 }) => {
   const [input, setInput] = useState("");
   const [open, setOpen] = useState(false);
+  const [giveUpOpen, setGiveUpOpen] = useState(false);
   const [value, setValue] = useState("");
   const [shake, setShake] = useState(false);
   const { revealAllTiles, completeGame, moveToCountryPhase, activePhase } =
@@ -186,10 +194,32 @@ export const GuessInput: React.FC<GuessInputProps> = ({
 
   return (
     <div className="w-full flex gap-2 items-center">
+      <Dialog open={giveUpOpen} onOpenChange={setGiveUpOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Are you sure you want to give up?</DialogTitle>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="default" onClick={() => setGiveUpOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                handleGiveUp();
+                setGiveUpOpen(false);
+              }}
+            >
+              Ok
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Button
         className="p-1 sm:p-1.5 md:p-2"
         variant="danger"
-        onClick={handleGiveUp}
+        onClick={() => setGiveUpOpen(true)}
       >
         <div className="w-5 h-5 sm:w-4 sm:h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 relative">
           <Image
