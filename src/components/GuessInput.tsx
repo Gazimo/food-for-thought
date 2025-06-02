@@ -4,18 +4,18 @@ import {
   Command,
   CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { getClosestGuess } from "@/utils/gameHelpers"; // adjust path as needed
+import { getClosestGuess } from "@/utils/gameHelpers";
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { cn } from "../lib/utils";
 import { useGameStore } from "../store/gameStore";
@@ -49,6 +49,8 @@ export const GuessInput: React.FC<GuessInputProps> = ({
   const [giveUpOpen, setGiveUpOpen] = useState(false);
   const [value, setValue] = useState("");
   const [shake, setShake] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const inputRef = useRef<HTMLInputElement>(null);
   const { revealAllTiles, completeGame, moveToCountryPhase, activePhase } =
     useGameStore();
 
@@ -112,13 +114,13 @@ export const GuessInput: React.FC<GuessInputProps> = ({
   };
 
   const filtered = suggestions
-    .filter((s) => s.toLowerCase().includes(input.toLowerCase()))
+    .filter((s) => s.toLowerCase().includes((input || "").toLowerCase()))
     .filter((s) => !previousGuesses.includes(s));
 
   const renderInputField = () => {
     if (suggestions.length === 0) {
       return (
-        <input
+        <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
@@ -128,69 +130,143 @@ export const GuessInput: React.FC<GuessInputProps> = ({
             }
           }}
           placeholder={placeholder}
-          className={cn(
-            "flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500",
-            shake && "animate-shake"
-          )}
+          className={cn("flex-1", shake && "animate-shake")}
           disabled={isComplete}
+          ref={inputRef}
         />
       );
     }
 
     return (
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && value) {
-                e.preventDefault();
-                handleGuess(value);
+      <div className="relative flex-1">
+        <Input
+          value={value || input}
+          onChange={(e) => {
+            const newValue = e.target.value;
+            setInput(newValue);
+            setValue("");
+            if (newValue && !open) {
+              setOpen(true);
+              setSelectedIndex(0);
+            } else if (!newValue && open) {
+              setOpen(false);
+              setSelectedIndex(-1);
+            } else if (newValue && open) {
+              setSelectedIndex(0);
+            } else {
+              setSelectedIndex(-1);
+            }
+          }}
+          onFocus={() => {
+            if (input || filtered.length > 0) {
+              setOpen(true);
+              if (filtered.length > 0) {
+                setSelectedIndex(0);
               }
-            }}
-            className={cn(
-              "w-full justify-between text-left truncate",
-              shake && "animate-shake"
-            )}
-            disabled={isComplete}
+            }
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              if (selectedIndex >= 0 && filtered[selectedIndex]) {
+                const selectedValue = filtered[selectedIndex];
+                setValue(selectedValue);
+                setInput(selectedValue);
+                setOpen(false);
+                setSelectedIndex(-1);
+                return;
+              }
+              if ((value || input) && !open) {
+                handleGuess(value || input);
+                return;
+              }
+              if (open) {
+                return;
+              }
+            }
+            if (e.key === "Escape") {
+              setOpen(false);
+              setSelectedIndex(-1);
+            }
+            if (e.key === "ArrowDown") {
+              e.preventDefault();
+              if (!open && input) {
+                setOpen(true);
+                setSelectedIndex(0);
+              } else if (open && filtered.length > 0) {
+                setSelectedIndex((prev) =>
+                  prev < filtered.length - 1 ? prev + 1 : prev
+                );
+              }
+            }
+            if (e.key === "ArrowUp") {
+              e.preventDefault();
+              if (open) {
+                setSelectedIndex((prev) => (prev > 0 ? prev - 1 : -1));
+              }
+            }
+          }}
+          placeholder={placeholder}
+          className={cn("w-full", shake && "animate-shake")}
+          disabled={isComplete}
+          ref={inputRef}
+        />
+        <Popover
+          open={open}
+          onOpenChange={(newOpen) => {
+            setOpen(newOpen);
+            if (!newOpen) {
+              setSelectedIndex(-1);
+            }
+          }}
+          modal={false}
+        >
+          <PopoverTrigger asChild>
+            <div className="absolute inset-0 pointer-events-none" />
+          </PopoverTrigger>
+          <PopoverContent
+            align="start"
+            side="bottom"
+            className="p-0"
+            style={{ width: "var(--radix-popover-trigger-width)" }}
+            onOpenAutoFocus={(e) => e.preventDefault()}
           >
-            {value || placeholder}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent align="start" side="bottom" className="p-0">
-          <Command>
-            <CommandInput
-              placeholder={placeholder}
-              className="h-9"
-              disabled={isComplete}
-              onValueChange={setInput}
-            />
-            <CommandList>
-              <CommandEmpty>No match found.</CommandEmpty>
-              <CommandGroup>
-                {filtered.map((item) => (
-                  <CommandItem
-                    key={item}
-                    value={item}
-                    onSelect={(v) => {
-                      setValue(v);
-                      setOpen(false);
-                    }}
-                  >
-                    {item}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+            <Command shouldFilter={false}>
+              <CommandList>
+                <CommandEmpty>No match found.</CommandEmpty>
+                <CommandGroup>
+                  {filtered.map((item, index) => (
+                    <CommandItem
+                      key={item}
+                      value={item}
+                      className={cn(
+                        selectedIndex === index &&
+                          "bg-accent text-accent-foreground"
+                      )}
+                      onSelect={(selectedValue) => {
+                        setValue(selectedValue);
+                        setInput(selectedValue);
+                        setOpen(false);
+                        setSelectedIndex(-1);
+                      }}
+                    >
+                      {item}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      </div>
     );
   };
 
-  const currentGuess = suggestions.length === 0 ? input : value;
+  const currentGuess = suggestions.length === 0 ? input : value || input;
+  const canSubmit =
+    suggestions.length === 0 ||
+    (value && filtered.includes(value)) ||
+    (!value && filtered.includes(input));
 
   return (
     <div className="w-full flex gap-2 items-center">
@@ -235,7 +311,11 @@ export const GuessInput: React.FC<GuessInputProps> = ({
       <Button
         variant="primary"
         onClick={() => handleGuess(currentGuess)}
-        disabled={!currentGuess.trim() || isComplete}
+        disabled={
+          !currentGuess.trim() ||
+          isComplete ||
+          (suggestions.length > 0 && !canSubmit)
+        }
       >
         Submit
       </Button>
