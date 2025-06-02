@@ -35,7 +35,6 @@ export const GuessInput: React.FC<GuessInputProps> = ({
     revealAllTiles,
     completeGame,
     moveToCountryPhase,
-    moveToProteinPhase,
     activePhase,
     currentDish,
     revealCorrectCountry,
