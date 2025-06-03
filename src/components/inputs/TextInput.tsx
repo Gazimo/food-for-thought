@@ -14,7 +14,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface TextInputProps {
   value: string;
@@ -41,6 +41,12 @@ export const TextInput: React.FC<TextInputProps> = ({
   const [suggestionValue, setSuggestionValue] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!value) {
+      setSuggestionValue("");
+    }
+  }, [value]);
 
   const filtered = suggestions
     .filter((s) => s.toLowerCase().includes((value || "").toLowerCase()))
