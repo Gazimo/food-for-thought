@@ -1,7 +1,7 @@
 import { promises as fs } from "fs";
 import { NextApiRequest, NextApiResponse } from "next";
 import path from "path";
-import { enrichDishesWithCoords } from "../../../public/data/dishes";
+import { Dish, enrichDishesWithCoords } from "../../../public/data/dishes";
 import PostHogClient from "../../lib/posthog";
 import { getCountryCoordsMap } from "../../utils/countries";
 import { getDailySalt, obfuscateData } from "../../utils/encryption";
@@ -24,7 +24,7 @@ export default async function handler(
 
   // Get today's date and filter for today's dish on the server side
   const today = new Date().toISOString().split("T")[0];
-  const todaysDish = dishes.find((dish: any) => dish.releaseDate === today);
+  const todaysDish = dishes.find((dish: Dish) => dish.releaseDate === today);
 
   if (!todaysDish) {
     return res.status(404).json({ error: "No dish available for today" });

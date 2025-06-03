@@ -2,6 +2,26 @@ import Fuse from "fuse.js";
 import { Dish } from "../../public/data/dishes";
 import { deobfuscateData } from "./encryption";
 
+// Type for the sensitive data that gets encrypted/decrypted
+interface SensitiveData {
+  name: string;
+  country: string;
+  acceptableGuesses: string[];
+  proteinPerServing?: number;
+  ingredients: string[];
+  recipe: {
+    ingredients: string[];
+    instructions: string[];
+  };
+  blurb: string;
+  imageUrl: string;
+  releaseDate?: string;
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
+}
+
 export function calculateDistance(
   lat1: number,
   lon1: number,
@@ -97,7 +117,7 @@ export async function loadDishes(): Promise<Dish[]> {
   });
 
   // Deobfuscate the sensitive data
-  const sensitiveData = deobfuscateData(
+  const sensitiveData = deobfuscateData<SensitiveData>(
     todayObfuscatedDish._encrypted,
     todayObfuscatedDish._salt
   );
@@ -131,14 +151,30 @@ export async function loadDishes(): Promise<Dish[]> {
     releaseDate: sensitiveData.releaseDate,
     // Extract coordinates from sensitive data
     coordinates: sensitiveData.coordinates,
-    // Remove the encrypted fields
-    _encrypted: undefined,
-    _salt: undefined,
   };
 
-  // Clean up the undefined fields
-  delete (completeDish as any)._encrypted;
-  delete (completeDish as any)._salt;
+  // Clean up the encrypted fields
+  delete (
+    completeDish as Dish & {
+      _encrypted?: string;
+      _salt?: string;
+      _checksum?: string;
+    }
+  )._encrypted;
+  delete (
+    completeDish as Dish & {
+      _encrypted?: string;
+      _salt?: string;
+      _checksum?: string;
+    }
+  )._salt;
+  delete (
+    completeDish as Dish & {
+      _encrypted?: string;
+      _salt?: string;
+      _checksum?: string;
+    }
+  )._checksum;
 
   console.log("✅ Complete dish ready:", {
     name: completeDish.name,

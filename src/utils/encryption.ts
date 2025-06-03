@@ -1,5 +1,5 @@
 // Simple XOR encryption that works both server and client side
-export function obfuscateData(data: any, salt: string): string {
+export function obfuscateData<T>(data: T, salt: string): string {
   try {
     const key = salt + "food-for-thought-secret";
     const jsonString = JSON.stringify(data);
@@ -34,7 +34,10 @@ export function getDailySalt(): string {
 }
 
 // Simple XOR decryption
-export function deobfuscateData(obfuscatedData: string, salt: string): any {
+export function deobfuscateData<T>(
+  obfuscatedData: string,
+  salt: string
+): T | null {
   try {
     const key = salt + "food-for-thought-secret";
 
