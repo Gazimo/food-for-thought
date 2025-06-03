@@ -1,12 +1,9 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "react-hot-toast";
+import ClientProviders from "./client-providers";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
@@ -43,9 +40,9 @@ export const metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <head>
@@ -54,18 +51,20 @@ export default function RootLayout({
       <body
         className={`bg-white text-black font-sans ${geistSans.variable} ${geistMono.variable}`}
       >
-        {children}
-        <Toaster
-          position="top-center"
-          toastOptions={{
-            duration: 2000,
-            style: {
-              borderRadius: "8px",
-              background: "#333",
-              color: "#fff",
-            },
-          }}
-        />
+        <ClientProviders>
+          {children}
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              duration: 2000,
+              style: {
+                borderRadius: "8px",
+                background: "#333",
+                color: "#fff",
+              },
+            }}
+          />
+        </ClientProviders>
       </body>
     </html>
   );

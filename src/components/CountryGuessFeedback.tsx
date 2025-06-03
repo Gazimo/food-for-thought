@@ -22,6 +22,23 @@ export const CountryGuessFeedback: React.FC<CountryGuessFeedbackProps> = ({
     return "bg-red-500";
   };
 
+  const getDirectionArrow = (direction: string): string => {
+    const directionMap: { [key: string]: string } = {
+      N: "⬆️",
+      NE: "↗️",
+      E: "➡️",
+      SE: "↘️",
+      S: "⬇️",
+      SW: "↙️",
+      W: "⬅️",
+      NW: "↖️",
+      "": "",
+      "N/A": "",
+      Invalid: "❌",
+    };
+    return directionMap[direction] || direction;
+  };
+
   const lastGuess = guessResults[guessResults.length - 1] ?? { distance: 0 };
   const animatedDistance = useCountUp(0, Math.round(lastGuess.distance), 1000);
 
@@ -60,7 +77,9 @@ export const CountryGuessFeedback: React.FC<CountryGuessFeedbackProps> = ({
               <span className="text-sm">
                 {distanceValue.toLocaleString()} km
               </span>
-              <span className="text-sm">{result.direction}</span>
+              <span className="text-sm flex items-center justify-center">
+                {getDirectionArrow(result.direction)}
+              </span>
               <div
                 className={`w-4 h-4 rounded-full ${getColorForDistance(
                   result.distance
