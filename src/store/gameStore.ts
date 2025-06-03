@@ -87,6 +87,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     countryGuessSuccess: false,
     proteinGuesses: [],
     proteinGuessSuccess: false,
+    tracked: false,
   },
   revealedTiles: [false, false, false, false, false, false],
   countryGuessResults: [],
@@ -144,6 +145,7 @@ export const useGameStore = create<GameState>((set, get) => ({
         countryGuessSuccess: false,
         proteinGuesses: [],
         proteinGuessSuccess: false,
+        tracked: false,
       },
       revealedTiles: [false, false, false, false, false, false],
       countryGuessResults: [],
@@ -288,6 +290,14 @@ export const useGameStore = create<GameState>((set, get) => ({
     const newStreak = updateStreak();
     const state = get();
 
+    // Determine if user won or lost based on success in any phase
+    const hasAnySuccess =
+      state.gameResults.dishGuessSuccess ||
+      state.gameResults.countryGuessSuccess ||
+      state.gameResults.proteinGuessSuccess;
+
+    const finalStatus = hasAnySuccess ? "won" : "lost";
+
     if (typeof window !== "undefined") {
       localStorage.setItem(
         "fft-current-dish",
@@ -295,7 +305,11 @@ export const useGameStore = create<GameState>((set, get) => ({
       );
       localStorage.setItem(
         "fft-game-results",
-        JSON.stringify(state.gameResults)
+        JSON.stringify({
+          ...state.gameResults,
+          status: finalStatus,
+          tracked: false,
+        })
       );
       localStorage.setItem(
         "fft-revealed-tiles",
@@ -331,6 +345,11 @@ export const useGameStore = create<GameState>((set, get) => ({
       gamePhase: "complete",
       modalVisible: true,
       streak: newStreak,
+      gameResults: {
+        ...state.gameResults,
+        status: finalStatus,
+        tracked: false,
+      },
     });
   },
 
@@ -448,4 +467,11 @@ export const useGameStore = create<GameState>((set, get) => ({
     set({ activePhase: phase }),
   streak: 0,
   setStreak: (value: number) => set({ streak: value }),
+  markGameTracked: () =>
+    set((state) => ({
+      gameResults: {
+        ...state.gameResults,
+        tracked: true,
+      },
+    })),
 }));

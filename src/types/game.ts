@@ -3,12 +3,14 @@ import { Dish } from "../../public/data/dishes";
 export type GamePhase = "dish" | "country" | "protein" | "complete";
 
 export interface GameResults {
+  status?: "won" | "lost";
   dishGuesses: string[];
   dishGuessSuccess: boolean;
   countryGuesses: string[];
   countryGuessSuccess: boolean;
   proteinGuesses: number[];
   proteinGuessSuccess: boolean;
+  tracked?: boolean;
   totalTime?: number; // We could add this later for tracking completion time
 }
 
@@ -65,4 +67,5 @@ export interface GameState {
   setActivePhase: (phase: "dish" | "country" | "protein") => void;
   streak: number;
   setStreak: (value: number) => void;
+  markGameTracked: () => void;
 }

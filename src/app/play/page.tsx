@@ -6,6 +6,7 @@ import { PhaseContainer } from "@/components/PhaseContainer";
 import { ResultModal } from "@/components/ResultModal";
 import { useGameStore } from "@/store/gameStore";
 import { AnimatePresence, motion } from "framer-motion";
+import posthog from "posthog-js";
 import { useEffect } from "react";
 import { IntroModal } from "../../components/IntroModal";
 import { Button } from "../../components/ui/button";
@@ -26,9 +27,17 @@ export default function GamePage() {
     resetProteinGuesses,
     activePhase,
     setActivePhase,
+    gameResults,
+    markGameTracked,
   } = useGameStore();
 
   const setStreak = useGameStore((s) => s.setStreak);
+
+  useEffect(() => {
+    posthog.capture("game_start", {
+      mode: alreadyPlayedToday() ? "daily" : "freeplay",
+    });
+  }, []);
 
   useEffect(() => {
     const value = getStreak();
@@ -70,6 +79,21 @@ export default function GamePage() {
       setActivePhase("dish");
     }
   }, [gamePhase, resetCountryGuesses, resetProteinGuesses, setActivePhase]);
+
+  useEffect(() => {
+    if (gameResults?.status && !gameResults.tracked) {
+      posthog.capture("game_end", {
+        success: gameResults.status === "won",
+        guessCount:
+          (gameResults.dishGuesses?.length || 0) +
+          (gameResults.countryGuesses?.length || 0) +
+          (gameResults.proteinGuesses?.length || 0),
+        mode: alreadyPlayedToday() ? "daily" : "freeplay",
+      });
+
+      markGameTracked();
+    }
+  }, [gameResults?.status]);
 
   return (
     <main className="p-4 sm:p-6 max-w-full sm:max-w-xl mx-auto flex flex-col min-h-screen">
@@ -187,7 +211,10 @@ export default function GamePage() {
         {gamePhase === "complete" && !modalVisible && (
           <div className="text-center mt-4">
             <Button
-              onClick={() => toggleModal(true)}
+              onClick={() => {
+                toggleModal(true);
+                posthog.capture("toggle_recipe_modal", { opened: true });
+              }}
               className="px-4 py-2"
               variant="secondary"
             >

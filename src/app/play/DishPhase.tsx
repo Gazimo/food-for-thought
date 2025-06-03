@@ -2,6 +2,7 @@ import { GuessFeedback } from "@/components/GuessFeedback";
 import { GuessInput } from "@/components/GuessInput";
 import { useGameStore } from "@/store/gameStore";
 import { TileGrid } from "../../components/dish-image/TileGrid";
+import posthog from "posthog-js";
 
 interface DishPhaseProps {
   isComplete?: boolean;
@@ -10,6 +11,18 @@ interface DishPhaseProps {
 export function DishPhase({ isComplete }: DishPhaseProps) {
   const { guessDish, dishGuesses, currentDish, revealedTiles, gameResults } =
     useGameStore();
+
+  const handleGuess = (guess: string) => {
+    const isCorrect =
+      currentDish?.acceptableGuesses?.includes(guess.toLowerCase()) ?? false;
+
+    posthog.capture("guess_dish", {
+      guess,
+      correct: isCorrect,
+    });
+
+    guessDish(guess);
+  };
   return (
     <>
       {currentDish?.imageUrl && (
@@ -23,7 +36,7 @@ export function DishPhase({ isComplete }: DishPhaseProps) {
           <div>
             <GuessInput
               placeholder="Enter a dish name..."
-              onGuess={guessDish}
+              onGuess={handleGuess}
               previousGuesses={dishGuesses}
               isComplete={isComplete}
               acceptableGuesses={currentDish?.acceptableGuesses}

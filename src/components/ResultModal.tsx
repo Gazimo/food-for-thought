@@ -3,9 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { useGameStore } from "@/store/gameStore";
 import Image from "next/image";
+import posthog from "posthog-js";
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { generateShareText } from "../utils/shareText";
+import { alreadyPlayedToday } from "../utils/streak";
 
 export const ResultModal: React.FC = () => {
   const {
@@ -22,6 +24,10 @@ export const ResultModal: React.FC = () => {
   if (gamePhase !== "complete" || !currentDish || !modalVisible) return null;
 
   const handleCopyResults = () => {
+    posthog.capture("share_score_clicked", {
+      mode: alreadyPlayedToday() ? "daily" : "freeplay",
+    });
+
     const text = generateShareText({
       dishGuesses: gameResults.dishGuesses,
       countryGuesses: countryGuessResults.map((g) => ({
@@ -49,7 +55,10 @@ export const ResultModal: React.FC = () => {
           <div className="flex justify-between items-center">
             <h2 className="text-xl sm:text-2xl font-bold">🎉 You did it!</h2>
             <button
-              onClick={() => toggleModal(false)}
+              onClick={() => {
+                toggleModal(false);
+                posthog.capture("toggle_recipe_modal", { opened: false });
+              }}
               className="text-gray-500 hover:text-gray-700 text-2xl sm:text-xl px-2"
               aria-label="Close"
             >
