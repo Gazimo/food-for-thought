@@ -59,6 +59,7 @@ export const TextInput: React.FC<TextInputProps> = ({
       }
       if ((suggestionValue || value) && !open) {
         onSubmit(suggestionValue || value);
+        setSuggestionValue("");
         return;
       }
       if (open) {

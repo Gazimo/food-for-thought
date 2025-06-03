@@ -12,6 +12,8 @@ import { create } from "zustand";
 import { enrichDishesWithCoords } from "../../public/data/dishes";
 import { GameResults, GameState } from "../types/game";
 import { updateStreak } from "../utils/streak";
+import { launchEmojiBurst } from "../utils/celebration";
+import { emojiThemes } from "../utils/celebration";
 const countryCoords = getCountryCoordsMap();
 
 function getSortedCountryCoords() {
@@ -400,7 +402,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     if (!currentDish) return false;
     const isCorrect = makeDishGuess(guess);
     if (isCorrect) {
-      if (typeof window !== "undefined") confetti();
+      if (typeof window !== "undefined") launchEmojiBurst(emojiThemes.dish);
       revealAllTiles();
       moveToCountryPhase();
     } else {
@@ -423,7 +425,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     if (!currentDish || !currentDish.coordinates) return false;
     const isCorrect = makeCountryGuess(guess);
     if (isCorrect) {
-      if (typeof window !== "undefined") confetti();
+      if (typeof window !== "undefined") launchEmojiBurst(emojiThemes.country);
       moveToProteinPhase();
     }
     return isCorrect;
@@ -433,7 +435,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     if (!currentDish) return false;
     const isCorrect = makeProteinGuess(guess);
     if (isCorrect) {
-      if (typeof window !== "undefined") confetti();
+      if (typeof window !== "undefined") launchEmojiBurst(emojiThemes.protein);
       completeGame();
     } else {
       const { proteinGuesses } = get();

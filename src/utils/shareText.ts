@@ -16,6 +16,12 @@ export function generateShareText({
   const dayNumber = getGameDayNumber();
   const today = new Date().toLocaleDateString("en-GB");
 
+  const lastDishGuess = dishGuesses.at(-1)?.toLowerCase();
+  const lastCountryGuess = countryGuesses.at(-1)?.name.toLowerCase();
+
+  const dishCorrect = lastDishGuess === dish.toLowerCase();
+  const countryCorrect = lastCountryGuess === country.toLowerCase();
+
   const dishTiles = dishGuesses
     .map((guess, i, arr) => {
       const isCorrect = guess.toLowerCase() === dish.toLowerCase();
@@ -71,8 +77,8 @@ export function generateShareText({
   return `#FoodForThought ${dayNumber} (${today}) ${dishGuesses.length}/6
 🔥 Streak: ${streak} days
 
-🍽️ ${dishTiles}  ${dishGuesses.length}/6
-🌍 ${countryTiles}  ${countryGuesses.length}${
+🍽️ ${dishTiles}${dishCorrect ? "🎉" : ""}  ${dishGuesses.length}/6
+🌍 ${countryTiles}${countryCorrect ? "🎉" : ""}  ${countryGuesses.length}${
     proteinLine ? `\n${proteinLine}` : ""
   }
 

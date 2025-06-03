@@ -5,5 +5,5 @@ interface PhaseContainerProps {
 }
 
 export function PhaseContainer({ children }: PhaseContainerProps) {
-  return <section className="mt-6">{children}</section>;
+  return <section className="mt-6 flex-grow">{children}</section>;
 }

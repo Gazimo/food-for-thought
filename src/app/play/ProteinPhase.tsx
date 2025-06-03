@@ -1,6 +1,6 @@
 import { GuessInput } from "@/components/GuessInput";
-import { ProteinGuessFeedback } from "@/components/ProteinGuessFeedback";
 import { useGameStore } from "@/store/gameStore";
+import { ProteinGuessFeedback } from "../../components/ProteinGuessFeedback";
 
 interface ProteinPhaseProps {
   isComplete?: boolean;
@@ -25,7 +25,6 @@ export function ProteinPhase({ isComplete }: ProteinPhaseProps) {
       <p className="text-sm text-gray-600">
         How many grams of protein per serving does this dish have?
       </p>
-
       {!isComplete && (
         <div className="flex flex-col gap-4">
           <GuessInput

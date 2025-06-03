@@ -72,7 +72,7 @@ export default function GamePage() {
   }, [gamePhase, resetCountryGuesses, resetProteinGuesses, setActivePhase]);
 
   return (
-    <main className="p-4 sm:p-6 max-w-full sm:max-w-xl mx-auto">
+    <main className="p-4 sm:p-6 max-w-full sm:max-w-xl mx-auto flex flex-col min-h-screen">
       <IntroModal />
       <GameHeader />
 
