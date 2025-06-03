@@ -1,5 +1,6 @@
 import Fuse from "fuse.js";
 import { Dish } from "../../public/data/dishes";
+import { deobfuscateData } from "./encryption";
 
 export function calculateDistance(
   lat1: number,
@@ -71,14 +72,82 @@ export function capitalizeFirst(str: string) {
 }
 
 export async function loadDishes(): Promise<Dish[]> {
+  console.log("🔍 Loading dishes from API...");
   const res = await fetch("/api/dishes");
-  if (!res.ok) throw new Error("Failed to load dishes");
+  if (!res.ok) {
+    console.error("❌ Failed to fetch dishes:", res.status, res.statusText);
+    throw new Error("Failed to load dishes");
+  }
 
-  const allDishes = await res.json();
-  const today = new Date().toISOString().split("T")[0];
-  const todayDish = allDishes.find((dish: Dish) => dish.releaseDate === today);
+  const obfuscatedDishes = await res.json();
+  console.log("📦 Received obfuscated dishes:", obfuscatedDishes.length);
 
-  return todayDish ? [todayDish] : [];
+  if (!obfuscatedDishes || obfuscatedDishes.length === 0) {
+    console.warn("⚠️ No dishes received from API");
+    return [];
+  }
+
+  // Server now returns only today's dish, so just use the first one
+  const todayObfuscatedDish = obfuscatedDishes[0];
+
+  console.log("🔍 Processing dish:", {
+    hasEncrypted: !!todayObfuscatedDish._encrypted,
+    hasSalt: !!todayObfuscatedDish._salt,
+    hasCoordinates: !!todayObfuscatedDish.coordinates,
+  });
+
+  // Deobfuscate the sensitive data
+  const sensitiveData = deobfuscateData(
+    todayObfuscatedDish._encrypted,
+    todayObfuscatedDish._salt
+  );
+
+  if (!sensitiveData) {
+    console.error("❌ Failed to deobfuscate dish data");
+    return [];
+  }
+
+  console.log("🔓 Successfully deobfuscated data:", {
+    name: sensitiveData.name,
+    country: sensitiveData.country,
+    hasIngredients: !!sensitiveData.ingredients,
+    hasRecipe: !!sensitiveData.recipe,
+    hasImageUrl: !!sensitiveData.imageUrl,
+    releaseDate: sensitiveData.releaseDate,
+  });
+
+  // Reconstruct the complete dish object
+  const completeDish: Dish = {
+    ...todayObfuscatedDish,
+    name: sensitiveData.name,
+    country: sensitiveData.country,
+    acceptableGuesses: sensitiveData.acceptableGuesses,
+    proteinPerServing: sensitiveData.proteinPerServing,
+    ingredients: sensitiveData.ingredients,
+    recipe: sensitiveData.recipe,
+    blurb: sensitiveData.blurb,
+    // Extract imageUrl and releaseDate from sensitive data
+    imageUrl: sensitiveData.imageUrl,
+    releaseDate: sensitiveData.releaseDate,
+    // Extract coordinates from sensitive data
+    coordinates: sensitiveData.coordinates,
+    // Remove the encrypted fields
+    _encrypted: undefined,
+    _salt: undefined,
+  };
+
+  // Clean up the undefined fields
+  delete (completeDish as any)._encrypted;
+  delete (completeDish as any)._salt;
+
+  console.log("✅ Complete dish ready:", {
+    name: completeDish.name,
+    country: completeDish.country,
+    imageUrl: completeDish.imageUrl,
+    coordinates: completeDish.coordinates,
+  });
+
+  return [completeDish];
 }
 
 export function getClosestGuess(

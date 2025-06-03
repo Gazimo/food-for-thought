@@ -290,7 +290,6 @@ export const useGameStore = create<GameState>((set, get) => ({
     const newStreak = updateStreak();
     const state = get();
 
-    // Determine if user won or lost based on success in any phase
     const hasAnySuccess =
       state.gameResults.dishGuessSuccess ||
       state.gameResults.countryGuessSuccess ||

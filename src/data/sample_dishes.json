@@ -26,7 +26,7 @@
       ]
     },
     "tags": ["vegetarian", "bread", "main"],
-    "releaseDate": "2025-05-28"
+    "releaseDate": "2025-07-15"
   },
   {
     "name": "Injera with Stew",
@@ -61,7 +61,7 @@
       ]
     },
     "tags": ["vegan", "main", "fermented"],
-    "releaseDate": "2025-05-29"
+    "releaseDate": "2025-07-16"
   },
   {
     "name": "Okonomiyaki",
@@ -95,7 +95,7 @@
       ]
     },
     "tags": ["meat", "main", "grilled"],
-    "releaseDate": "2025-05-30"
+    "releaseDate": "2025-07-17"
   },
   {
     "name": "Feijoada",
@@ -129,7 +129,7 @@
       ]
     },
     "tags": ["meat", "main", "stew"],
-    "releaseDate": "2025-05-31"
+    "releaseDate": "2025-07-18"
   },
   {
     "name": "Mansaf",
@@ -164,7 +164,7 @@
       ]
     },
     "tags": ["meat", "main", "fermented"],
-    "releaseDate": "2025-06-01"
+    "releaseDate": "2025-07-19"
   },
   {
     "name": "Gado-Gado",
@@ -197,7 +197,7 @@
       ]
     },
     "tags": ["vegetarian", "salad", "main"],
-    "releaseDate": "2025-06-02"
+    "releaseDate": "2025-07-20"
   },
   {
     "name": "Shakshuka",
