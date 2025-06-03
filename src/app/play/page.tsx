@@ -156,7 +156,13 @@ export default function GamePage() {
             gamePhase === "complete") && (
             <div className="text-center mt-4">
               <Button
-                onClick={() => setActivePhase("country")}
+                onClick={() => {
+                  setActivePhase("country");
+                  posthog.capture("phase_transition", {
+                    from: activePhase,
+                    to: "country",
+                  });
+                }}
                 className={cn(
                   "px-4 py-2 rounded-lg",
                   gamePhase === "country" && "animate-pulse"
@@ -173,7 +179,13 @@ export default function GamePage() {
         {activePhase === "country" && (
           <div className="flex justify-between mt-2">
             <Button
-              onClick={() => setActivePhase("dish")}
+              onClick={() => {
+                setActivePhase("dish");
+                posthog.capture("phase_transition", {
+                  from: activePhase,
+                  to: "dish",
+                });
+              }}
               className="px-3 py-1 rounded"
               variant="neutral"
             >
@@ -181,7 +193,13 @@ export default function GamePage() {
             </Button>
             {(gamePhase === "protein" || gamePhase === "complete") && (
               <Button
-                onClick={() => setActivePhase("protein")}
+                onClick={() => {
+                  setActivePhase("protein");
+                  posthog.capture("phase_transition", {
+                    from: activePhase,
+                    to: "protein",
+                  });
+                }}
                 className={cn(
                   "px-4 py-2 rounded-lg",
                   gamePhase === "protein" && "animate-pulse"
@@ -199,7 +217,13 @@ export default function GamePage() {
         {activePhase === "protein" && (
           <div className="text-left mt-2">
             <Button
-              onClick={() => setActivePhase("country")}
+              onClick={() => {
+                setActivePhase("country");
+                posthog.capture("phase_transition", {
+                  from: activePhase,
+                  to: "country",
+                });
+              }}
               className="px-3 py-1 rounded"
               variant="neutral"
             >
