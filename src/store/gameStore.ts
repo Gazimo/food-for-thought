@@ -7,13 +7,11 @@ import {
   loadDishes,
   normalizeString,
 } from "@/utils/gameHelpers";
-import confetti from "canvas-confetti";
 import { create } from "zustand";
 import { enrichDishesWithCoords } from "../../public/data/dishes";
 import { GameResults, GameState } from "../types/game";
+import { emojiThemes, launchEmojiBurst } from "../utils/celebration";
 import { updateStreak } from "../utils/streak";
-import { launchEmojiBurst } from "../utils/celebration";
-import { emojiThemes } from "../utils/celebration";
 const countryCoords = getCountryCoordsMap();
 
 function getSortedCountryCoords() {
@@ -358,7 +356,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       },
     ];
 
-    set((state) => ({
+    set(() => ({
       countryGuesses: newGuesses,
       countryGuessResults: updatedResults,
     }));
@@ -382,7 +380,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       },
     ];
 
-    set((state) => ({
+    set(() => ({
       proteinGuesses: newGuesses,
       proteinGuessResults: updatedResults,
     }));

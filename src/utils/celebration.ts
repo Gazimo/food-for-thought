@@ -267,22 +267,84 @@ export const emojiThemes = {
 };
 
 export function launchEmojiBurst(emojis: string[]) {
-  const sides = [
-    { angle: 60, origin: { x: 0, y: 0.5 } },
-    { angle: 120, origin: { x: 1, y: 0.5 } },
-  ];
+  const isMobile =
+    typeof window !== "undefined" &&
+    /iPhone|Android/i.test(navigator.userAgent);
 
-  sides.forEach((side) => {
-    emojis.forEach((emoji) => {
-      confetti({
-        ...side,
-        particleCount: 30,
-        spread: 60,
-        ticks: 120,
-        scalar: 1.8,
-        shapes: ["text"],
-        text: "🎉",
-      } as any); // bypass TS shape limitation
+  const scalar = isMobile ? 1.4 : 2;
+  const gravity = 0.4;
+  const velocity = isMobile ? 65 : 85;
+  const emojiCount = isMobile ? 3 : 5;
+  const selected = pickRandom(emojis, emojiCount);
+
+  selected.forEach((emoji) => {
+    const shape = confetti.shapeFromText({ text: emoji, scalar });
+
+    fireCannon({
+      originX: 0,
+      angle: 45,
+      shape,
+      scalar,
+      gravity,
+      velocity,
+    });
+
+    fireCannon({
+      originX: 1,
+      angle: 135,
+      shape,
+      scalar,
+      gravity,
+      velocity,
     });
   });
+
+  ["left", "right"].forEach((side) => {
+    confetti({
+      particleCount: isMobile ? 10 : 25,
+      gravity,
+      spread: 60,
+      startVelocity: isMobile ? 25 : 35,
+      ticks: 150,
+      origin: {
+        x: side === "left" ? 0 : 1,
+        y: 0.8,
+      },
+      angle: side === "left" ? 45 : 135,
+      shapes: ["square", "circle"],
+    });
+  });
+}
+
+function fireCannon({
+  originX,
+  angle,
+  shape,
+  scalar,
+  gravity,
+  velocity,
+}: {
+  originX: number;
+  angle: number;
+  shape: ReturnType<typeof confetti.shapeFromText>;
+  scalar: number;
+  gravity: number;
+  velocity: number;
+}) {
+  confetti({
+    angle,
+    spread: 90,
+    origin: { x: originX, y: 0.8 },
+    particleCount: 40,
+    startVelocity: velocity,
+    gravity,
+    ticks: 120,
+    scalar,
+    shapes: [shape],
+  });
+}
+
+function pickRandom<T>(arr: T[], count: number): T[] {
+  const shuffled = [...arr].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
 }
