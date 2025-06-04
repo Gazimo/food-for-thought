@@ -48,7 +48,8 @@ export function Tile({
           rotate ? "rotate-y-180" : ""
         }`}
       >
-        <div className="absolute w-full h-full bg-gray-300 backface-hidden" />
+        <div className="absolute w-full h-full bg-transparent backface-hidden" />
+
 
         <div className="absolute w-full h-full overflow-hidden backface-hidden transform rotate-y-180">
           <div
