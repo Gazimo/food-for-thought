@@ -13,6 +13,7 @@ export function TileGrid({
   const cols = 3;
   const tileWidth = width / 3;
   const tileHeight = height / 2;
+  const fullyRevealed = revealedTiles.every(Boolean);
 
   return (
     <div
@@ -32,6 +33,7 @@ export function TileGrid({
             imageUrl={imageUrl}
             width={width}
             height={height}
+            showBorder={!fullyRevealed}
           />
         );
       })}

@@ -1,8 +1,8 @@
 import { GuessFeedback } from "@/components/GuessFeedback";
 import { GuessInput } from "@/components/GuessInput";
 import { useGameStore } from "@/store/gameStore";
-import { TileGrid } from "../../components/dish-image/TileGrid";
 import posthog from "posthog-js";
+import { TileGrid } from "../../components/dish-image/TileGrid";
 
 interface DishPhaseProps {
   isComplete?: boolean;
@@ -33,9 +33,14 @@ export function DishPhase({ isComplete }: DishPhaseProps) {
       )}
       {!isComplete && (
         <div className="flex flex-col gap-2">
+          {gameResults.dishGuesses.length === 0 && (
+            <div className="text-center text-sm text-gray-600 mb-2">
+              Make a guess to reveal the first tile
+            </div>
+          )}
           <div>
             <GuessInput
-              placeholder="Enter a dish name..."
+              placeholder="e.g. Spaghetti, Sushi, Tacos..."
               onGuess={handleGuess}
               previousGuesses={dishGuesses}
               isComplete={isComplete}

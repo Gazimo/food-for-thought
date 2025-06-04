@@ -10,6 +10,7 @@ export function Tile({
   top,
   width,
   height,
+  showBorder,
 }: {
   imageUrl: string;
   rotate: boolean;
@@ -17,6 +18,7 @@ export function Tile({
   top: number;
   width: number;
   height: number;
+  showBorder: boolean;
 }) {
   const [imgSrc, setImgSrc] = useState(imageUrl);
 
@@ -31,7 +33,9 @@ export function Tile({
 
   return (
     <div
-      className="relative perspective-[1000px] max-w-full"
+      className={`relative perspective-[1000px] max-w-full transition-all duration-500 ${
+        !showBorder ? "border-transparent" : "border border-gray-200"
+      }`}
       style={{
         width: width / 3,
         height: height / 2,

@@ -76,11 +76,17 @@ module.exports = {
           '50%': { transform: 'scale(1.4)', opacity: 0.6 },
           '100%': { transform: 'scale(1)', opacity: 1 },
         },
+        tileHint: {
+          '0%, 100%': { transform: 'rotateY(0deg)' },
+          '25%': { transform: 'rotateY(15deg)' },
+          '75%': { transform: 'rotateY(-15deg)' },
+        },
       },
       animation: {
         'streak-pop': 'streak-pop 0.3s ease-in-out',
         'shake': 'shake 0.3s ease-in-out',
         'pulseCorrect': 'pulseCorrect 1.2s ease-in-out infinite',
+        'tileHint': 'tileHint 3s ease-in-out infinite',
       },
 
     }
