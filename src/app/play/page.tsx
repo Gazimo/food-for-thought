@@ -2,15 +2,16 @@
 
 import { GameFooter } from "@/components/GameFooter";
 import { GameHeader } from "@/components/GameHeader";
+import { GameNavigation } from "@/components/GameNavigation";
 import { PhaseContainer } from "@/components/PhaseContainer";
+import { PhaseRenderer } from "@/components/PhaseRenderer";
 import { ResultModal } from "@/components/ResultModal";
 import { useGameStore } from "@/store/gameStore";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import posthog from "posthog-js";
 import { useEffect } from "react";
 import { IntroModal } from "../../components/IntroModal";
-import { Button } from "../../components/ui/button";
-import { cn } from "../../lib/utils";
+import { getPhaseConfig } from "../../config/gamePhases";
 import { alreadyPlayedToday, getStreak } from "../../utils/streak";
 import { CountryPhase } from "./CountryPhase";
 import { DishPhase } from "./DishPhase";
@@ -95,157 +96,55 @@ export default function GamePage() {
     }
   }, [gameResults?.status]);
 
+  const renderPhaseContent = () => {
+    const phaseConfig = getPhaseConfig(activePhase);
+    if (!phaseConfig) return null;
+
+    const commonProps = {
+      phaseKey: activePhase,
+      title: phaseConfig.title,
+    };
+
+    switch (activePhase) {
+      case "dish":
+        return (
+          <PhaseRenderer {...commonProps}>
+            <DishPhase isComplete={gamePhase !== "dish"} />
+          </PhaseRenderer>
+        );
+      case "country":
+        return (
+          <PhaseRenderer {...commonProps}>
+            <CountryPhase
+              isComplete={gamePhase === "protein" || gamePhase === "complete"}
+            />
+          </PhaseRenderer>
+        );
+      case "protein":
+        return (
+          <PhaseRenderer {...commonProps}>
+            <ProteinPhase isComplete={gamePhase === "complete"} />
+          </PhaseRenderer>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <main className="p-4 sm:p-6 max-w-full sm:max-w-xl mx-auto flex flex-col min-h-screen">
       <IntroModal />
       <GameHeader />
 
       <PhaseContainer>
-        <AnimatePresence mode="wait">
-          {activePhase === "dish" && (
-            <motion.div
-              key="dish"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-              className="flex flex-col gap-4"
-            >
-              <h2 className="text-xl font-semibold">🍽️ Guess the Dish</h2>
-              <DishPhase isComplete={gamePhase !== "dish"} />
-            </motion.div>
-          )}
+        <AnimatePresence mode="wait">{renderPhaseContent()}</AnimatePresence>
 
-          {activePhase === "country" && (
-            <motion.div
-              key="country"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-            >
-              <h2 className="text-xl font-semibold">
-                🌍 Guess the Country of Origin
-              </h2>
-              <CountryPhase
-                isComplete={gamePhase === "protein" || gamePhase === "complete"}
-              />
-            </motion.div>
-          )}
-
-          {activePhase === "protein" && (
-            <motion.div
-              key="protein"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-            >
-              <h2 className="text-xl font-semibold">
-                💪 Guess the Protein Content
-              </h2>
-              <ProteinPhase isComplete={gamePhase === "complete"} />
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Navigation buttons */}
-        {activePhase === "dish" &&
-          (gamePhase === "country" ||
-            gamePhase === "protein" ||
-            gamePhase === "complete") && (
-            <div className="text-center mt-4">
-              <Button
-                onClick={() => {
-                  setActivePhase("country");
-                  posthog.capture("phase_transition", {
-                    from: activePhase,
-                    to: "country",
-                  });
-                }}
-                className={cn(
-                  "px-4 py-2 rounded-lg",
-                  gamePhase === "country" && "animate-pulse"
-                )}
-                variant="phase"
-              >
-                {gamePhase === "complete"
-                  ? "Review your country guess"
-                  : "Guess where it's from"}
-              </Button>
-            </div>
-          )}
-
-        {activePhase === "country" && (
-          <div className="flex justify-between mt-2">
-            <Button
-              onClick={() => {
-                setActivePhase("dish");
-                posthog.capture("phase_transition", {
-                  from: activePhase,
-                  to: "dish",
-                });
-              }}
-              className="px-3 py-1 rounded"
-              variant="neutral"
-            >
-              ← Back to Dish
-            </Button>
-            {(gamePhase === "protein" || gamePhase === "complete") && (
-              <Button
-                onClick={() => {
-                  setActivePhase("protein");
-                  posthog.capture("phase_transition", {
-                    from: activePhase,
-                    to: "protein",
-                  });
-                }}
-                className={cn(
-                  "px-4 py-2 rounded-lg",
-                  gamePhase === "protein" && "animate-pulse"
-                )}
-                variant="phase"
-              >
-                {gamePhase === "complete"
-                  ? "Review protein guess"
-                  : "Guess the protein"}
-              </Button>
-            )}
-          </div>
-        )}
-
-        {activePhase === "protein" && (
-          <div className="text-left mt-2">
-            <Button
-              onClick={() => {
-                setActivePhase("country");
-                posthog.capture("phase_transition", {
-                  from: activePhase,
-                  to: "country",
-                });
-              }}
-              className="px-3 py-1 rounded"
-              variant="neutral"
-            >
-              ← Back to Country
-            </Button>
-          </div>
-        )}
-
-        {gamePhase === "complete" && !modalVisible && (
-          <div className="text-center mt-4">
-            <Button
-              onClick={() => {
-                toggleModal(true);
-                posthog.capture("toggle_recipe_modal", { opened: true });
-              }}
-              className="px-4 py-2"
-              variant="secondary"
-            >
-              Show Results
-            </Button>
-          </div>
-        )}
+        <GameNavigation
+          activePhase={activePhase}
+          gamePhase={gamePhase}
+          modalVisible={modalVisible}
+          toggleModal={toggleModal}
+        />
       </PhaseContainer>
 
       <ResultModal />
