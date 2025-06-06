@@ -2,13 +2,16 @@ import { GuessInput } from "@/components/GuessInput";
 import { useGameStore } from "@/store/gameStore";
 import { ProteinGuessFeedback } from "../../components/ProteinGuessFeedback";
 
-interface ProteinPhaseProps {
-  isComplete?: boolean;
-}
+export function ProteinPhase() {
+  const {
+    guessProtein,
+    proteinGuesses,
+    proteinGuessResults,
+    currentDish,
+    isProteinPhaseComplete,
+  } = useGameStore();
 
-export function ProteinPhase({ isComplete }: ProteinPhaseProps) {
-  const { guessProtein, proteinGuesses, proteinGuessResults, currentDish } =
-    useGameStore();
+  const isComplete = isProteinPhaseComplete();
 
   if (!currentDish?.proteinPerServing) {
     return (
@@ -33,7 +36,6 @@ export function ProteinPhase({ isComplete }: ProteinPhaseProps) {
             onProteinGuess={guessProtein}
             previousProteinGuesses={proteinGuesses}
             actualProtein={currentDish.proteinPerServing}
-            isComplete={isComplete}
           />
           <div className="text-sm text-gray-600 text-center">
             Attempts: {proteinGuesses.length} of 4
@@ -44,7 +46,6 @@ export function ProteinPhase({ isComplete }: ProteinPhaseProps) {
       <ProteinGuessFeedback
         guessResults={proteinGuessResults}
         actualProtein={currentDish.proteinPerServing}
-        isComplete={isComplete}
       />
     </div>
   );

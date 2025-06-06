@@ -2,7 +2,7 @@
 
 import { GameFooter } from "@/components/GameFooter";
 import { GameHeader } from "@/components/GameHeader";
-import { GameNavigation } from "@/components/GameNavigation";
+import { GameNavigation, ShowResultsButton } from "@/components/GameNavigation";
 import { PhaseContainer } from "@/components/PhaseContainer";
 import { PhaseRenderer } from "@/components/PhaseRenderer";
 import { ResultModal } from "@/components/ResultModal";
@@ -109,21 +109,19 @@ export default function GamePage() {
       case "dish":
         return (
           <PhaseRenderer {...commonProps}>
-            <DishPhase isComplete={gamePhase !== "dish"} />
+            <DishPhase />
           </PhaseRenderer>
         );
       case "country":
         return (
           <PhaseRenderer {...commonProps}>
-            <CountryPhase
-              isComplete={gamePhase === "protein" || gamePhase === "complete"}
-            />
+            <CountryPhase />
           </PhaseRenderer>
         );
       case "protein":
         return (
           <PhaseRenderer {...commonProps}>
-            <ProteinPhase isComplete={gamePhase === "complete"} />
+            <ProteinPhase />
           </PhaseRenderer>
         );
       default:
@@ -141,6 +139,12 @@ export default function GamePage() {
 
         <GameNavigation
           activePhase={activePhase}
+          gamePhase={gamePhase}
+          modalVisible={modalVisible}
+          toggleModal={toggleModal}
+        />
+
+        <ShowResultsButton
           gamePhase={gamePhase}
           modalVisible={modalVisible}
           toggleModal={toggleModal}

@@ -1,16 +1,19 @@
 import { CountryGuessFeedback } from "@/components/CountryGuessFeedback";
 import { GuessInput } from "@/components/GuessInput";
 import { useGameStore } from "@/store/gameStore";
+import posthog from "posthog-js";
 import { MapGuessVisualizer } from "../../components/MapGuessVisualizer";
 import { getCountryCoordsMap, getCountryNames } from "../../utils/countries";
-import posthog from "posthog-js";
 
-interface CountryPhaseProps {
-  isComplete?: boolean;
-}
+export function CountryPhase() {
+  const {
+    guessCountry,
+    countryGuessResults,
+    countryGuesses,
+    isCountryPhaseComplete,
+  } = useGameStore();
 
-export function CountryPhase({ isComplete }: CountryPhaseProps) {
-  const { guessCountry, countryGuessResults, countryGuesses } = useGameStore();
+  const isComplete = isCountryPhaseComplete();
   const countryNames = getCountryNames();
   const countryCoords = getCountryCoordsMap();
 
@@ -48,7 +51,6 @@ export function CountryPhase({ isComplete }: CountryPhaseProps) {
             onGuess={handleGuess}
             suggestions={countryNames}
             previousGuesses={countryGuesses}
-            isComplete={isComplete}
           />
         </div>
       )}

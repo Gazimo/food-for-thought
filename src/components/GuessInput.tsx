@@ -11,7 +11,6 @@ interface GuessInputProps {
   onGuess: (guess: string) => void;
   suggestions?: string[];
   previousGuesses?: string[];
-  isComplete?: boolean;
   acceptableGuesses?: string[];
   onProteinGuess?: (guess: number) => boolean;
   previousProteinGuesses?: number[];
@@ -23,7 +22,6 @@ export const GuessInput: React.FC<GuessInputProps> = ({
   onGuess,
   suggestions = [],
   previousGuesses = [],
-  isComplete = false,
   acceptableGuesses = [],
   onProteinGuess,
   previousProteinGuesses = [],
@@ -39,9 +37,11 @@ export const GuessInput: React.FC<GuessInputProps> = ({
     currentDish,
     revealCorrectCountry,
     revealCorrectProtein,
+    isPhaseComplete,
   } = useGameStore();
 
   const isProteinPhase = activePhase === "protein";
+  const isComplete = isPhaseComplete(activePhase);
 
   const triggerShake = () => {
     setShake(false);
@@ -52,6 +52,12 @@ export const GuessInput: React.FC<GuessInputProps> = ({
   };
 
   const handleProteinGuess = (guess: number) => {
+    if (previousProteinGuesses.includes(guess)) {
+      triggerShake();
+      toast.error("You already guessed that number!");
+      return;
+    }
+
     const isCorrect = onProteinGuess?.(guess);
 
     if (isCorrect) {
@@ -144,8 +150,6 @@ export const GuessInput: React.FC<GuessInputProps> = ({
           onChange={setInput}
           onSubmit={handleProteinGuess}
           placeholder={placeholder}
-          previousGuesses={previousProteinGuesses}
-          isComplete={isComplete}
           shake={shake}
           min={0}
           max={200}
@@ -158,7 +162,6 @@ export const GuessInput: React.FC<GuessInputProps> = ({
           placeholder={placeholder}
           suggestions={suggestions}
           previousGuesses={previousGuesses}
-          isComplete={isComplete}
           shake={shake}
         />
       )}

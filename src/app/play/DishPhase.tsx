@@ -4,13 +4,17 @@ import { useGameStore } from "@/store/gameStore";
 import posthog from "posthog-js";
 import { TileGrid } from "../../components/dish-image/TileGrid";
 
-interface DishPhaseProps {
-  isComplete?: boolean;
-}
+export function DishPhase() {
+  const {
+    guessDish,
+    dishGuesses,
+    currentDish,
+    revealedTiles,
+    gameResults,
+    isDishPhaseComplete,
+  } = useGameStore();
 
-export function DishPhase({ isComplete }: DishPhaseProps) {
-  const { guessDish, dishGuesses, currentDish, revealedTiles, gameResults } =
-    useGameStore();
+  const isComplete = isDishPhaseComplete();
 
   const handleGuess = (guess: string) => {
     const isCorrect =
@@ -23,6 +27,7 @@ export function DishPhase({ isComplete }: DishPhaseProps) {
 
     guessDish(guess);
   };
+
   return (
     <>
       {currentDish?.imageUrl && (
@@ -43,29 +48,43 @@ export function DishPhase({ isComplete }: DishPhaseProps) {
               placeholder="e.g. Spaghetti, Sushi, Tacos..."
               onGuess={handleGuess}
               previousGuesses={dishGuesses}
-              isComplete={isComplete}
               acceptableGuesses={currentDish?.acceptableGuesses}
             />
-            <div className="text-sm text-gray-600 mt-1">
-              Guesses: {gameResults.dishGuesses.length} of 6
-            </div>
-            {gameResults.dishGuesses.length > 0 &&
-              !gameResults.dishGuessSuccess && (
-                <div className="flex flex-wrap gap-1">
-                  {gameResults.dishGuesses.map((guess, index) => (
-                    <span
-                      key={index}
-                      className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded border"
-                    >
-                      {guess}
-                    </span>
-                  ))}
-                </div>
-              )}
           </div>
         </div>
       )}
+
       <GuessFeedback />
+
+      {gameResults.dishGuesses.length > 0 && (
+        <div className="flex flex-col gap-1">
+          <div className="text-sm text-gray-600">
+            Guesses: {gameResults.dishGuesses.length} of 6
+          </div>
+          <div className="flex flex-wrap gap-1 ">
+            {gameResults.dishGuesses.map((guess, index) => {
+              const isCorrectGuess =
+                currentDish?.acceptableGuesses?.some(
+                  (acceptable) =>
+                    acceptable.toLowerCase() === guess.toLowerCase()
+                ) || currentDish?.name.toLowerCase() === guess.toLowerCase();
+
+              return (
+                <span
+                  key={index}
+                  className={`px-2 py-1 text-xs rounded border ${
+                    isCorrectGuess
+                      ? "bg-green-100 text-green-700 border-green-300"
+                      : "bg-red-100 text-red-700 border-red-300"
+                  }`}
+                >
+                  {guess}
+                </span>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </>
   );
 }

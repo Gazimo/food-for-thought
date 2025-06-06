@@ -13,11 +13,10 @@ interface GameNavigationProps {
 export function GameNavigation({
   activePhase,
   gamePhase,
-  modalVisible,
-  toggleModal,
 }: GameNavigationProps) {
   const { transitionToPhase } = usePhaseTransition();
 
+  // Navigation from dish phase to country
   if (
     activePhase === "dish" &&
     (gamePhase === "country" ||
@@ -25,81 +24,100 @@ export function GameNavigation({
       gamePhase === "complete")
   ) {
     return (
-      <div className="text-center mt-4">
-        <Button
-          onClick={() => transitionToPhase("country")}
-          className={cn(
-            "px-4 py-2 rounded-lg",
-            gamePhase === "country" && "animate-pulse"
-          )}
-          variant="phase"
-        >
-          {gamePhase === "complete"
-            ? "Review your country guess"
-            : "Guess where it's from"}
-        </Button>
-      </div>
-    );
-  }
-
-  if (activePhase === "country") {
-    return (
-      <div className="flex justify-between mt-2 gap-2">
-        <Button
-          onClick={() => transitionToPhase("dish")}
-          className="px-3 py-1 rounded"
-          variant="neutral"
-        >
-          ←
-        </Button>
-        {(gamePhase === "protein" || gamePhase === "complete") && (
+      <div className="flex flex-col gap-4 mt-4">
+        <div className="text-center">
           <Button
-            onClick={() => transitionToPhase("protein")}
+            onClick={() => transitionToPhase("country")}
             className={cn(
-              "px-4 py-2 rounded-lg flex-1",
-              gamePhase === "protein" && "animate-pulse"
+              "px-4 py-2 rounded-lg",
+              gamePhase === "country" && "animate-pulse"
             )}
             variant="phase"
           >
             {gamePhase === "complete"
-              ? "Review protein guess"
-              : "Guess the protein"}
+              ? "Review your country guess"
+              : "Guess where it's from"}
           </Button>
-        )}
+        </div>
       </div>
     );
   }
 
+  // Navigation from country phase
+  if (activePhase === "country") {
+    return (
+      <div className="flex flex-col gap-4 mt-2">
+        <div className="flex justify-between gap-2">
+          <Button
+            onClick={() => transitionToPhase("dish")}
+            className="px-3 py-1 rounded"
+            variant="neutral"
+          >
+            ←
+          </Button>
+          {(gamePhase === "protein" || gamePhase === "complete") && (
+            <Button
+              onClick={() => transitionToPhase("protein")}
+              className={cn(
+                "px-4 py-2 rounded-lg flex-1",
+                gamePhase === "protein" && "animate-pulse"
+              )}
+              variant="phase"
+            >
+              {gamePhase === "complete"
+                ? "Review protein guess"
+                : "Guess the protein"}
+            </Button>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Navigation from protein phase
   if (activePhase === "protein") {
     return (
-      <div className="text-left mt-2">
-        <Button
-          onClick={() => transitionToPhase("country")}
-          className="px-3 py-1 rounded"
-          variant="neutral"
-        >
-          ←
-        </Button>
-      </div>
-    );
-  }
-
-  if (gamePhase === "complete" && !modalVisible) {
-    return (
-      <div className="text-center mt-4">
-        <Button
-          onClick={() => {
-            toggleModal(true);
-            posthog.capture("toggle_recipe_modal", { opened: true });
-          }}
-          className="px-4 py-2"
-          variant="secondary"
-        >
-          Show Results
-        </Button>
+      <div className="flex flex-col gap-4 mt-2">
+        <div className="text-left">
+          <Button
+            onClick={() => transitionToPhase("country")}
+            className="px-3 py-1 rounded"
+            variant="neutral"
+          >
+            ←
+          </Button>
+        </div>
       </div>
     );
   }
 
   return null;
+}
+
+// Add the ShowResultsButton as a separate component to be used once
+export function ShowResultsButton({
+  gamePhase,
+  modalVisible,
+  toggleModal,
+}: {
+  gamePhase: string;
+  modalVisible: boolean;
+  toggleModal: (visible: boolean) => void;
+}) {
+  if (gamePhase !== "complete" || modalVisible) return null;
+
+  return (
+    <div className="text-center mt-4">
+      <Button
+        onClick={() => {
+          toggleModal(true);
+          posthog.capture("toggle_recipe_modal", { opened: true });
+        }}
+        className="px-4 py-2"
+        variant="secondary"
+      >
+        Show Results
+      </Button>
+    </div>
+  );
 }

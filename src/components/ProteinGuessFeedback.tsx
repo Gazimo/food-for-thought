@@ -1,19 +1,21 @@
 "use client";
 
+import { useGameStore } from "@/store/gameStore";
 import { ProteinGuessResult } from "@/types/game";
 import { AnimatePresence, motion } from "framer-motion";
 
 interface ProteinGuessFeedbackProps {
   guessResults: ProteinGuessResult[];
   actualProtein: number;
-  isComplete?: boolean;
 }
 
 export const ProteinGuessFeedback: React.FC<ProteinGuessFeedbackProps> = ({
   guessResults,
   actualProtein,
-  isComplete = false,
 }) => {
+  const { isProteinPhaseComplete } = useGameStore();
+  const isComplete = isProteinPhaseComplete();
+
   if (guessResults.length === 0) return null;
 
   const getTemperatureInfo = (difference: number) => {

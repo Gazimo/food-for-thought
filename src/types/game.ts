@@ -68,4 +68,8 @@ export interface GameState {
   streak: number;
   setStreak: (value: number) => void;
   markGameTracked: () => void;
+  isDishPhaseComplete: () => boolean;
+  isCountryPhaseComplete: () => boolean;
+  isProteinPhaseComplete: () => boolean;
+  isPhaseComplete: (phase: "dish" | "country" | "protein") => boolean;
 }

@@ -1,20 +1,10 @@
 "use client";
 
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
+import { toast } from "react-hot-toast";
+import { useGameStore } from "../../store/gameStore";
 
 interface TextInputProps {
   value: string;
@@ -23,7 +13,6 @@ interface TextInputProps {
   placeholder: string;
   suggestions?: string[];
   previousGuesses?: string[];
-  isComplete?: boolean;
   shake?: boolean;
 }
 
@@ -34,170 +23,152 @@ export const TextInput: React.FC<TextInputProps> = ({
   placeholder,
   suggestions = [],
   previousGuesses = [],
-  isComplete = false,
   shake = false,
 }) => {
-  const [open, setOpen] = useState(false);
-  const [suggestionValue, setSuggestionValue] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const { activePhase, isPhaseComplete } = useGameStore();
+  const isComplete = isPhaseComplete(activePhase);
 
-  useEffect(() => {
-    if (!value) {
-      setSuggestionValue("");
+  const filteredSuggestions = suggestions
+    .filter((suggestion) =>
+      suggestion.toLowerCase().includes(value.toLowerCase())
+    )
+    .filter(
+      (suggestion) =>
+        !previousGuesses.some(
+          (guess) => guess.toLowerCase() === suggestion.toLowerCase()
+        )
+    )
+    .slice(0, 10);
+
+  const handleSubmit = (submitValue: string) => {
+    if (!submitValue.trim()) return;
+
+    if (suggestions.length > 0) {
+      const normalizedValue = submitValue.toLowerCase().trim();
+      const isValidSuggestion = suggestions.some(
+        (suggestion) => suggestion.toLowerCase() === normalizedValue
+      );
+
+      if (!isValidSuggestion) {
+        toast.error(
+          `"${submitValue}" is not a valid country name. Please select from the suggestions.`
+        );
+        return;
+      }
+
+      if (
+        previousGuesses.some((guess) => guess.toLowerCase() === normalizedValue)
+      ) {
+        toast.error("You already guessed that country!");
+        return;
+      }
     }
-  }, [value]);
 
-  const filtered = suggestions
-    .filter((s) => s.toLowerCase().includes((value || "").toLowerCase()))
-    .filter((s) => !previousGuesses.includes(s));
+    onSubmit(submitValue.trim());
+    setShowSuggestions(false);
+    setSelectedIndex(-1);
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      if (selectedIndex >= 0 && filtered[selectedIndex]) {
-        const selectedValue = filtered[selectedIndex];
-        setSuggestionValue(selectedValue);
-        onChange(selectedValue);
-        setOpen(false);
-        setSelectedIndex(-1);
-        return;
+      if (selectedIndex >= 0 && filteredSuggestions[selectedIndex]) {
+        handleSubmit(filteredSuggestions[selectedIndex]);
+      } else {
+        handleSubmit(value);
       }
-      if ((suggestionValue || value) && !open) {
-        onSubmit(suggestionValue || value);
-        setSuggestionValue("");
-        return;
-      }
-      if (open) {
-        return;
-      }
-    }
-    if (e.key === "Escape") {
-      setOpen(false);
-      setSelectedIndex(-1);
-    }
-    if (e.key === "ArrowDown") {
+    } else if (e.key === "ArrowDown") {
       e.preventDefault();
-      if (!open && value) {
-        setOpen(true);
-        setSelectedIndex(0);
-      } else if (open && filtered.length > 0) {
+      if (filteredSuggestions.length > 0) {
         setSelectedIndex((prev) =>
-          prev < filtered.length - 1 ? prev + 1 : prev
+          prev < filteredSuggestions.length - 1 ? prev + 1 : 0
         );
       }
-    }
-    if (e.key === "ArrowUp") {
+    } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      if (open) {
-        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : -1));
+      if (filteredSuggestions.length > 0) {
+        setSelectedIndex((prev) =>
+          prev > 0 ? prev - 1 : filteredSuggestions.length - 1
+        );
       }
-    }
-  };
-
-  const handleChange = (newValue: string) => {
-    onChange(newValue);
-    setSuggestionValue("");
-    if (newValue && !open) {
-      setOpen(true);
-      setSelectedIndex(0);
-    } else if (!newValue && open) {
-      setOpen(false);
-      setSelectedIndex(-1);
-    } else if (newValue && open) {
-      setSelectedIndex(0);
-    } else {
+    } else if (e.key === "Escape") {
+      setShowSuggestions(false);
       setSelectedIndex(-1);
     }
   };
 
   const handleFocus = () => {
-    if (value || filtered.length > 0) {
-      setOpen(true);
-      if (filtered.length > 0) {
-        setSelectedIndex(0);
-      }
+    if (suggestions.length > 0 && value) {
+      setShowSuggestions(true);
     }
   };
 
-  if (suggestions.length === 0) {
-    return (
-      <Input
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            onSubmit(value);
-          }
-        }}
-        placeholder={placeholder}
-        className={cn("flex-1", shake && "animate-shake")}
-        disabled={isComplete}
-        ref={inputRef}
-      />
-    );
-  }
+  const handleBlur = () => {
+    setTimeout(() => {
+      setShowSuggestions(false);
+      setSelectedIndex(-1);
+    }, 150);
+  };
+
+  const handleSuggestionClick = (suggestion: string) => {
+    onChange(suggestion);
+    handleSubmit(suggestion);
+  };
+
+  const handleInputChange = (newValue: string) => {
+    onChange(newValue);
+    if (suggestions.length > 0 && newValue.trim()) {
+      setShowSuggestions(true);
+      setSelectedIndex(-1);
+    } else {
+      setShowSuggestions(false);
+    }
+  };
 
   return (
-    <div className="relative flex-1">
+    <div className="flex-1 relative">
       <Input
-        value={suggestionValue || value}
-        onChange={(e) => handleChange(e.target.value)}
-        onFocus={handleFocus}
+        type="text"
+        value={value}
+        onChange={(e) => handleInputChange(e.target.value)}
         onKeyDown={handleKeyDown}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
         placeholder={placeholder}
         className={cn("w-full", shake && "animate-shake")}
         disabled={isComplete}
-        ref={inputRef}
+        autoComplete="off"
       />
-      <Popover
-        open={open}
-        onOpenChange={(newOpen) => {
-          setOpen(newOpen);
-          if (!newOpen) {
-            setSelectedIndex(-1);
-          }
-        }}
-        modal={false}
-      >
-        <PopoverTrigger asChild>
-          <div className="absolute inset-0 pointer-events-none" />
-        </PopoverTrigger>
-        <PopoverContent
-          align="start"
-          side="bottom"
-          className="p-0"
-          style={{ width: "var(--radix-popover-trigger-width)" }}
-          onOpenAutoFocus={(e) => e.preventDefault()}
-        >
-          <Command shouldFilter={false}>
-            <CommandList>
-              <CommandEmpty>No match found.</CommandEmpty>
-              <CommandGroup>
-                {filtered.map((item, index) => (
-                  <CommandItem
-                    key={item}
-                    value={item}
-                    className={cn(
-                      selectedIndex === index &&
-                        "bg-accent text-accent-foreground"
-                    )}
-                    onSelect={(selectedValue) => {
-                      setSuggestionValue(selectedValue);
-                      onChange(selectedValue);
-                      setOpen(false);
-                      setSelectedIndex(-1);
-                    }}
-                  >
-                    {item}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+
+      {showSuggestions && filteredSuggestions.length > 0 && value && (
+        <div className="absolute top-full left-0 right-0 z-10 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-40 overflow-y-auto">
+          {filteredSuggestions.map((suggestion, index) => (
+            <div
+              key={suggestion}
+              onClick={() => handleSuggestionClick(suggestion)}
+              className={cn(
+                "px-3 py-2 cursor-pointer transition-colors",
+                index === selectedIndex
+                  ? "bg-blue-100 text-blue-900"
+                  : "hover:bg-gray-100"
+              )}
+            >
+              {suggestion}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {showSuggestions &&
+        value &&
+        filteredSuggestions.length === 0 &&
+        suggestions.length > 0 && (
+          <div className="absolute top-full left-0 right-0 z-10 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg p-3 text-sm text-gray-500">
+            No countries match your search. Try typing a different country name.
+          </div>
+        )}
     </div>
   );
 };

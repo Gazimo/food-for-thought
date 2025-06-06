@@ -466,11 +466,36 @@ export const useGameStore = create<GameState>((set, get) => ({
     set({ activePhase: phase }),
   streak: 0,
   setStreak: (value: number) => set({ streak: value }),
-  markGameTracked: () =>
+  markGameTracked: () => {
     set((state) => ({
-      gameResults: {
-        ...state.gameResults,
-        tracked: true,
-      },
-    })),
+      gameResults: { ...state.gameResults, tracked: true },
+    }));
+  },
+  isDishPhaseComplete: () => {
+    const { gamePhase } = get();
+    return gamePhase === "complete" || gamePhase !== "dish";
+  },
+  isCountryPhaseComplete: () => {
+    const { gamePhase } = get();
+    return gamePhase === "complete" || gamePhase === "protein";
+  },
+  isProteinPhaseComplete: () => {
+    const { gamePhase } = get();
+    return gamePhase === "complete";
+  },
+  isPhaseComplete: (phase: "dish" | "country" | "protein") => {
+    const { gamePhase } = get();
+    if (gamePhase === "complete") return true;
+
+    switch (phase) {
+      case "dish":
+        return gamePhase !== "dish";
+      case "country":
+        return gamePhase === "protein";
+      case "protein":
+        return false;
+      default:
+        return false;
+    }
+  },
 }));

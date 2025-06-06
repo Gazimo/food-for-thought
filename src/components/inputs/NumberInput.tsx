@@ -1,18 +1,15 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { useRef } from "react";
-import { toast } from "react-hot-toast";
+import { ChangeEvent, KeyboardEvent } from "react";
+import { useGameStore } from "../../store/gameStore";
 
 interface NumberInputProps {
   value: string;
   onChange: (value: string) => void;
   onSubmit: (value: number) => void;
   placeholder: string;
-  previousGuesses?: number[];
-  isComplete?: boolean;
-  shake?: boolean;
+  shake: boolean;
   min?: number;
   max?: number;
 }
@@ -22,49 +19,46 @@ export const NumberInput: React.FC<NumberInputProps> = ({
   onChange,
   onSubmit,
   placeholder,
-  previousGuesses = [],
-  isComplete = false,
-  shake = false,
+  shake,
   min = 0,
-  max = 200,
+  max = 1000,
 }) => {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const { activePhase, isPhaseComplete } = useGameStore();
+  const isComplete = isPhaseComplete(activePhase);
 
-  const handleSubmit = () => {
-    const guess = parseInt(value.trim());
-
-    if (isNaN(guess) || guess < min) {
-      toast.error("Please enter a valid number!");
-      return;
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    if (
+      val === "" ||
+      (!isNaN(Number(val)) && Number(val) >= min && Number(val) <= max)
+    ) {
+      onChange(val);
     }
-
-    if (previousGuesses.includes(guess)) {
-      toast.error("You already guessed that number!");
-      return;
-    }
-
-    onSubmit(guess);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      handleSubmit();
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && value.trim() && !isNaN(Number(value))) {
+      onSubmit(Number(value));
     }
   };
 
   return (
-    <Input
-      type="number"
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      onKeyDown={handleKeyDown}
-      placeholder={placeholder}
-      min={min}
-      max={max}
-      className={cn("flex-1", shake && "animate-shake")}
-      disabled={isComplete}
-      ref={inputRef}
-    />
+    <div className="flex-1 relative">
+      <input
+        type="text"
+        inputMode="numeric"
+        pattern="[0-9]*"
+        value={value}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        placeholder={placeholder}
+        className={cn(
+          "w-full px-4 py-2 border-2 rounded-lg transition-all duration-200",
+          "border-gray-200 focus:border-blue-500 focus:outline-none",
+          shake && "animate-shake"
+        )}
+        disabled={isComplete}
+      />
+    </div>
   );
 };
