@@ -80,10 +80,8 @@ export const ProteinGuessFeedback: React.FC<ProteinGuessFeedbackProps> = ({
             !guessResults[guessResults.length - 1].isCorrect && (
               <div className="text-sm text-green-600 mt-1">
                 Your closest guess was{" "}
-                {Math.abs(
-                  guessResults[guessResults.length - 1].guess - actualProtein
-                )}
-                g off
+                {Math.min(...guessResults.map((result) => result.difference))}g
+                off
               </div>
             )}
         </motion.div>

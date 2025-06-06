@@ -273,8 +273,12 @@ export function launchEmojiBurst(emojis: string[]) {
 
   const scalar = isMobile ? 1.4 : 2;
   const gravity = 0.4;
-  const velocity = isMobile ? 65 : 85;
-  const emojiCount = isMobile ? 3 : 5;
+  const velocity = isMobile ? 45 : 85;
+  const emojiCount = isMobile ? 1 : 5;
+  const particlesPerCannon = isMobile ? 15 : 40;
+  const sideBurstParticles = isMobile ? 10 : 25;
+  const ticks = isMobile ? 80 : 120;
+
   const selected = pickRandom(emojis, emojiCount);
 
   selected.forEach((emoji) => {
@@ -287,6 +291,8 @@ export function launchEmojiBurst(emojis: string[]) {
       scalar,
       gravity,
       velocity,
+      ticks,
+      particles: particlesPerCannon,
     });
 
     fireCannon({
@@ -296,16 +302,19 @@ export function launchEmojiBurst(emojis: string[]) {
       scalar,
       gravity,
       velocity,
+      ticks,
+      particles: particlesPerCannon,
     });
   });
 
+  // Side bursts (generic confetti)
   ["left", "right"].forEach((side) => {
     confetti({
-      particleCount: isMobile ? 10 : 25,
+      particleCount: sideBurstParticles,
       gravity,
       spread: 60,
-      startVelocity: isMobile ? 25 : 35,
-      ticks: 150,
+      startVelocity: velocity * 0.5,
+      ticks,
       origin: {
         x: side === "left" ? 0 : 1,
         y: 0.8,
@@ -323,6 +332,8 @@ function fireCannon({
   scalar,
   gravity,
   velocity,
+  ticks,
+  particles,
 }: {
   originX: number;
   angle: number;
@@ -330,15 +341,17 @@ function fireCannon({
   scalar: number;
   gravity: number;
   velocity: number;
+  ticks: number;
+  particles: number;
 }) {
   confetti({
     angle,
     spread: 90,
     origin: { x: originX, y: 0.8 },
-    particleCount: 40,
+    particleCount: particles,
     startVelocity: velocity,
     gravity,
-    ticks: 120,
+    ticks,
     scalar,
     shapes: [shape],
   });
