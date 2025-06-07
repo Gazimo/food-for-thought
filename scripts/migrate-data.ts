@@ -2,23 +2,26 @@ import { config } from "dotenv";
 config({ path: ".env.local" });
 
 import { createClient } from "@supabase/supabase-js";
-import { promises as fs } from "fs";
+import fs from "fs";
 import path from "path";
-import { Dish, enrichDishesWithCoords } from "../public/data/dishes";
 import { Database } from "../src/types/database";
+import { Dish, enrichDishesWithCoords } from "../src/types/dishes";
 import { getCountryCoordsMap } from "../src/utils/countries";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
-const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
+const supabase = createClient<Database>(supabaseUrl, supabaseServiceKey);
 
 async function migrateDishes() {
   try {
-    console.log("🚀 Starting data migration...");
+    console.log("🚀 Starting migration...");
 
-    const filePath = path.join(process.cwd(), "src/data/sample_dishes.json");
-    const fileContents = await fs.readFile(filePath, "utf8");
+    const filePath = path.join(
+      process.cwd(),
+      "src/examples/sample_dishes.json"
+    );
+    const fileContents = await fs.promises.readFile(filePath, "utf8");
     const dishes: Dish[] = JSON.parse(fileContents);
 
     console.log(`📊 Found ${dishes.length} dishes to migrate`);

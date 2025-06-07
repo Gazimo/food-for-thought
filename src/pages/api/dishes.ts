@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { Dish, enrichDishesWithCoords } from "../../../public/data/dishes";
 import PostHogClient from "../../lib/posthog";
 import supabase from "../../lib/supabase";
+import { Dish, enrichDishesWithCoords } from "../../types/dishes";
 import { getCountryCoordsMap } from "../../utils/countries";
 import { getDailySalt, obfuscateData } from "../../utils/encryption";
 
