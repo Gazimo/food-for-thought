@@ -42,6 +42,7 @@ export const ResultModal: React.FC = () => {
       dish: currentDish.name,
       country: currentDish.country,
       streak,
+      acceptableGuesses: currentDish.acceptableGuesses || [],
     });
 
     navigator.clipboard.writeText(text);
