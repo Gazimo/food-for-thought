@@ -190,10 +190,61 @@ export function getClosestGuess(
   input: string,
   options: string[]
 ): string | null {
+  const normalizedInput = input.toLowerCase().trim();
   const fuse = new Fuse(options, {
-    threshold: 0.2,
+    threshold: 0.4,
     includeScore: true,
+    keys: [""],
+    ignoreLocation: true,
+    findAllMatches: true,
   });
-  const result = fuse.search(input);
-  return result.length > 0 ? result[0].item : null;
+
+  const results = fuse.search(normalizedInput);
+  if (results.length === 0) {
+    return null;
+  }
+  const goodMatches = results.filter((result) => {
+    const target = result.item.toLowerCase();
+    const score = result.score || 0;
+
+    if (normalizedInput.length <= 3) {
+      const isGood = score <= 0.1;
+      return isGood;
+    }
+    const inputWords = normalizedInput.split(/\s+/);
+    const targetWords = target.split(/\s+/);
+
+    if (inputWords.length === 1 && targetWords.length > 1) {
+      const inputWord = inputWords[0];
+      const isCompleteWordMatch = targetWords.some(
+        (word) => word === inputWord
+      );
+
+      if (isCompleteWordMatch) {
+        const isGood = false;
+        return isGood;
+      }
+    }
+
+    const inputLength = normalizedInput.length;
+    const targetLength = target.length;
+    const lengthRatio =
+      Math.min(inputLength, targetLength) / Math.max(inputLength, targetLength);
+
+    if (lengthRatio < 0.4 && target.includes(normalizedInput)) {
+      const isGood = score <= 0.01;
+      return isGood;
+    }
+
+    if (lengthRatio >= 0.7) {
+      const isGood = score <= 0.3;
+      return isGood;
+    }
+
+    const isGood = score <= 0.15;
+    return isGood;
+  });
+
+  const result = goodMatches.length > 0 ? goodMatches[0].item : null;
+  return result;
 }
