@@ -19,15 +19,10 @@ import { ProteinPhase } from "./ProteinPhase";
 
 export default function GamePage() {
   const {
-    currentDish,
     gamePhase,
     modalVisible,
     toggleModal,
-    startNewGame,
-    resetCountryGuesses,
-    resetProteinGuesses,
     activePhase,
-    setActivePhase,
     gameResults,
     markGameTracked,
   } = useGameStore();
