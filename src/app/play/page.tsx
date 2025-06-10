@@ -9,7 +9,7 @@ import { ResultModal } from "@/components/ResultModal";
 import { useGameStore } from "@/store/gameStore";
 import { AnimatePresence } from "framer-motion";
 import posthog from "posthog-js";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { IntroModal } from "../../components/IntroModal";
 import { getPhaseConfig } from "../../config/gamePhases";
 import { alreadyPlayedToday, getStreak } from "../../utils/streak";
@@ -33,6 +33,7 @@ export default function GamePage() {
   } = useGameStore();
 
   const setStreak = useGameStore((s) => s.setStreak);
+  const hasInitialized = useRef(false); // Track if we've already initialized
 
   useEffect(() => {
     posthog.capture("game_start", {
@@ -46,40 +47,52 @@ export default function GamePage() {
   }, [setStreak]);
 
   useEffect(() => {
-    const init = async () => {
-      const { loadDishes, restoreGameStateFromStorage } =
-        useGameStore.getState();
+    if (hasInitialized.current) return; // Prevent re-initialization
 
+    const init = async () => {
+      const {
+        loadDishes,
+        restoreGameStateFromStorage,
+        startNewGame,
+        resetCountryGuesses,
+        resetProteinGuesses,
+        setActivePhase,
+      } = useGameStore.getState();
+
+      // First, load the dishes data
       await loadDishes();
 
-      if (alreadyPlayedToday()) {
-        restoreGameStateFromStorage();
-      } else {
+      // Then try to restore from storage
+      restoreGameStateFromStorage();
+
+      // Check if we have a current dish after restoration
+      const currentState = useGameStore.getState();
+      if (!currentState.currentDish) {
+        // If no saved game was found AND no current dish, start a new game
         startNewGame();
         resetCountryGuesses();
         resetProteinGuesses();
         setActivePhase("dish");
       }
+
+      hasInitialized.current = true; // Mark as initialized
     };
 
-    if (!currentDish) {
-      init();
-    }
-  }, [
-    currentDish,
-    startNewGame,
-    resetCountryGuesses,
-    resetProteinGuesses,
-    setActivePhase,
-  ]);
+    init();
+  }, []); // No dependencies - run only once
 
   useEffect(() => {
+    // Don't run this during initialization to avoid interfering with restoration
+    if (!hasInitialized.current) return;
+
     if (gamePhase === "dish") {
+      const { resetCountryGuesses, resetProteinGuesses, setActivePhase } =
+        useGameStore.getState();
       resetCountryGuesses();
       resetProteinGuesses();
       setActivePhase("dish");
     }
-  }, [gamePhase, resetCountryGuesses, resetProteinGuesses, setActivePhase]);
+  }, [gamePhase]);
 
   useEffect(() => {
     if (gameResults?.status && !gameResults.tracked) {

@@ -30,6 +30,7 @@ export interface ProteinGuessResult {
 
 export interface GameState {
   restoreGameStateFromStorage: () => void;
+  saveCurrentGameState: () => void;
   currentDish: Dish | null;
   dishes: Dish[];
   loadDishes: () => Promise<void>;
