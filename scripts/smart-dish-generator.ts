@@ -17,83 +17,6 @@ if (!supabaseUrl || !supabaseServiceKey) {
   process.exit(1);
 }
 
-// Country detection mapping
-const DISH_COUNTRY_MAP: Record<string, string> = {
-  // Italian dishes
-  carbonara: "italy",
-  "spaghetti carbonara": "italy",
-  "pasta carbonara": "italy",
-  ratatouille: "france",
-  "coq au vin": "france",
-  "beef bourguignon": "france",
-  moussaka: "greece",
-  paella: "spain",
-  "paella valenciana": "spain",
-  goulash: "hungary",
-  "fish and chips": "united kingdom",
-  "shepherd's pie": "united kingdom",
-  "chicken tikka masala": "india",
-  "thai green curry": "thailand",
-  "tom yum goong": "thailand",
-  "pho bo": "vietnam",
-  pho: "vietnam",
-  bibimbap: "south korea",
-  sushi: "japan",
-  "peking duck": "china",
-  "beef stroganoff": "russia",
-  ceviche: "peru",
-  "lamb tagine": "morocco",
-  "chicken parmigiana": "italy",
-};
-
-// Blurb templates by cuisine
-const BLURB_TEMPLATES: Record<
-  string,
-  (dishName: string, ingredients: string[]) => string
-> = {
-  italy: (dishName: string, ingredients: string[]) =>
-    `A classic Italian dish featuring ${ingredients
-      .slice(0, 3)
-      .join(
-        ", "
-      )}. This beloved comfort food brings authentic flavors from the heart of Italy to your table.`,
-
-  france: (dishName: string, ingredients: string[]) =>
-    `An elegant French dish showcasing ${ingredients
-      .slice(0, 3)
-      .join(
-        ", "
-      )}. This traditional recipe embodies the sophisticated flavors of French cuisine.`,
-
-  "united kingdom": (dishName: string, ingredients: string[]) =>
-    `A hearty British classic made with ${ingredients
-      .slice(0, 3)
-      .join(
-        ", "
-      )}. This comforting dish is a staple of traditional British cuisine.`,
-
-  india: (dishName: string, ingredients: string[]) =>
-    `A flavorful Indian dish featuring ${ingredients
-      .slice(0, 3)
-      .join(
-        ", "
-      )}. Rich spices and aromatic ingredients create this beloved curry.`,
-
-  thailand: (dishName: string, ingredients: string[]) =>
-    `A vibrant Thai dish combining ${ingredients
-      .slice(0, 3)
-      .join(
-        ", "
-      )}. This aromatic recipe balances sweet, sour, salty, and spicy flavors perfectly.`,
-
-  default: (dishName: string, ingredients: string[]) =>
-    `A delicious traditional dish featuring ${ingredients
-      .slice(0, 3)
-      .join(
-        ", "
-      )}. This authentic recipe brings bold flavors and satisfying ingredients together.`,
-};
-
 class SmartDishGenerator {
   private fetcher: RecipeDataFetcher;
   private supabase: any;
@@ -104,46 +27,31 @@ class SmartDishGenerator {
   }
 
   async generateAndSaveDish(dishName: string): Promise<void> {
-    console.log(`🚀 Smart generation for: "${dishName}"`);
+    console.log(`🚀 Smart AI generation for: "${dishName}"`);
     console.log("=".repeat(50));
 
     try {
-      // Step 1: Generate base dish data
+      // Step 1: Generate complete dish data using AI
       const dishData = await this.fetcher.fetchDishData(dishName);
       if (!dishData) {
-        throw new Error("Failed to generate dish data from APIs");
+        throw new Error("Failed to generate complete dish data using AI");
       }
 
-      console.log(`✅ Base data generated from ${dishData.dataSource}`);
+      console.log(`✅ Complete dish data generated using AI`);
 
-      // Step 2: Auto-detect country
-      const country = this.detectCountry(dishName);
-      (dishData as any).country = country;
-      console.log(`🌍 Country detected: ${country}`);
-
-      // Step 3: Generate smart blurb
-      if (dishData.ingredients && dishData.ingredients.length > 0) {
-        (dishData as any).blurb = this.generateBlurb(
-          dishName,
-          country,
-          dishData.ingredients
-        );
-        console.log(`📝 Blurb generated`);
-      }
-
-      // Step 4: Calculate next release date
+      // Step 2: Calculate next release date
       const releaseDate = await this.getNextReleaseDate();
       (dishData as any).releaseDate = releaseDate;
       console.log(`📅 Release date: ${releaseDate}`);
 
-      // Step 5: Add coordinates based on country
-      const coordinates = this.getCountryCoordinates(country);
+      // Step 3: Add coordinates based on country
+      const coordinates = this.getCountryCoordinates(dishData.country || "");
 
-      // Step 6: Display final data for review
-      console.log("\n📊 GENERATED DISH DATA:");
-      console.log("=======================");
+      // Step 4: Display final data for review
+      console.log("\n📊 FINAL DISH DATA:");
+      console.log("===================");
       console.log(`Name: ${dishData.name}`);
-      console.log(`Country: ${(dishData as any).country}`);
+      console.log(`Country: ${dishData.country}`);
       console.log(
         `Ingredients (${
           dishData.ingredients?.length
@@ -153,49 +61,31 @@ class SmartDishGenerator {
         `Acceptable Guesses: ${dishData.acceptableGuesses?.join(", ")}`
       );
       console.log(`Protein: ${dishData.proteinPerServing || "N/A"}g`);
-      console.log(
-        `Image: ${dishData.imageUrl ? "Available" : "Not available"}`
-      );
+      console.log(`Tags: ${dishData.tags?.join(", ")}`);
       console.log(`Release Date: ${(dishData as any).releaseDate}`);
-      console.log(`Blurb: ${(dishData as any).blurb}`);
+      console.log(`Blurb: ${dishData.blurb}`);
 
-      // Step 7: Save to database
+      if (dishData.recipe) {
+        console.log(
+          `Recipe: ${dishData.recipe.ingredients?.length || 0} ingredients, ${
+            dishData.recipe.instructions?.length || 0
+          } steps`
+        );
+      }
+
+      // Step 5: Save to database
       await this.saveDishToDatabase(dishData as any, coordinates);
 
-      console.log("\n🎉 SUCCESS! Dish added to database and ready for game!");
+      console.log(
+        "\n🎉 SUCCESS! High-quality dish generated and saved to database!"
+      );
+      console.log(
+        "🎯 Ready for game play immediately - no manual review needed!"
+      );
     } catch (error) {
       console.error("💥 Error:", error);
       process.exit(1);
     }
-  }
-
-  private detectCountry(dishName: string): string {
-    const normalized = dishName.toLowerCase().trim();
-
-    // Check exact matches first
-    if (DISH_COUNTRY_MAP[normalized]) {
-      return DISH_COUNTRY_MAP[normalized];
-    }
-
-    // Check partial matches
-    for (const [dish, country] of Object.entries(DISH_COUNTRY_MAP)) {
-      if (normalized.includes(dish) || dish.includes(normalized)) {
-        return country;
-      }
-    }
-
-    // Default fallback - could be enhanced with AI
-    console.log("⚠️ Country not auto-detected, using Italy as default");
-    return "italy";
-  }
-
-  private generateBlurb(
-    dishName: string,
-    country: string,
-    ingredients: string[]
-  ): string {
-    const template = BLURB_TEMPLATES[country] || BLURB_TEMPLATES.default;
-    return template(dishName, ingredients);
   }
 
   private async getNextReleaseDate(): Promise<string> {
@@ -265,7 +155,7 @@ class SmartDishGenerator {
         name: dishData.name,
         acceptable_guesses: dishData.acceptableGuesses,
         country: dishData.country,
-        image_url: dishData.imageUrl,
+        image_url: dishData.imageUrl || null,
         ingredients: dishData.ingredients,
         blurb: dishData.blurb,
         protein_per_serving: dishData.proteinPerServing || 0,
@@ -308,7 +198,7 @@ async function main() {
   if (!dishName) {
     console.error("❌ Please provide a dish name");
     console.log('Usage: npm run smart-generate "Dish Name"');
-    console.log('Example: npm run smart-generate "Spaghetti Carbonara"');
+    console.log('Example: npm run smart-generate "Chicken Tikka Masala"');
     process.exit(1);
   }
 

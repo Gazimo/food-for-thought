@@ -8,8 +8,6 @@
     "start": "next start",
     "lint": "next lint",
     "migrate": "tsx scripts/migrate-data.ts",
-    "generate-dish": "tsx scripts/generate-dish.ts",
-    "generate-batch": "tsx scripts/generate-batch.ts",
     "smart-generate": "tsx scripts/smart-dish-generator.ts"
   },
   "dependencies": {
@@ -27,6 +25,7 @@
     "fuse.js": "^7.1.0",
     "lucide-react": "^0.510.0",
     "next": "15.3.0",
+    "openai": "^5.3.0",
     "posthog-js": "^1.249.2",
     "posthog-node": "^4.18.0",
     "react": "^19.0.0",
