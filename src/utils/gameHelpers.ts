@@ -92,7 +92,6 @@ export function capitalizeFirst(str: string) {
 }
 
 export async function loadDishes(): Promise<Dish[]> {
-  console.log("🔍 Loading dishes from API...");
   const res = await fetch("/api/dishes");
   if (!res.ok) {
     console.error("❌ Failed to fetch dishes:", res.status, res.statusText);
@@ -100,7 +99,6 @@ export async function loadDishes(): Promise<Dish[]> {
   }
 
   const obfuscatedDishes = await res.json();
-  console.log("📦 Received obfuscated dishes:", obfuscatedDishes.length);
 
   if (!obfuscatedDishes || obfuscatedDishes.length === 0) {
     console.warn("⚠️ No dishes received from API");
@@ -109,12 +107,6 @@ export async function loadDishes(): Promise<Dish[]> {
 
   // Server now returns only today's dish, so just use the first one
   const todayObfuscatedDish = obfuscatedDishes[0];
-
-  console.log("🔍 Processing dish:", {
-    hasEncrypted: !!todayObfuscatedDish._encrypted,
-    hasSalt: !!todayObfuscatedDish._salt,
-    hasCoordinates: !!todayObfuscatedDish.coordinates,
-  });
 
   // Deobfuscate the sensitive data
   const sensitiveData = deobfuscateData<SensitiveData>(
@@ -126,15 +118,6 @@ export async function loadDishes(): Promise<Dish[]> {
     console.error("❌ Failed to deobfuscate dish data");
     return [];
   }
-
-  console.log("🔓 Successfully deobfuscated data:", {
-    name: sensitiveData.name,
-    country: sensitiveData.country,
-    hasIngredients: !!sensitiveData.ingredients,
-    hasRecipe: !!sensitiveData.recipe,
-    hasImageUrl: !!sensitiveData.imageUrl,
-    releaseDate: sensitiveData.releaseDate,
-  });
 
   // Reconstruct the complete dish object
   const completeDish: Dish = {
@@ -176,13 +159,6 @@ export async function loadDishes(): Promise<Dish[]> {
     }
   )._checksum;
 
-  console.log("✅ Complete dish ready:", {
-    name: completeDish.name,
-    country: completeDish.country,
-    imageUrl: completeDish.imageUrl,
-    coordinates: completeDish.coordinates,
-  });
-
   return [completeDish];
 }
 
@@ -191,8 +167,9 @@ export function getClosestGuess(
   options: string[]
 ): string | null {
   const normalizedInput = input.toLowerCase().trim();
+
   const fuse = new Fuse(options, {
-    threshold: 0.4,
+    threshold: 0.2,
     includeScore: true,
     keys: [""],
     ignoreLocation: true,
@@ -200,9 +177,11 @@ export function getClosestGuess(
   });
 
   const results = fuse.search(normalizedInput);
+
   if (results.length === 0) {
     return null;
   }
+
   const goodMatches = results.filter((result) => {
     const target = result.item.toLowerCase();
     const score = result.score || 0;
@@ -211,13 +190,19 @@ export function getClosestGuess(
       const isGood = score <= 0.1;
       return isGood;
     }
+
+    const hasNonAlpha = /[^a-z\s]/.test(normalizedInput);
+    if (hasNonAlpha) {
+      const isGood = score <= 0.05;
+      return isGood;
+    }
     const inputWords = normalizedInput.split(/\s+/);
     const targetWords = target.split(/\s+/);
 
     if (inputWords.length === 1 && targetWords.length > 1) {
       const inputWord = inputWords[0];
       const isCompleteWordMatch = targetWords.some(
-        (word) => word === inputWord
+        (word: string) => word === inputWord
       );
 
       if (isCompleteWordMatch) {
