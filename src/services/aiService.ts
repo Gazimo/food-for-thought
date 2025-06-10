@@ -165,6 +165,8 @@ Return ONLY a valid JSON object with the complete dish data. No other text.`;
   /**
    * Validate that the generated dish data has all required fields
    */
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+
   private validateDishData(dishData: any): dishData is CompleteDishData {
     return (
       dishData &&
