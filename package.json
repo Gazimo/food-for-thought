@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "migrate": "tsx scripts/migrate-data.ts"
+    "migrate": "tsx scripts/migrate-data.ts",
+    "generate-dish": "tsx scripts/generate-dish.ts",
+    "generate-batch": "tsx scripts/generate-batch.ts",
+    "smart-generate": "tsx scripts/smart-dish-generator.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.13",
