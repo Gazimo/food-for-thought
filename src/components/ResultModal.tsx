@@ -76,7 +76,7 @@ export const ResultModal: React.FC = () => {
         {currentDish.imageUrl && (
           <Image
             src={currentDish.imageUrl}
-            alt={currentDish.name}
+            alt="Dish image"
             className="rounded-lg w-full object-cover max-h-52"
             width={1000}
             height={1000}
