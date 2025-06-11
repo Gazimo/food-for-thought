@@ -3,9 +3,11 @@
 import { GameFooter } from "@/components/GameFooter";
 import { GameHeader } from "@/components/GameHeader";
 import { GameNavigation, ShowResultsButton } from "@/components/GameNavigation";
+import { GameSkeleton } from "@/components/GameSkeleton";
 import { PhaseContainer } from "@/components/PhaseContainer";
 import { PhaseRenderer } from "@/components/PhaseRenderer";
 import { ResultModal } from "@/components/ResultModal";
+import { useTodaysDish } from "@/hooks/useDishes";
 import { useGameStore } from "@/store/gameStore";
 import { AnimatePresence } from "framer-motion";
 import posthog from "posthog-js";
@@ -25,10 +27,12 @@ export default function GamePage() {
     activePhase,
     gameResults,
     markGameTracked,
+    setCurrentDish,
   } = useGameStore();
 
+  const { dish, isLoading, isError } = useTodaysDish();
   const setStreak = useGameStore((s) => s.setStreak);
-  const hasInitialized = useRef(false); // Track if we've already initialized
+  const hasInitialized = useRef(false);
 
   useEffect(() => {
     posthog.capture("game_start", {
@@ -42,11 +46,10 @@ export default function GamePage() {
   }, [setStreak]);
 
   useEffect(() => {
-    if (hasInitialized.current) return; // Prevent re-initialization
+    if (hasInitialized.current) return;
 
     const init = async () => {
       const {
-        loadDishes,
         restoreGameStateFromStorage,
         startNewGame,
         resetCountryGuesses,
@@ -54,30 +57,31 @@ export default function GamePage() {
         setActivePhase,
       } = useGameStore.getState();
 
-      // First, load the dishes data
-      await loadDishes();
-
-      // Then try to restore from storage
       restoreGameStateFromStorage();
 
-      // Check if we have a current dish after restoration
       const currentState = useGameStore.getState();
-      if (!currentState.currentDish) {
-        // If no saved game was found AND no current dish, start a new game
+      if (!currentState.currentDish && dish) {
+        setCurrentDish(dish);
         startNewGame();
         resetCountryGuesses();
         resetProteinGuesses();
         setActivePhase("dish");
       }
 
-      hasInitialized.current = true; // Mark as initialized
+      hasInitialized.current = true;
     };
-
-    init();
-  }, []); // No dependencies - run only once
+    if (dish && !isLoading) {
+      init();
+    }
+  }, [dish, isLoading, setCurrentDish]);
 
   useEffect(() => {
-    // Don't run this during initialization to avoid interfering with restoration
+    if (dish && !useGameStore.getState().currentDish) {
+      setCurrentDish(dish);
+    }
+  }, [dish, setCurrentDish]);
+
+  useEffect(() => {
     if (!hasInitialized.current) return;
 
     if (gamePhase === "dish") {
@@ -102,7 +106,49 @@ export default function GamePage() {
 
       markGameTracked();
     }
-  }, [gameResults?.status]);
+  }, [
+    gameResults?.status,
+    gameResults?.tracked,
+    gameResults?.dishGuesses?.length,
+    gameResults?.countryGuesses?.length,
+    gameResults?.proteinGuesses?.length,
+    markGameTracked,
+  ]);
+
+  if (isError) {
+    return (
+      <main className="p-4 sm:p-6 max-w-full sm:max-w-xl mx-auto flex flex-col min-h-screen">
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-xl font-semibold mb-2 text-red-600">
+              Failed to load game
+            </h2>
+            <p className="text-gray-600 mb-4">
+              Please check your connection and try again.
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (isLoading || !dish) {
+    return (
+      <main className="p-4 sm:p-6 max-w-full sm:max-w-xl mx-auto flex flex-col min-h-screen">
+        <GameHeader />
+        <PhaseContainer>
+          <GameSkeleton />
+        </PhaseContainer>
+        <GameFooter />
+      </main>
+    );
+  }
 
   const renderPhaseContent = () => {
     const phaseConfig = getPhaseConfig(activePhase);
