@@ -88,7 +88,7 @@ export const useGameStore = create<GameState>((set, get) => ({
           modalVisible: isComplete,
         });
       }
-    } catch (error) {
+    } catch {
       // Remove console.warn to avoid giving hints about data loading
       localStorage.removeItem("fft-game-state");
     }

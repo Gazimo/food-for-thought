@@ -28,7 +28,7 @@ export default function GamePage() {
   } = useGameStore();
 
   const setStreak = useGameStore((s) => s.setStreak);
-  const hasInitialized = useRef(false); // Track if we've already initialized
+  const hasInitialized = useRef(false);
 
   useEffect(() => {
     posthog.capture("game_start", {
@@ -42,7 +42,7 @@ export default function GamePage() {
   }, [setStreak]);
 
   useEffect(() => {
-    if (hasInitialized.current) return; // Prevent re-initialization
+    if (hasInitialized.current) return;
 
     const init = async () => {
       const {
@@ -54,30 +54,25 @@ export default function GamePage() {
         setActivePhase,
       } = useGameStore.getState();
 
-      // First, load the dishes data
       await loadDishes();
 
-      // Then try to restore from storage
       restoreGameStateFromStorage();
 
-      // Check if we have a current dish after restoration
       const currentState = useGameStore.getState();
       if (!currentState.currentDish) {
-        // If no saved game was found AND no current dish, start a new game
         startNewGame();
         resetCountryGuesses();
         resetProteinGuesses();
         setActivePhase("dish");
       }
 
-      hasInitialized.current = true; // Mark as initialized
+      hasInitialized.current = true;
     };
 
     init();
-  }, []); // No dependencies - run only once
+  }, []);
 
   useEffect(() => {
-    // Don't run this during initialization to avoid interfering with restoration
     if (!hasInitialized.current) return;
 
     if (gamePhase === "dish") {
@@ -102,7 +97,14 @@ export default function GamePage() {
 
       markGameTracked();
     }
-  }, [gameResults?.status]);
+  }, [
+    gameResults?.status,
+    gameResults?.tracked,
+    gameResults?.dishGuesses?.length,
+    gameResults?.countryGuesses?.length,
+    gameResults?.proteinGuesses?.length,
+    markGameTracked,
+  ]);
 
   const renderPhaseContent = () => {
     const phaseConfig = getPhaseConfig(activePhase);
