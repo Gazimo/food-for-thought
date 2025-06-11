@@ -1,7 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { promises as fs } from "fs";
 import { NextApiRequest, NextApiResponse } from "next";
-import path from "path";
 import { Dish, enrichDishesWithCoords } from "../../../public/data/dishes";
 import PostHogClient from "../../lib/posthog";
 import { getCountryCoordsMap } from "../../utils/countries";
@@ -19,92 +17,86 @@ export default async function handler(
   res.setHeader("Expires", "0");
   res.setHeader("X-Content-Type-Options", "nosniff");
 
+  // Check environment variables
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    console.error("❌ Missing Supabase credentials:");
+    console.error(
+      "NEXT_PUBLIC_SUPABASE_URL:",
+      supabaseUrl ? "✅ Set" : "❌ Missing"
+    );
+    console.error(
+      "SUPABASE_SERVICE_ROLE_KEY:",
+      supabaseKey ? "✅ Set" : "❌ Missing"
+    );
+    return res.status(500).json({
+      error: "Database configuration error",
+      details: "Supabase credentials not configured in environment variables",
+    });
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
   try {
-    let enrichedDish: Dish;
+    // Get today's date and fetch today's dish from Supabase
+    const today = new Date().toISOString().split("T")[0];
+    console.log(`🔍 Fetching dish for date: ${today}`);
 
-    // Try Supabase first, fallback to JSON file
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const { data: dishes, error } = await supabase
+      .from("dishes")
+      .select("*")
+      .eq("release_date", today)
+      .limit(1);
 
-    if (supabaseUrl && supabaseKey) {
-      // Use Supabase (preferred method with randomized image URLs)
-      console.log("🔒 Using Supabase database (secure)");
-      const supabase = createClient(supabaseUrl, supabaseKey);
-
-      const today = new Date().toISOString().split("T")[0];
-
-      const { data: dishes, error } = await supabase
-        .from("dishes")
-        .select("*")
-        .eq("release_date", today)
-        .limit(1);
-
-      if (error) {
-        throw new Error(`Supabase error: ${error.message}`);
-      }
-
-      if (!dishes || dishes.length === 0) {
-        return res.status(404).json({ error: "No dish available for today" });
-      }
-
-      const todaysDish = dishes[0];
-
-      // Convert Supabase dish format to our Dish interface
-      const dish: Dish = {
-        name: todaysDish.name,
-        acceptableGuesses: todaysDish.acceptable_guesses || [],
-        country: todaysDish.country,
-        imageUrl: todaysDish.image_url, // This has the randomized filename!
-        ingredients: todaysDish.ingredients || [],
-        blurb: todaysDish.blurb || "",
-        proteinPerServing: todaysDish.protein_per_serving,
-        recipe: {
-          ingredients: todaysDish.recipe_ingredients || [],
-          instructions: todaysDish.recipe_instructions || [],
-        },
-        tags: todaysDish.tags || [],
-        region: todaysDish.region,
-        releaseDate: todaysDish.release_date,
-        coordinates: todaysDish.coordinates
-          ? {
-              lat: todaysDish.coordinates.lat || todaysDish.latitude,
-              lng: todaysDish.coordinates.lng || todaysDish.longitude,
-            }
-          : undefined,
-      };
-
-      // Enrich the dish with coordinates if not already present
-      const countryCoords = getCountryCoordsMap();
-      const enrichedDishes = enrichDishesWithCoords([dish], countryCoords);
-      enrichedDish = enrichedDishes[0];
-    } else {
-      // Fallback to JSON file (temporary - has revealing image names)
-      console.log(
-        "⚠️  Using JSON fallback (less secure - revealing image names)"
-      );
-
-      const filePath = path.join(process.cwd(), "src/data/sample_dishes.json");
-      const fileContents = await fs.readFile(filePath, "utf8");
-      const dishes = JSON.parse(fileContents);
-
-      // Get today's date and filter for today's dish
-      const today = new Date().toISOString().split("T")[0];
-      const todaysDish = dishes.find(
-        (dish: Dish) => dish.releaseDate === today
-      );
-
-      if (!todaysDish) {
-        return res.status(404).json({ error: "No dish available for today" });
-      }
-
-      // Enrich the dish with coordinates
-      const countryCoords = getCountryCoordsMap();
-      const enrichedDishes = enrichDishesWithCoords(
-        [todaysDish],
-        countryCoords
-      );
-      enrichedDish = enrichedDishes[0];
+    if (error) {
+      console.error("❌ Supabase query error:", error);
+      return res.status(500).json({
+        error: "Database query failed",
+        details: error.message,
+      });
     }
+
+    console.log(`📊 Found ${dishes?.length || 0} dishes for today`);
+
+    if (!dishes || dishes.length === 0) {
+      return res.status(404).json({ error: "No dish available for today" });
+    }
+
+    const todaysDish = dishes[0];
+    console.log(
+      `🍽️ Today's dish: ${todaysDish.name} (image: ${todaysDish.image_url})`
+    );
+
+    // Convert Supabase dish format to our Dish interface
+    const dish: Dish = {
+      name: todaysDish.name,
+      acceptableGuesses: todaysDish.acceptable_guesses || [],
+      country: todaysDish.country,
+      imageUrl: todaysDish.image_url, // This has the randomized filename!
+      ingredients: todaysDish.ingredients || [],
+      blurb: todaysDish.blurb || "",
+      proteinPerServing: todaysDish.protein_per_serving,
+      recipe: {
+        ingredients: todaysDish.recipe_ingredients || [],
+        instructions: todaysDish.recipe_instructions || [],
+      },
+      tags: todaysDish.tags || [],
+      region: todaysDish.region,
+      releaseDate: todaysDish.release_date,
+      coordinates: todaysDish.coordinates
+        ? {
+            lat: todaysDish.coordinates.lat || todaysDish.latitude,
+            lng: todaysDish.coordinates.lng || todaysDish.longitude,
+          }
+        : undefined,
+    };
+
+    // Enrich the dish with coordinates if not already present
+    const countryCoords = getCountryCoordsMap();
+    const enrichedDishes = enrichDishesWithCoords([dish], countryCoords);
+    const enrichedDish = enrichedDishes[0];
 
     // Get today's salt
     const salt = getDailySalt();
@@ -152,7 +144,7 @@ export default async function handler(
           method: req.method,
           endpoint: req.url,
           count: 1,
-          source: supabaseUrl && supabaseKey ? "supabase" : "json_fallback",
+          source: "supabase",
         },
       });
     } catch (error) {
@@ -163,10 +155,15 @@ export default async function handler(
     res.setHeader("X-Robots-Tag", "noindex, nofollow, nosnippet, noarchive");
     res.setHeader("Referrer-Policy", "no-referrer");
 
+    console.log("✅ Successfully returning obfuscated dish data");
+
     // Return as an array with a single dish for consistency
     res.status(200).json([safeDish]);
   } catch (error) {
-    console.error("❌ API error:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    console.error("❌ Unexpected API error:", error);
+    return res.status(500).json({
+      error: "Internal server error",
+      details: error instanceof Error ? error.message : "Unknown error",
+    });
   }
 }
