@@ -29,9 +29,9 @@ export const useGameStore = create<GameState>((set, get) => ({
 
     const state = get();
 
-    // Store only the essential game state as a single object
+    // Store only the essential game state WITHOUT sensitive dish data
     const gameStateToSave = {
-      currentDish: state.currentDish,
+      // Remove currentDish from saved state - it contains sensitive data
       gamePhase: state.gamePhase,
       activePhase: state.activePhase,
       revealedTiles: state.revealedTiles,
@@ -50,15 +50,16 @@ export const useGameStore = create<GameState>((set, get) => ({
   restoreGameStateFromStorage: () => {
     if (typeof window === "undefined") return;
 
-    const savedGameState = localStorage.getItem("fft-game-state");
+    try {
+      const saved = localStorage.getItem("fft-game-state");
+      if (!saved) return;
 
-    if (savedGameState) {
-      try {
-        const parsedState = JSON.parse(savedGameState);
-        const isComplete = parsedState.gamePhase === "complete";
+      const parsedState = JSON.parse(saved);
+      const isComplete = parsedState.gamePhase === "complete";
 
+      if (parsedState.gameResults) {
         set({
-          currentDish: parsedState.currentDish || null,
+          // Don't restore currentDish - it will be loaded fresh from API
           gamePhase: parsedState.gamePhase || "dish",
           activePhase: parsedState.activePhase || "dish",
           gameResults: parsedState.gameResults || {
@@ -84,13 +85,12 @@ export const useGameStore = create<GameState>((set, get) => ({
           dishGuesses: parsedState.dishGuesses || [],
           countryGuesses: parsedState.countryGuesses || [],
           proteinGuesses: parsedState.proteinGuesses || [],
-          modalVisible: isComplete, // Only show modal if game is complete
+          modalVisible: isComplete,
         });
-      } catch (error) {
-        console.warn("Failed to restore game state from localStorage:", error);
-        // Clear corrupted data
-        localStorage.removeItem("fft-game-state");
       }
+    } catch (error) {
+      // Remove console.warn to avoid giving hints about data loading
+      localStorage.removeItem("fft-game-state");
     }
   },
   currentDish: null,

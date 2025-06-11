@@ -94,14 +94,12 @@ export function capitalizeFirst(str: string) {
 export async function loadDishes(): Promise<Dish[]> {
   const res = await fetch("/api/dishes");
   if (!res.ok) {
-    console.error("❌ Failed to fetch dishes:", res.status, res.statusText);
     throw new Error("Failed to load dishes");
   }
 
   const obfuscatedDishes = await res.json();
 
   if (!obfuscatedDishes || obfuscatedDishes.length === 0) {
-    console.warn("⚠️ No dishes received from API");
     return [];
   }
 
@@ -115,7 +113,6 @@ export async function loadDishes(): Promise<Dish[]> {
   );
 
   if (!sensitiveData) {
-    console.error("❌ Failed to deobfuscate dish data");
     return [];
   }
 
