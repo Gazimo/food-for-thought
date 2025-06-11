@@ -59,8 +59,8 @@ export default async function handler(
       blurb: todaysDish.blurb || "",
       proteinPerServing: todaysDish.protein_per_serving,
       recipe: {
-        ingredients: todaysDish.ingredients || [],
-        instructions: todaysDish.instructions || [],
+        ingredients: todaysDish.recipe?.ingredients || [],
+        instructions: todaysDish.recipe?.instructions || [],
       },
       tags: todaysDish.tags || [],
       region: todaysDish.region,
