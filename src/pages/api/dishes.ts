@@ -17,24 +17,13 @@ export default async function handler(
   res.setHeader("Expires", "0");
   res.setHeader("X-Content-Type-Options", "nosniff");
 
-  // Check environment variables
+  // Initialize Supabase client
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
-    console.error("❌ Missing Supabase credentials:");
-    console.error(
-      "NEXT_PUBLIC_SUPABASE_URL:",
-      supabaseUrl ? "✅ Set" : "❌ Missing"
-    );
-    console.error(
-      "SUPABASE_SERVICE_ROLE_KEY:",
-      supabaseKey ? "✅ Set" : "❌ Missing"
-    );
-    return res.status(500).json({
-      error: "Database configuration error",
-      details: "Supabase credentials not configured in environment variables",
-    });
+    console.error("❌ Missing Supabase credentials");
+    return res.status(500).json({ error: "Database configuration error" });
   }
 
   const supabase = createClient(supabaseUrl, supabaseKey);
@@ -42,7 +31,6 @@ export default async function handler(
   try {
     // Get today's date and fetch today's dish from Supabase
     const today = new Date().toISOString().split("T")[0];
-    console.log(`🔍 Fetching dish for date: ${today}`);
 
     const { data: dishes, error } = await supabase
       .from("dishes")
@@ -51,30 +39,22 @@ export default async function handler(
       .limit(1);
 
     if (error) {
-      console.error("❌ Supabase query error:", error);
-      return res.status(500).json({
-        error: "Database query failed",
-        details: error.message,
-      });
+      console.error("❌ Supabase error:", error);
+      return res.status(500).json({ error: "Failed to fetch dish data" });
     }
-
-    console.log(`📊 Found ${dishes?.length || 0} dishes for today`);
 
     if (!dishes || dishes.length === 0) {
       return res.status(404).json({ error: "No dish available for today" });
     }
 
     const todaysDish = dishes[0];
-    console.log(
-      `🍽️ Today's dish: ${todaysDish.name} (image: ${todaysDish.image_url})`
-    );
 
     // Convert Supabase dish format to our Dish interface
     const dish: Dish = {
       name: todaysDish.name,
       acceptableGuesses: todaysDish.acceptable_guesses || [],
       country: todaysDish.country,
-      imageUrl: todaysDish.image_url, // This has the randomized filename!
+      imageUrl: todaysDish.image_url, // This now has the randomized filename!
       ingredients: todaysDish.ingredients || [],
       blurb: todaysDish.blurb || "",
       proteinPerServing: todaysDish.protein_per_serving,
@@ -143,8 +123,7 @@ export default async function handler(
         properties: {
           method: req.method,
           endpoint: req.url,
-          count: 1,
-          source: "supabase",
+          count: 1, // Always 1 dish now
         },
       });
     } catch (error) {
@@ -155,15 +134,10 @@ export default async function handler(
     res.setHeader("X-Robots-Tag", "noindex, nofollow, nosnippet, noarchive");
     res.setHeader("Referrer-Policy", "no-referrer");
 
-    console.log("✅ Successfully returning obfuscated dish data");
-
     // Return as an array with a single dish for consistency
     res.status(200).json([safeDish]);
   } catch (error) {
-    console.error("❌ Unexpected API error:", error);
-    return res.status(500).json({
-      error: "Internal server error",
-      details: error instanceof Error ? error.message : "Unknown error",
-    });
+    console.error("❌ API error:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 }
