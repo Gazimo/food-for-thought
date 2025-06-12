@@ -42,6 +42,8 @@ export const useGameStore = create<GameState>((set, get) => ({
       countryGuessResults: state.countryGuessResults,
       proteinGuessResults: state.proteinGuessResults,
       gameResults: state.gameResults,
+      // Add the current date to check if this is from today
+      savedDate: new Date().toISOString().split("T")[0],
     };
 
     localStorage.setItem("fft-game-state", JSON.stringify(gameStateToSave));
@@ -55,6 +57,17 @@ export const useGameStore = create<GameState>((set, get) => ({
       if (!saved) return;
 
       const parsedState = JSON.parse(saved);
+
+      // Check if the saved game state is from today
+      const today = new Date().toISOString().split("T")[0];
+      const savedDate = parsedState.savedDate;
+
+      // If no saved date or it's from a different day, clear the saved state and return
+      if (!savedDate || savedDate !== today) {
+        localStorage.removeItem("fft-game-state");
+        return;
+      }
+
       const isComplete = parsedState.gamePhase === "complete";
 
       if (parsedState.gameResults) {
