@@ -165,12 +165,19 @@ export function getClosestGuess(
 ): string | null {
   const normalizedInput = input.toLowerCase().trim();
 
+  if (options.some((option) => option.toLowerCase() === normalizedInput)) {
+    return options.find((option) => option.toLowerCase() === normalizedInput)!;
+  }
+
+  if (normalizedInput.length <= 3) {
+    return null;
+  }
+
   const fuse = new Fuse(options, {
-    threshold: 0.2,
+    threshold: 0.1,
     includeScore: true,
-    keys: [""],
-    ignoreLocation: true,
-    findAllMatches: true,
+    ignoreLocation: false,
+    distance: 10,
   });
 
   const results = fuse.search(normalizedInput);
@@ -179,54 +186,30 @@ export function getClosestGuess(
     return null;
   }
 
-  const goodMatches = results.filter((result) => {
-    const target = result.item.toLowerCase();
-    const score = result.score || 0;
+  const bestMatch = results[0];
+  const target = bestMatch.item.toLowerCase();
+  const score = bestMatch.score || 0;
 
-    if (normalizedInput.length <= 3) {
-      const isGood = score <= 0.1;
-      return isGood;
-    }
+  let acceptableScoreThreshold: number;
+  if (normalizedInput.length >= target.length * 0.7) {
+    acceptableScoreThreshold = 0.2;
+  } else if (normalizedInput.length >= target.length * 0.5) {
+    acceptableScoreThreshold = 0.1;
+  } else {
+    acceptableScoreThreshold = 0.05;
+  }
 
-    const hasNonAlpha = /[^a-z\s]/.test(normalizedInput);
-    if (hasNonAlpha) {
-      const isGood = score <= 0.05;
-      return isGood;
-    }
-    const inputWords = normalizedInput.split(/\s+/);
-    const targetWords = target.split(/\s+/);
+  const isMeaningfulSubstring =
+    target.includes(normalizedInput) &&
+    normalizedInput.length / target.length > 0.3;
 
-    if (inputWords.length === 1 && targetWords.length > 1) {
-      const inputWord = inputWords[0];
-      const isCompleteWordMatch = targetWords.some(
-        (word: string) => word === inputWord
-      );
+  if (score <= acceptableScoreThreshold && isMeaningfulSubstring) {
+    return bestMatch.item;
+  }
 
-      if (isCompleteWordMatch) {
-        const isGood = false;
-        return isGood;
-      }
-    }
+  if (score <= 0.05) {
+    return bestMatch.item;
+  }
 
-    const inputLength = normalizedInput.length;
-    const targetLength = target.length;
-    const lengthRatio =
-      Math.min(inputLength, targetLength) / Math.max(inputLength, targetLength);
-
-    if (lengthRatio < 0.4 && target.includes(normalizedInput)) {
-      const isGood = score <= 0.01;
-      return isGood;
-    }
-
-    if (lengthRatio >= 0.7) {
-      const isGood = score <= 0.3;
-      return isGood;
-    }
-
-    const isGood = score <= 0.15;
-    return isGood;
-  });
-
-  const result = goodMatches.length > 0 ? goodMatches[0].item : null;
-  return result;
+  return null;
 }
