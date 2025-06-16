@@ -81,12 +81,17 @@ module.exports = {
           '25%': { transform: 'rotateY(15deg)' },
           '75%': { transform: 'rotateY(-15deg)' },
         },
+        shimmer: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' },
+        },
       },
       animation: {
         'streak-pop': 'streak-pop 0.3s ease-in-out',
         'shake': 'shake 0.3s ease-in-out',
         'pulseCorrect': 'pulseCorrect 1.2s ease-in-out infinite',
         'tileHint': 'tileHint 3s ease-in-out infinite',
+        'shimmer': 'shimmer 2s ease-in-out infinite',
       },
 
     }

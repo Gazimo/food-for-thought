@@ -14,6 +14,7 @@ interface TextInputProps {
   suggestions?: string[];
   previousGuesses?: string[];
   shake?: boolean;
+  disabled?: boolean;
 }
 
 export const TextInput: React.FC<TextInputProps> = ({
@@ -24,6 +25,7 @@ export const TextInput: React.FC<TextInputProps> = ({
   suggestions = [],
   previousGuesses = [],
   shake = false,
+  disabled = false,
 }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -138,7 +140,7 @@ export const TextInput: React.FC<TextInputProps> = ({
         onBlur={handleBlur}
         placeholder={placeholder}
         className={cn("w-full", shake && "animate-shake")}
-        disabled={isComplete}
+        disabled={isComplete || disabled}
         autoComplete="off"
       />
 

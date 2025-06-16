@@ -2,6 +2,12 @@ import { Dish } from "../../public/data/dishes";
 
 export type GamePhase = "dish" | "country" | "protein" | "complete";
 
+export interface LoadingStates {
+  dishGuess: boolean;
+  countryGuess: boolean;
+  proteinGuess: boolean;
+}
+
 export interface GameResults {
   status?: "won" | "lost";
   dishGuesses: string[];
@@ -29,11 +35,11 @@ export interface ProteinGuessResult {
 }
 
 export interface GameState {
-  restoreGameStateFromStorage: () => void;
+  restoreGameStateFromStorage: () => boolean;
   saveCurrentGameState: () => void;
   currentDish: Dish | null;
   dishes: Dish[];
-  loadDishes: () => Promise<void>;
+  setCurrentDish: (dish: Dish | null) => void;
   gamePhase: GamePhase;
   revealedIngredients: number;
   dishGuesses: string[];
@@ -73,4 +79,8 @@ export interface GameState {
   isCountryPhaseComplete: () => boolean;
   isProteinPhaseComplete: () => boolean;
   isPhaseComplete: (phase: "dish" | "country" | "protein") => boolean;
+  hasRestoredState: boolean;
+
+  loading: LoadingStates;
+  setLoading: (key: keyof LoadingStates, value: boolean) => void;
 }

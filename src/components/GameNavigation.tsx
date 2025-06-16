@@ -94,7 +94,6 @@ export function GameNavigation({
   return null;
 }
 
-// Add the ShowResultsButton as a separate component to be used once
 export function ShowResultsButton({
   gamePhase,
   modalVisible,
