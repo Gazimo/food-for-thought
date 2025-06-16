@@ -1,15 +1,8 @@
 import { cn } from "@/lib/utils";
 
 const TileGridSkeleton = () => {
-  const width =
-    typeof window !== "undefined" ? Math.min(window.innerWidth - 32, 500) : 500;
-  const height = (width / 3) * 2;
-
   return (
-    <div
-      className="relative mx-auto bg-gray-200 rounded-lg overflow-hidden"
-      style={{ width: `${width}px`, height: `${height}px`, maxWidth: "100vw" }}
-    >
+    <div className="relative w-full aspect-[3/2] max-w-[500px] mx-auto bg-gray-200 rounded-lg overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-[shimmer_2s_infinite]" />
 
       <div className="absolute inset-0 grid grid-cols-3 grid-rows-2 border border-gray-300/50 z-[2] pointer-events-none">
