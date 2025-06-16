@@ -1,4 +1,4 @@
-import { Dish } from "../../public/data/dishes";
+import { Dish } from "./dishes";
 
 export type GamePhase = "dish" | "country" | "protein" | "complete";
 

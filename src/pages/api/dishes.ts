@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextApiRequest, NextApiResponse } from "next";
-import { Dish, enrichDishesWithCoords } from "../../../public/data/dishes";
 import PostHogClient from "../../lib/posthog";
+import { Dish, enrichDishesWithCoords } from "../../types/dishes";
 import { getCountryCoordsMap } from "../../utils/countries";
 import { getDailySalt, obfuscateData } from "../../utils/encryption";
 
@@ -17,7 +17,6 @@ export default async function handler(
   res.setHeader("Expires", "0");
   res.setHeader("X-Content-Type-Options", "nosniff");
 
-  // Initialize Supabase client
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -29,7 +28,6 @@ export default async function handler(
   const supabase = createClient(supabaseUrl, supabaseKey);
 
   try {
-    // Get today's date and fetch today's dish from Supabase
     const today = new Date().toISOString().split("T")[0];
 
     const { data: dishes, error } = await supabase
@@ -47,71 +45,56 @@ export default async function handler(
       return res.status(404).json({ error: "No dish available for today" });
     }
 
-    const todaysDish = dishes[0];
+    const dishData = dishes[0];
 
-    // Convert Supabase dish format to our Dish interface
     const dish: Dish = {
-      name: todaysDish.name,
-      acceptableGuesses: todaysDish.acceptable_guesses || [],
-      country: todaysDish.country,
-      imageUrl: todaysDish.image_url, // This now has the randomized filename!
-      ingredients: todaysDish.ingredients || [],
-      blurb: todaysDish.blurb || "",
-      proteinPerServing: todaysDish.protein_per_serving,
+      name: dishData.name,
+      acceptableGuesses: dishData.acceptable_guesses || [],
+      country: dishData.country,
+      imageUrl: dishData.image_url || "",
+      ingredients: dishData.ingredients || [],
+      blurb: dishData.blurb || "",
+      proteinPerServing: dishData.protein_per_serving,
       recipe: {
-        ingredients: todaysDish.recipe?.ingredients || [],
-        instructions: todaysDish.recipe?.instructions || [],
+        ingredients: dishData.recipe?.ingredients || [],
+        instructions: dishData.recipe?.instructions || [],
       },
-      tags: todaysDish.tags || [],
-      region: todaysDish.region,
-      releaseDate: todaysDish.release_date,
-      coordinates: todaysDish.coordinates
+      tags: dishData.tags || [],
+      region: dishData.region || undefined,
+      releaseDate: dishData.release_date,
+      coordinates: dishData.coordinates
         ? {
-            lat: todaysDish.coordinates.lat || todaysDish.latitude,
-            lng: todaysDish.coordinates.lng || todaysDish.longitude,
+            lat: dishData.coordinates.lat || dishData.latitude,
+            lng: dishData.coordinates.lng || dishData.longitude,
           }
         : undefined,
     };
 
-    // Enrich the dish with coordinates if not already present
     const countryCoords = getCountryCoordsMap();
-    const enrichedDishes = enrichDishesWithCoords([dish], countryCoords);
-    const enrichedDish = enrichedDishes[0];
+    const enrichedDish = enrichDishesWithCoords([dish], countryCoords)[0];
 
-    // Get today's salt
     const salt = getDailySalt();
+    const obfuscatedAnswers = obfuscateData(
+      {
+        name: enrichedDish.name,
+        country: enrichedDish.country,
+        acceptableGuesses: enrichedDish.acceptableGuesses,
+        proteinPerServing: enrichedDish.proteinPerServing,
+        ingredients: enrichedDish.ingredients,
+        recipe: enrichedDish.recipe,
+        blurb: enrichedDish.blurb,
+        imageUrl: enrichedDish.imageUrl,
+        releaseDate: enrichedDish.releaseDate,
+        coordinates: enrichedDish.coordinates,
+      },
+      salt
+    );
 
-    // Process only today's dish
-    const sensitiveData = {
-      name: enrichedDish.name,
-      country: enrichedDish.country,
-      acceptableGuesses: enrichedDish.acceptableGuesses,
-      proteinPerServing: enrichedDish.proteinPerServing,
-      // Also hide ingredients and recipe as they can give hints
-      ingredients: enrichedDish.ingredients,
-      recipe: enrichedDish.recipe,
-      blurb: enrichedDish.blurb,
-      // Hide imageUrl and releaseDate as they can give away the answer
-      imageUrl: enrichedDish.imageUrl,
-      releaseDate: enrichedDish.releaseDate,
-      // Hide coordinates as they're a dead giveaway for the country
-      coordinates: enrichedDish.coordinates,
-    };
-
-    // Create obfuscated version of sensitive data
-    const obfuscatedAnswers = obfuscateData(sensitiveData, salt);
-
-    // Return only today's dish with sensitive fields removed and obfuscated data added
     const safeDish = {
-      // Keep only non-sensitive visual data
       tags: enrichedDish.tags,
       region: enrichedDish.region,
-
-      // Add obfuscated sensitive data
       _encrypted: obfuscatedAnswers,
       _salt: salt,
-
-      // Add random dummy field to prevent pattern analysis
       _checksum: Math.random().toString(36).substring(7),
     };
 
@@ -123,21 +106,19 @@ export default async function handler(
         properties: {
           method: req.method,
           endpoint: req.url,
-          count: 1, // Always 1 dish now
+          count: 1,
         },
       });
     } catch (error) {
       console.error("PostHog capture error:", error);
     }
 
-    // Add additional security headers to prevent inspection
     res.setHeader("X-Robots-Tag", "noindex, nofollow, nosnippet, noarchive");
     res.setHeader("Referrer-Policy", "no-referrer");
 
-    // Return as an array with a single dish for consistency
     res.status(200).json([safeDish]);
   } catch (error) {
     console.error("❌ API error:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: "Internal server error" });
   }
 }
