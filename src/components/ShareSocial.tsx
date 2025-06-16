@@ -38,7 +38,7 @@ export const CircularShareMenu: React.FC<CircularShareMenuProps> = ({
         onClick={() => handleClick("whatsapp")}
         className={`absolute w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center shadow transition-all duration-300 ${
           open
-            ? "top-[-46px] opacity-100 rigth-[6px]"
+            ? "top-[-46px] opacity-100 right-[6px]"
             : "top-0 opacity-0 pointer-events-none"
         }`}
         aria-label="Share to WhatsApp"
