@@ -35,7 +35,7 @@ export interface ProteinGuessResult {
 }
 
 export interface GameState {
-  restoreGameStateFromStorage: () => void;
+  restoreGameStateFromStorage: () => boolean;
   saveCurrentGameState: () => void;
   currentDish: Dish | null;
   dishes: Dish[];
@@ -79,6 +79,7 @@ export interface GameState {
   isCountryPhaseComplete: () => boolean;
   isProteinPhaseComplete: () => boolean;
   isPhaseComplete: (phase: "dish" | "country" | "protein") => boolean;
+  hasRestoredState: boolean;
 
   loading: LoadingStates;
   setLoading: (key: keyof LoadingStates, value: boolean) => void;

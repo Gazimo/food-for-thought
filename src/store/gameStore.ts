@@ -47,11 +47,11 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   restoreGameStateFromStorage: () => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined") return false;
 
     try {
       const saved = localStorage.getItem("fft-game-state");
-      if (!saved) return;
+      if (!saved) return false;
 
       const parsedState = JSON.parse(saved);
 
@@ -62,7 +62,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       // If no saved date or it's from a different day, clear the saved state and return
       if (!savedDate || savedDate !== today) {
         localStorage.removeItem("fft-game-state");
-        return;
+        return false;
       }
 
       const isComplete = parsedState.gamePhase === "complete";
@@ -96,10 +96,14 @@ export const useGameStore = create<GameState>((set, get) => ({
           countryGuesses: parsedState.countryGuesses || [],
           proteinGuesses: parsedState.proteinGuesses || [],
           modalVisible: isComplete,
+          hasRestoredState: true,
         });
+        return true;
       }
+      return false;
     } catch {
       localStorage.removeItem("fft-game-state");
+      return false;
     }
   },
 
@@ -498,6 +502,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     return isCorrect;
   },
   activePhase: "dish",
+  hasRestoredState: false,
   setActivePhase: (phase: "dish" | "country" | "protein") => {
     set({ activePhase: phase });
     get().saveCurrentGameState();

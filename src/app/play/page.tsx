@@ -56,15 +56,18 @@ export default function GamePage() {
         setActivePhase,
       } = useGameStore.getState();
 
-      restoreGameStateFromStorage();
+      const hasRestoredState = restoreGameStateFromStorage();
 
-      const currentState = useGameStore.getState();
-      if (!currentState.currentDish && dish) {
+      if (!hasRestoredState && dish) {
+        // Only start new game if we didn't restore existing state
         setCurrentDish(dish);
         startNewGame();
         resetCountryGuesses();
         resetProteinGuesses();
         setActivePhase("dish");
+      } else if (hasRestoredState && dish) {
+        // If we restored state, just set the current dish
+        setCurrentDish(dish);
       }
 
       hasInitialized.current = true;
