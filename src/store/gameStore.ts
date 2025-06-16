@@ -28,8 +28,8 @@ export const useGameStore = create<GameState>((set, get) => ({
 
     const state = get();
 
+    // Store only the essential game state WITHOUT sensitive dish data
     const gameStateToSave = {
-      currentDish: state.currentDish,
       gamePhase: state.gamePhase,
       activePhase: state.activePhase,
       revealedTiles: state.revealedTiles,
@@ -40,6 +40,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       countryGuessResults: state.countryGuessResults,
       proteinGuessResults: state.proteinGuessResults,
       gameResults: state.gameResults,
+      savedDate: new Date().toISOString().split("T")[0],
     };
 
     localStorage.setItem("fft-game-state", JSON.stringify(gameStateToSave));
@@ -53,11 +54,22 @@ export const useGameStore = create<GameState>((set, get) => ({
       if (!saved) return;
 
       const parsedState = JSON.parse(saved);
+
+      // Check if the saved game state is from today
+      const today = new Date().toISOString().split("T")[0];
+      const savedDate = parsedState.savedDate;
+
+      // If no saved date or it's from a different day, clear the saved state and return
+      if (!savedDate || savedDate !== today) {
+        localStorage.removeItem("fft-game-state");
+        return;
+      }
+
       const isComplete = parsedState.gamePhase === "complete";
 
-      if (parsedState.currentDish && parsedState.gameResults) {
+      if (parsedState.gameResults) {
         set({
-          currentDish: parsedState.currentDish || null,
+          // Don't restore currentDish - it will be loaded fresh from API
           gamePhase: parsedState.gamePhase || "dish",
           activePhase: parsedState.activePhase || "dish",
           gameResults: parsedState.gameResults || {
@@ -86,11 +98,11 @@ export const useGameStore = create<GameState>((set, get) => ({
           modalVisible: isComplete,
         });
       }
-    } catch (error) {
-      console.warn("Failed to restore game state from localStorage:", error);
+    } catch {
       localStorage.removeItem("fft-game-state");
     }
   },
+
   currentDish: null,
   dishes: [],
 
