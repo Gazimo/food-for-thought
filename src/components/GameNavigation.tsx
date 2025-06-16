@@ -47,10 +47,10 @@ export function GameNavigation({
   if (activePhase === "country") {
     return (
       <div className="flex flex-col gap-4 mt-2">
-        <div className="flex justify-between gap-2">
+        <div className="flex justify-between gap-2 items-center">
           <Button
             onClick={() => transitionToPhase("dish")}
-            className="px-3 py-1 rounded"
+            className="px-3 py-1 w-[42px] h-[42px]"
             variant="neutral"
           >
             ←
@@ -81,7 +81,7 @@ export function GameNavigation({
         <div className="text-left">
           <Button
             onClick={() => transitionToPhase("country")}
-            className="px-3 py-1 rounded"
+            className="px-3 py-1 w-[42px] h-[42px]"
             variant="neutral"
           >
             ←
