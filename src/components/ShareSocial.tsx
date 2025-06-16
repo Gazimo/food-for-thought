@@ -39,7 +39,7 @@ export const CircularShareMenu: React.FC<CircularShareMenuProps> = ({
         className={`absolute w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center shadow transition-all duration-300 ${
           open
             ? "top-[-46px] opacity-100 right-[6px]"
-            : "top-0 opacity-0 pointer-events-none"
+            : "top-0 right-0 opacity-0 pointer-events-none"
         }`}
         aria-label="Share to WhatsApp"
       >
@@ -63,7 +63,7 @@ export const CircularShareMenu: React.FC<CircularShareMenuProps> = ({
         className={`absolute w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center shadow transition-all duration-300 ${
           open
             ? "bottom-[-42px] right-[6px] opacity-100"
-            : "bottom-0 opacity-0 pointer-events-none"
+            : "bottom-0 right-0 opacity-0 pointer-events-none"
         }`}
         aria-label="Share to Reddit"
       >
