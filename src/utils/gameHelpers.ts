@@ -92,29 +92,19 @@ export function capitalizeFirst(str: string) {
 }
 
 export async function loadDishes(): Promise<Dish[]> {
-  console.log("🔍 Loading dishes from API...");
   const res = await fetch("/api/dishes");
   if (!res.ok) {
-    console.error("❌ Failed to fetch dishes:", res.status, res.statusText);
     throw new Error("Failed to load dishes");
   }
 
   const obfuscatedDishes = await res.json();
-  console.log("📦 Received obfuscated dishes:", obfuscatedDishes.length);
 
   if (!obfuscatedDishes || obfuscatedDishes.length === 0) {
-    console.warn("⚠️ No dishes received from API");
     return [];
   }
 
   // Server now returns only today's dish, so just use the first one
   const todayObfuscatedDish = obfuscatedDishes[0];
-
-  console.log("🔍 Processing dish:", {
-    hasEncrypted: !!todayObfuscatedDish._encrypted,
-    hasSalt: !!todayObfuscatedDish._salt,
-    hasCoordinates: !!todayObfuscatedDish.coordinates,
-  });
 
   // Deobfuscate the sensitive data
   const sensitiveData = deobfuscateData<SensitiveData>(
@@ -123,18 +113,8 @@ export async function loadDishes(): Promise<Dish[]> {
   );
 
   if (!sensitiveData) {
-    console.error("❌ Failed to deobfuscate dish data");
     return [];
   }
-
-  console.log("🔓 Successfully deobfuscated data:", {
-    name: sensitiveData.name,
-    country: sensitiveData.country,
-    hasIngredients: !!sensitiveData.ingredients,
-    hasRecipe: !!sensitiveData.recipe,
-    hasImageUrl: !!sensitiveData.imageUrl,
-    releaseDate: sensitiveData.releaseDate,
-  });
 
   // Reconstruct the complete dish object
   const completeDish: Dish = {
@@ -176,13 +156,6 @@ export async function loadDishes(): Promise<Dish[]> {
     }
   )._checksum;
 
-  console.log("✅ Complete dish ready:", {
-    name: completeDish.name,
-    country: completeDish.country,
-    imageUrl: completeDish.imageUrl,
-    coordinates: completeDish.coordinates,
-  });
-
   return [completeDish];
 }
 
@@ -190,10 +163,53 @@ export function getClosestGuess(
   input: string,
   options: string[]
 ): string | null {
+  const normalizedInput = input.toLowerCase().trim();
+
+  if (options.some((option) => option.toLowerCase() === normalizedInput)) {
+    return options.find((option) => option.toLowerCase() === normalizedInput)!;
+  }
+
+  if (normalizedInput.length <= 3) {
+    return null;
+  }
+
   const fuse = new Fuse(options, {
-    threshold: 0.2,
+    threshold: 0.1,
     includeScore: true,
+    ignoreLocation: false,
+    distance: 10,
   });
-  const result = fuse.search(input);
-  return result.length > 0 ? result[0].item : null;
+
+  const results = fuse.search(normalizedInput);
+
+  if (results.length === 0) {
+    return null;
+  }
+
+  const bestMatch = results[0];
+  const target = bestMatch.item.toLowerCase();
+  const score = bestMatch.score || 0;
+
+  let acceptableScoreThreshold: number;
+  if (normalizedInput.length >= target.length * 0.7) {
+    acceptableScoreThreshold = 0.2;
+  } else if (normalizedInput.length >= target.length * 0.5) {
+    acceptableScoreThreshold = 0.1;
+  } else {
+    acceptableScoreThreshold = 0.05;
+  }
+
+  const isMeaningfulSubstring =
+    target.includes(normalizedInput) &&
+    normalizedInput.length / target.length > 0.3;
+
+  if (score <= acceptableScoreThreshold && isMeaningfulSubstring) {
+    return bestMatch.item;
+  }
+
+  if (score <= 0.05) {
+    return bestMatch.item;
+  }
+
+  return null;
 }

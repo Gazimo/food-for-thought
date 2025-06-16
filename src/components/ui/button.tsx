@@ -25,11 +25,12 @@ const buttonVariants = cva(
         secondary:
           "bg-gray-700 hover:bg-gray-800 text-white focus:ring-gray-500",
         neutral:
-          "bg-amber-500 hover:bg-amber-600 text-white focus:ring-amber-500",
+          "bg-amber-500 hover:bg-amber-600 text-white focus:ring-amber-500 rounded-full w-full h-full",
         phase:
           "bg-indigo-600 hover:bg-indigo-700 text-white focus:ring-indigo-500",
         cta: "bg-emerald-600 hover:bg-emerald-700 text-white focus:ring-emerald-500",
-        share: "bg-teal-600 hover:bg-teal-700 text-white focus:ring-teal-500",
+        share:
+          "bg-teal-600 hover:bg-teal-700 text-white focus:ring-teal-500 rounded-full w-full h-full",
       },
       size: {
         default: "h-9 px-4 py-2",

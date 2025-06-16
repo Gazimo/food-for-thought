@@ -1,6 +1,6 @@
+import { createClient } from "@supabase/supabase-js";
 import { NextApiRequest, NextApiResponse } from "next";
 import PostHogClient from "../../lib/posthog";
-import supabase from "../../lib/supabase";
 import { Dish, enrichDishesWithCoords } from "../../types/dishes";
 import { getCountryCoordsMap } from "../../utils/countries";
 import { getDailySalt, obfuscateData } from "../../utils/encryption";
@@ -17,68 +17,78 @@ export default async function handler(
   res.setHeader("Expires", "0");
   res.setHeader("X-Content-Type-Options", "nosniff");
 
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    console.error("❌ Missing Supabase credentials");
+    return res.status(500).json({ error: "Database configuration error" });
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
   try {
     const today = new Date().toISOString().split("T")[0];
 
-    const { data: dishData, error } = await supabase
+    const { data: dishes, error } = await supabase
       .from("dishes")
       .select("*")
       .eq("release_date", today)
-      .single();
+      .limit(1);
 
     if (error) {
-      console.error("Database error:", error);
+      console.error("❌ Supabase error:", error);
+      return res.status(500).json({ error: "Failed to fetch dish data" });
+    }
+
+    if (!dishes || dishes.length === 0) {
       return res.status(404).json({ error: "No dish available for today" });
     }
 
-    if (!dishData) {
-      return res.status(404).json({ error: "No dish available for today" });
-    }
+    const dishData = dishes[0];
 
-    const todaysDish: Dish = {
+    const dish: Dish = {
       name: dishData.name,
-      acceptableGuesses: dishData.acceptable_guesses,
+      acceptableGuesses: dishData.acceptable_guesses || [],
       country: dishData.country,
       imageUrl: dishData.image_url || "",
-      ingredients: dishData.ingredients,
-      blurb: dishData.blurb,
+      ingredients: dishData.ingredients || [],
+      blurb: dishData.blurb || "",
       proteinPerServing: dishData.protein_per_serving,
-      recipe: dishData.recipe,
-      tags: dishData.tags,
+      recipe: {
+        ingredients: dishData.recipe?.ingredients || [],
+        instructions: dishData.recipe?.instructions || [],
+      },
+      tags: dishData.tags || [],
+      region: dishData.region || undefined,
       releaseDate: dishData.release_date,
       coordinates: dishData.coordinates
         ? {
-            lat: parseFloat(
-              dishData.coordinates.toString().split(",")[1].replace(")", "")
-            ),
-            lng: parseFloat(
-              dishData.coordinates.toString().split(",")[0].replace("(", "")
-            ),
+            lat: dishData.coordinates.lat || dishData.latitude,
+            lng: dishData.coordinates.lng || dishData.longitude,
           }
         : undefined,
-      region: dishData.region || undefined,
     };
 
     const countryCoords = getCountryCoordsMap();
-    const enrichedDishes = enrichDishesWithCoords([todaysDish], countryCoords);
-    const enrichedDish = enrichedDishes[0];
+    const enrichedDish = enrichDishesWithCoords([dish], countryCoords)[0];
 
     const salt = getDailySalt();
-
-    const sensitiveData = {
-      name: enrichedDish.name,
-      country: enrichedDish.country,
-      acceptableGuesses: enrichedDish.acceptableGuesses,
-      proteinPerServing: enrichedDish.proteinPerServing,
-      ingredients: enrichedDish.ingredients,
-      recipe: enrichedDish.recipe,
-      blurb: enrichedDish.blurb,
-      imageUrl: enrichedDish.imageUrl,
-      releaseDate: enrichedDish.releaseDate,
-      coordinates: enrichedDish.coordinates,
-    };
-
-    const obfuscatedAnswers = obfuscateData(sensitiveData, salt);
+    const obfuscatedAnswers = obfuscateData(
+      {
+        name: enrichedDish.name,
+        country: enrichedDish.country,
+        acceptableGuesses: enrichedDish.acceptableGuesses,
+        proteinPerServing: enrichedDish.proteinPerServing,
+        ingredients: enrichedDish.ingredients,
+        recipe: enrichedDish.recipe,
+        blurb: enrichedDish.blurb,
+        imageUrl: enrichedDish.imageUrl,
+        releaseDate: enrichedDish.releaseDate,
+        coordinates: enrichedDish.coordinates,
+      },
+      salt
+    );
 
     const safeDish = {
       tags: enrichedDish.tags,
@@ -108,7 +118,7 @@ export default async function handler(
 
     res.status(200).json([safeDish]);
   } catch (error) {
-    console.error("API error:", error);
+    console.error("❌ API error:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 }

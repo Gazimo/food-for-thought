@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { getClosestGuess } from "@/utils/gameHelpers";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
@@ -38,10 +39,16 @@ export const GuessInput: React.FC<GuessInputProps> = ({
     revealCorrectCountry,
     revealCorrectProtein,
     isPhaseComplete,
+    loading,
   } = useGameStore();
 
   const isProteinPhase = activePhase === "protein";
   const isComplete = isPhaseComplete(activePhase);
+
+  const isSubmitting =
+    (activePhase === "dish" && loading.dishGuess) ||
+    (activePhase === "country" && loading.countryGuess) ||
+    (activePhase === "protein" && loading.proteinGuess);
 
   const triggerShake = () => {
     setShake(false);
@@ -153,6 +160,7 @@ export const GuessInput: React.FC<GuessInputProps> = ({
           shake={shake}
           min={0}
           max={200}
+          disabled={isSubmitting}
         />
       ) : (
         <TextInput
@@ -163,6 +171,7 @@ export const GuessInput: React.FC<GuessInputProps> = ({
           suggestions={suggestions}
           previousGuesses={previousGuesses}
           shake={shake}
+          disabled={isSubmitting}
         />
       )}
 
@@ -175,9 +184,17 @@ export const GuessInput: React.FC<GuessInputProps> = ({
             handleTextGuess(input);
           }
         }}
-        disabled={!canSubmit || isComplete}
+        disabled={!canSubmit || isComplete || isSubmitting}
+        className="min-w-[100px]"
       >
-        Submit
+        {isSubmitting ? (
+          <div className="flex items-center gap-2">
+            <Spinner size="sm" />
+            <span>Processing...</span>
+          </div>
+        ) : (
+          "Submit"
+        )}
       </Button>
 
       {shouldShowGiveUp && !isComplete && (

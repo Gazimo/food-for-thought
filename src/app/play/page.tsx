@@ -6,10 +6,11 @@ import { GameNavigation, ShowResultsButton } from "@/components/GameNavigation";
 import { PhaseContainer } from "@/components/PhaseContainer";
 import { PhaseRenderer } from "@/components/PhaseRenderer";
 import { ResultModal } from "@/components/ResultModal";
+import { useTodaysDish } from "@/hooks/useDishes";
 import { useGameStore } from "@/store/gameStore";
 import { AnimatePresence } from "framer-motion";
 import posthog from "posthog-js";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { IntroModal } from "../../components/IntroModal";
 import { getPhaseConfig } from "../../config/gamePhases";
 import { alreadyPlayedToday, getStreak } from "../../utils/streak";
@@ -19,20 +20,18 @@ import { ProteinPhase } from "./ProteinPhase";
 
 export default function GamePage() {
   const {
-    currentDish,
     gamePhase,
     modalVisible,
     toggleModal,
-    startNewGame,
-    resetCountryGuesses,
-    resetProteinGuesses,
     activePhase,
-    setActivePhase,
     gameResults,
     markGameTracked,
+    setCurrentDish,
   } = useGameStore();
 
+  const { dish, isLoading, isError } = useTodaysDish();
   const setStreak = useGameStore((s) => s.setStreak);
+  const hasInitialized = useRef(false);
 
   useEffect(() => {
     posthog.capture("game_start", {
@@ -46,40 +45,55 @@ export default function GamePage() {
   }, [setStreak]);
 
   useEffect(() => {
+    if (hasInitialized.current) return;
+
     const init = async () => {
-      const { loadDishes, restoreGameStateFromStorage } =
-        useGameStore.getState();
+      const {
+        restoreGameStateFromStorage,
+        startNewGame,
+        resetCountryGuesses,
+        resetProteinGuesses,
+        setActivePhase,
+      } = useGameStore.getState();
 
-      await loadDishes();
+      const hasRestoredState = restoreGameStateFromStorage();
 
-      if (alreadyPlayedToday()) {
-        restoreGameStateFromStorage();
-      } else {
+      if (!hasRestoredState && dish) {
+        // Only start new game if we didn't restore existing state
+        setCurrentDish(dish);
         startNewGame();
         resetCountryGuesses();
         resetProteinGuesses();
         setActivePhase("dish");
+      } else if (hasRestoredState && dish) {
+        // If we restored state, just set the current dish
+        setCurrentDish(dish);
       }
-    };
 
-    if (!currentDish) {
+      hasInitialized.current = true;
+    };
+    if (dish && !isLoading) {
       init();
     }
-  }, [
-    currentDish,
-    startNewGame,
-    resetCountryGuesses,
-    resetProteinGuesses,
-    setActivePhase,
-  ]);
+  }, [dish, isLoading, setCurrentDish]);
 
   useEffect(() => {
+    if (dish && !useGameStore.getState().currentDish) {
+      setCurrentDish(dish);
+    }
+  }, [dish, setCurrentDish]);
+
+  useEffect(() => {
+    if (!hasInitialized.current) return;
+
     if (gamePhase === "dish") {
+      const { resetCountryGuesses, resetProteinGuesses, setActivePhase } =
+        useGameStore.getState();
       resetCountryGuesses();
       resetProteinGuesses();
       setActivePhase("dish");
     }
-  }, [gamePhase, resetCountryGuesses, resetProteinGuesses, setActivePhase]);
+  }, [gamePhase]);
 
   useEffect(() => {
     if (gameResults?.status && !gameResults.tracked) {
@@ -94,7 +108,37 @@ export default function GamePage() {
 
       markGameTracked();
     }
-  }, [gameResults?.status]);
+  }, [
+    gameResults?.status,
+    gameResults?.tracked,
+    gameResults?.dishGuesses?.length,
+    gameResults?.countryGuesses?.length,
+    gameResults?.proteinGuesses?.length,
+    markGameTracked,
+  ]);
+
+  if (isError) {
+    return (
+      <main className="p-4 sm:p-6 max-w-full sm:max-w-xl mx-auto flex flex-col min-h-screen">
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-xl font-semibold mb-2 text-red-600">
+              Failed to load game
+            </h2>
+            <p className="text-gray-600 mb-4">
+              Please check your connection and try again.
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   const renderPhaseContent = () => {
     const phaseConfig = getPhaseConfig(activePhase);
@@ -104,6 +148,36 @@ export default function GamePage() {
       phaseKey: activePhase,
       title: phaseConfig.title,
     };
+
+    if (!hasInitialized.current || isLoading || !dish) {
+      let correctPhase = activePhase;
+
+      if (typeof window !== "undefined" && !hasInitialized.current) {
+        try {
+          const saved = localStorage.getItem("fft-game-state");
+          if (saved) {
+            const parsedState = JSON.parse(saved);
+            correctPhase = parsedState.activePhase || "dish";
+          }
+        } catch (error) {
+          console.warn("Failed to read phase from localStorage:", error);
+        }
+      }
+
+      const correctPhaseConfig = getPhaseConfig(correctPhase);
+      const correctCommonProps = {
+        phaseKey: correctPhase,
+        title: correctPhaseConfig?.title || phaseConfig.title,
+      };
+
+      return (
+        <PhaseRenderer {...correctCommonProps}>
+          {correctPhase === "dish" && <DishPhase />}
+          {correctPhase === "country" && <CountryPhase />}
+          {correctPhase === "protein" && <ProteinPhase />}
+        </PhaseRenderer>
+      );
+    }
 
     switch (activePhase) {
       case "dish":

@@ -4,14 +4,13 @@ import {
   calculateDistance,
   capitalizeFirst,
   isDishGuessCorrect,
-  loadDishes,
   normalizeString,
 } from "@/utils/gameHelpers";
 import { create } from "zustand";
-import { enrichDishesWithCoords } from "../types/dishes";
-import { GameResults, GameState } from "../types/game";
+import { GameResults, GameState, LoadingStates } from "../types/game";
 import { emojiThemes, launchEmojiBurst } from "../utils/celebration";
 import { updateStreak } from "../utils/streak";
+import { Dish } from "@/types/dishes";
 const countryCoords = getCountryCoordsMap();
 
 function getSortedCountryCoords() {
@@ -24,57 +23,109 @@ function getSortedCountryCoords() {
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
-  restoreGameStateFromStorage: () => {
+  saveCurrentGameState: () => {
     if (typeof window === "undefined") return;
 
-    const savedDish = localStorage.getItem("fft-current-dish");
-    const savedResults = localStorage.getItem("fft-game-results");
-    const savedTiles = localStorage.getItem("fft-revealed-tiles");
-    const savedIngredients = localStorage.getItem("fft-revealed-ingredients");
-    const savedCountryResults = localStorage.getItem("fft-country-results");
-    const savedProteinResults = localStorage.getItem("fft-protein-results");
-    const savedDishGuesses = localStorage.getItem("fft-dish-guesses");
-    const savedCountryGuesses = localStorage.getItem("fft-country-guesses");
-    const savedProteinGuesses = localStorage.getItem("fft-protein-guesses");
+    const state = get();
 
-    if (savedDish && savedResults) {
-      set({
-        currentDish: JSON.parse(savedDish),
-        gameResults: JSON.parse(savedResults),
-        revealedTiles: savedTiles
-          ? JSON.parse(savedTiles)
-          : [false, false, false, false, false, false],
-        revealedIngredients: savedIngredients ? Number(savedIngredients) : 1,
-        countryGuessResults: savedCountryResults
-          ? JSON.parse(savedCountryResults)
-          : [],
-        proteinGuessResults: savedProteinResults
-          ? JSON.parse(savedProteinResults)
-          : [],
-        dishGuesses: savedDishGuesses ? JSON.parse(savedDishGuesses) : [],
-        countryGuesses: savedCountryGuesses
-          ? JSON.parse(savedCountryGuesses)
-          : [],
-        proteinGuesses: savedProteinGuesses
-          ? JSON.parse(savedProteinGuesses)
-          : [],
-        modalVisible: true,
-        gamePhase: "complete",
-      });
+    // Store only the essential game state WITHOUT sensitive dish data
+    const gameStateToSave = {
+      gamePhase: state.gamePhase,
+      activePhase: state.activePhase,
+      revealedTiles: state.revealedTiles,
+      revealedIngredients: state.revealedIngredients,
+      dishGuesses: state.dishGuesses,
+      countryGuesses: state.countryGuesses,
+      proteinGuesses: state.proteinGuesses,
+      countryGuessResults: state.countryGuessResults,
+      proteinGuessResults: state.proteinGuessResults,
+      gameResults: state.gameResults,
+      savedDate: new Date().toISOString().split("T")[0],
+    };
+
+    localStorage.setItem("fft-game-state", JSON.stringify(gameStateToSave));
+  },
+
+  restoreGameStateFromStorage: () => {
+    if (typeof window === "undefined") return false;
+
+    try {
+      const saved = localStorage.getItem("fft-game-state");
+      if (!saved) return false;
+
+      const parsedState = JSON.parse(saved);
+
+      // Check if the saved game state is from today
+      const today = new Date().toISOString().split("T")[0];
+      const savedDate = parsedState.savedDate;
+
+      // If no saved date or it's from a different day, clear the saved state and return
+      if (!savedDate || savedDate !== today) {
+        localStorage.removeItem("fft-game-state");
+        return false;
+      }
+
+      const isComplete = parsedState.gamePhase === "complete";
+
+      if (parsedState.gameResults) {
+        set({
+          // Don't restore currentDish - it will be loaded fresh from API
+          gamePhase: parsedState.gamePhase || "dish",
+          activePhase: parsedState.activePhase || "dish",
+          gameResults: parsedState.gameResults || {
+            dishGuesses: [],
+            dishGuessSuccess: false,
+            countryGuesses: [],
+            countryGuessSuccess: false,
+            proteinGuesses: [],
+            proteinGuessSuccess: false,
+            tracked: false,
+          },
+          revealedTiles: parsedState.revealedTiles || [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+          ],
+          revealedIngredients: parsedState.revealedIngredients || 1,
+          countryGuessResults: parsedState.countryGuessResults || [],
+          proteinGuessResults: parsedState.proteinGuessResults || [],
+          dishGuesses: parsedState.dishGuesses || [],
+          countryGuesses: parsedState.countryGuesses || [],
+          proteinGuesses: parsedState.proteinGuesses || [],
+          modalVisible: isComplete,
+          hasRestoredState: true,
+        });
+        return true;
+      }
+      return false;
+    } catch {
+      localStorage.removeItem("fft-game-state");
+      return false;
     }
   },
+
   currentDish: null,
   dishes: [],
-  loadDishes: async () => {
-    const rawDishes = await loadDishes();
-    const countryCoords = getCountryCoordsMap();
-    const enriched = enrichDishesWithCoords(rawDishes, countryCoords);
-    const todayDish = enriched[0] || null;
-    set({
-      dishes: enriched,
-      currentDish: todayDish,
-    });
+
+  loading: {
+    dishGuess: false,
+    countryGuess: false,
+    proteinGuess: false,
   },
+
+  setLoading: (key: keyof LoadingStates, value: boolean) => {
+    set((state) => ({
+      loading: { ...state.loading, [key]: value },
+    }));
+  },
+
+  setCurrentDish: (dish: Dish | null) => {
+    set({ currentDish: dish });
+  },
+
   gamePhase: "dish",
   revealedIngredients: 1,
   dishGuesses: [],
@@ -119,13 +170,19 @@ export const useGameStore = create<GameState>((set, get) => ({
     newTiles[index] = true;
 
     set({ revealedTiles: newTiles });
+    get().saveCurrentGameState();
   },
 
   revealAllTiles: () => {
     set({ revealedTiles: [true, true, true, true, true, true] });
+    get().saveCurrentGameState();
   },
 
   startNewGame: () => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("fft-game-state");
+    }
+
     const dishes = get().dishes;
     const dish =
       dishes.length > 0
@@ -154,118 +211,139 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   makeDishGuess: (guess: string): boolean => {
-    const { currentDish, gamePhase } = get();
-    if (!currentDish) return false;
-    const normalizedGuess = normalizeString(guess);
-    if (gamePhase === "dish") {
-      const isCorrect = isDishGuessCorrect(normalizedGuess, currentDish);
-      const newGuesses = [...get().dishGuesses, normalizedGuess];
-      set((state) => ({
-        dishGuesses: newGuesses,
-        gameResults: {
-          ...state.gameResults,
+    const { currentDish, gamePhase, loading } = get();
+    if (!currentDish || loading.dishGuess) return false;
+
+    try {
+      get().setLoading("dishGuess", true);
+      const normalizedGuess = normalizeString(guess);
+      if (gamePhase === "dish") {
+        const isCorrect = isDishGuessCorrect(normalizedGuess, currentDish);
+        const newGuesses = [...get().dishGuesses, normalizedGuess];
+        set((state) => ({
           dishGuesses: newGuesses,
-          dishGuessSuccess: isCorrect,
-        },
-      }));
-      return isCorrect;
+          gameResults: {
+            ...state.gameResults,
+            dishGuesses: newGuesses,
+            dishGuessSuccess: isCorrect,
+          },
+        }));
+        get().saveCurrentGameState();
+        return isCorrect;
+      }
+      return false;
+    } finally {
+      get().setLoading("dishGuess", false);
     }
-    return false;
   },
 
   makeCountryGuess: (guess: string): boolean => {
-    const { currentDish, gamePhase } = get();
-    if (!currentDish) return false;
-    const normalizedGuess = normalizeString(guess);
-    if (gamePhase === "country") {
-      const isCorrect =
-        normalizedGuess === normalizeString(currentDish.country);
+    const { currentDish, gamePhase, loading } = get();
+    if (!currentDish || loading.countryGuess) return false;
 
-      const newGuesses = [...get().countryGuesses, normalizedGuess];
-      const results = get().countryGuessResults;
-      const updatedResults = [...results];
-      if (isCorrect) {
-        updatedResults.push({
-          country: capitalizeFirst(normalizedGuess),
-          isCorrect: true,
-          distance: 0,
-          direction: "N/A",
-        });
-      } else {
-        const coords = countryCoords[normalizedGuess];
-        if (!coords) {
+    try {
+      get().setLoading("countryGuess", true);
+      const normalizedGuess = normalizeString(guess);
+      if (gamePhase === "country") {
+        const isCorrect =
+          normalizedGuess === normalizeString(currentDish.country);
+
+        const newGuesses = [...get().countryGuesses, normalizedGuess];
+        const results = get().countryGuessResults;
+        const updatedResults = [...results];
+        if (isCorrect) {
           updatedResults.push({
             country: capitalizeFirst(normalizedGuess),
-            isCorrect: false,
-            distance: NaN,
-            direction: "Invalid",
+            isCorrect: true,
+            distance: 0,
+            direction: "N/A",
           });
         } else {
-          const distance = calculateDistance(
-            coords.lat,
-            coords.lng,
-            currentDish.coordinates?.lat || 0,
-            currentDish.coordinates?.lng || 0
-          );
-          const direction = calculateDirection(
-            coords.lat,
-            coords.lng,
-            currentDish.coordinates?.lat || 0,
-            currentDish.coordinates?.lng || 0
-          );
-          updatedResults.push({
-            country: capitalizeFirst(normalizedGuess),
-            isCorrect: false,
-            distance,
-            direction,
-          });
+          const coords = countryCoords[normalizedGuess];
+          if (!coords) {
+            updatedResults.push({
+              country: capitalizeFirst(normalizedGuess),
+              isCorrect: false,
+              distance: NaN,
+              direction: "Invalid",
+            });
+          } else {
+            const distance = calculateDistance(
+              coords.lat,
+              coords.lng,
+              currentDish.coordinates?.lat || 0,
+              currentDish.coordinates?.lng || 0
+            );
+            const direction = calculateDirection(
+              coords.lat,
+              coords.lng,
+              currentDish.coordinates?.lat || 0,
+              currentDish.coordinates?.lng || 0
+            );
+            updatedResults.push({
+              country: capitalizeFirst(normalizedGuess),
+              isCorrect: false,
+              distance,
+              direction,
+            });
+          }
         }
-      }
-      set((state) => ({
-        countryGuesses: newGuesses,
-        countryGuessResults: updatedResults,
-        gameResults: {
-          ...state.gameResults,
+        set((state) => ({
           countryGuesses: newGuesses,
-          countryGuessSuccess: isCorrect,
-        },
-      }));
-      return isCorrect;
+          countryGuessResults: updatedResults,
+          gameResults: {
+            ...state.gameResults,
+            countryGuesses: newGuesses,
+            countryGuessSuccess: isCorrect,
+          },
+        }));
+        get().saveCurrentGameState();
+        return isCorrect;
+      }
+      return false;
+    } finally {
+      get().setLoading("countryGuess", false);
     }
-    return false;
   },
 
   makeProteinGuess: (guess: number): boolean => {
-    const { currentDish, gamePhase } = get();
-    if (!currentDish || gamePhase !== "protein") return false;
+    const { currentDish, gamePhase, loading } = get();
+    if (!currentDish || gamePhase !== "protein" || loading.proteinGuess)
+      return false;
 
-    const actualProtein = currentDish.proteinPerServing || 0;
-    const isCorrect = guess === actualProtein;
-    const difference = Math.abs(guess - actualProtein);
+    try {
+      get().setLoading("proteinGuess", true);
+      const actualProtein = currentDish.proteinPerServing || 0;
+      const isCorrect = guess === actualProtein;
+      const difference = Math.abs(guess - actualProtein);
 
-    const newGuesses = [...get().proteinGuesses, guess];
-    const results = get().proteinGuessResults;
-    const updatedResults = [
-      ...results,
-      {
-        guess,
-        actualProtein,
-        difference,
-        isCorrect,
-      },
-    ];
+      const newGuesses = [...get().proteinGuesses, guess];
+      const results = get().proteinGuessResults;
+      const updatedResults = [
+        ...results,
+        {
+          guess,
+          actualProtein,
+          difference,
+          isCorrect,
+        },
+      ];
 
-    set((state) => ({
-      proteinGuesses: newGuesses,
-      proteinGuessResults: updatedResults,
-      gameResults: {
-        ...state.gameResults,
+      set((state) => ({
         proteinGuesses: newGuesses,
-        proteinGuessSuccess: isCorrect,
-      },
-    }));
+        proteinGuessResults: updatedResults,
+        gameResults: {
+          ...state.gameResults,
+          proteinGuesses: newGuesses,
+          proteinGuessSuccess: isCorrect,
+        },
+      }));
+      get().saveCurrentGameState();
 
-    return isCorrect;
+      return isCorrect;
+    } finally {
+      get().setLoading("proteinGuess", false);
+    }
   },
 
   revealNextIngredient: () => {
@@ -273,6 +351,7 @@ export const useGameStore = create<GameState>((set, get) => ({
 
     if (revealedIngredients < (currentDish?.ingredients.length || 0)) {
       set((state) => ({ revealedIngredients: state.revealedIngredients + 1 }));
+      get().saveCurrentGameState();
     } else if (currentDish) {
       get().moveToCountryPhase();
     }
@@ -280,10 +359,12 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   moveToCountryPhase: () => {
     set({ gamePhase: "country" });
+    get().saveCurrentGameState();
   },
 
   moveToProteinPhase: () => {
     set({ gamePhase: "protein" });
+    get().saveCurrentGameState();
   },
 
   completeGame: () => {
@@ -297,49 +378,6 @@ export const useGameStore = create<GameState>((set, get) => ({
 
     const finalStatus = hasAnySuccess ? "won" : "lost";
 
-    if (typeof window !== "undefined") {
-      localStorage.setItem(
-        "fft-current-dish",
-        JSON.stringify(state.currentDish)
-      );
-      localStorage.setItem(
-        "fft-game-results",
-        JSON.stringify({
-          ...state.gameResults,
-          status: finalStatus,
-          tracked: false,
-        })
-      );
-      localStorage.setItem(
-        "fft-revealed-tiles",
-        JSON.stringify(state.revealedTiles)
-      );
-      localStorage.setItem(
-        "fft-revealed-ingredients",
-        String(state.revealedIngredients)
-      );
-      localStorage.setItem(
-        "fft-country-results",
-        JSON.stringify(state.countryGuessResults)
-      );
-      localStorage.setItem(
-        "fft-protein-results",
-        JSON.stringify(state.proteinGuessResults)
-      );
-      localStorage.setItem(
-        "fft-dish-guesses",
-        JSON.stringify(state.dishGuesses)
-      );
-      localStorage.setItem(
-        "fft-country-guesses",
-        JSON.stringify(state.countryGuesses)
-      );
-      localStorage.setItem(
-        "fft-protein-guesses",
-        JSON.stringify(state.proteinGuesses)
-      );
-    }
-
     set({
       gamePhase: "complete",
       modalVisible: true,
@@ -350,6 +388,8 @@ export const useGameStore = create<GameState>((set, get) => ({
         tracked: false,
       },
     });
+
+    get().saveCurrentGameState();
   },
 
   resetCountryGuesses: () => set({ countryGuessResults: [] }),
@@ -462,8 +502,11 @@ export const useGameStore = create<GameState>((set, get) => ({
     return isCorrect;
   },
   activePhase: "dish",
-  setActivePhase: (phase: "dish" | "country" | "protein") =>
-    set({ activePhase: phase }),
+  hasRestoredState: false,
+  setActivePhase: (phase: "dish" | "country" | "protein") => {
+    set({ activePhase: phase });
+    get().saveCurrentGameState();
+  },
   streak: 0,
   setStreak: (value: number) => set({ streak: value }),
   markGameTracked: () => {

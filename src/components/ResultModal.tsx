@@ -2,12 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { useGameStore } from "@/store/gameStore";
+import { ChefHat, Copy, Minimize2 } from "lucide-react";
 import Image from "next/image";
 import posthog from "posthog-js";
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { generateShareText } from "../utils/shareText";
 import { alreadyPlayedToday } from "../utils/streak";
+import { CircularShareMenu } from "./ShareSocial";
 
 export const ResultModal: React.FC = () => {
   const {
@@ -23,28 +25,28 @@ export const ResultModal: React.FC = () => {
 
   if (gamePhase !== "complete" || !currentDish || !modalVisible) return null;
 
+  const shareText = generateShareText({
+    dishGuesses: gameResults.dishGuesses,
+    countryGuesses: countryGuessResults.map((g) => ({
+      name: g.country,
+      distance: g.distance,
+      direction: g.direction,
+    })),
+    proteinGuesses: gameResults.proteinGuesses.map((guess) => ({
+      guess,
+      actualProtein: currentDish?.proteinPerServing || 0,
+    })),
+    dish: currentDish.name,
+    country: currentDish.country,
+    streak,
+    acceptableGuesses: currentDish.acceptableGuesses || [],
+  });
   const handleCopyResults = () => {
     posthog.capture("share_score_clicked", {
       mode: alreadyPlayedToday() ? "daily" : "freeplay",
     });
 
-    const text = generateShareText({
-      dishGuesses: gameResults.dishGuesses,
-      countryGuesses: countryGuessResults.map((g) => ({
-        name: g.country,
-        distance: g.distance,
-        direction: g.direction,
-      })),
-      proteinGuesses: gameResults.proteinGuesses.map((guess) => ({
-        guess,
-        actualProtein: currentDish?.proteinPerServing || 0,
-      })),
-      dish: currentDish.name,
-      country: currentDish.country,
-      streak,
-    });
-
-    navigator.clipboard.writeText(text);
+    navigator.clipboard.writeText(shareText);
     toast.success("Results copied to clipboard!");
   };
 
@@ -75,7 +77,7 @@ export const ResultModal: React.FC = () => {
         {currentDish.imageUrl && (
           <Image
             src={currentDish.imageUrl}
-            alt={currentDish.name}
+            alt="Dish image"
             className="rounded-lg w-full object-cover max-h-52"
             width={1000}
             height={1000}
@@ -151,17 +153,25 @@ export const ResultModal: React.FC = () => {
             </div>
           )}
 
-          <div className="flex justify-between gap-2">
+          {/* <div className="flex gap-1  sm:gap-4 mt-4"> */}
+          <div className="flex justify-between items-center gap-2 mt-4">
             <Button
               onClick={() => setShowRecipe(!showRecipe)}
               variant="neutral"
+              className="w-[42px] h-[42px]"
             >
-              {showRecipe ? "Close" : "🍽️ View Recipe"}
+              {showRecipe ? <Minimize2 /> : <ChefHat />}
             </Button>
-            <Button onClick={handleCopyResults} variant="share">
-              📋 Share Your Results
-            </Button>
+            <div className="flex items-center gap-2">
+              <div className="w-[42px] h-[42px] relative">
+                <CircularShareMenu shareText={shareText} />
+              </div>
+              <Button onClick={handleCopyResults} variant="share" className="w-[42px] h-[42px]">
+                <Copy />
+              </Button>
+            </div>
           </div>
+
           {currentDish.recipe && (
             <>
               {showRecipe && (

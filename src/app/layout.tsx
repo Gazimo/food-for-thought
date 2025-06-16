@@ -21,7 +21,7 @@ export const metadata = {
     siteName: "Food for Thought",
     images: [
       {
-        url: "/og-image.jpeg",
+        url: "https://f4t.xyz/og-image.jpeg", // ✅ absolute URL
         width: 1200,
         height: 630,
         alt: 'Cartoon chef holding a world map with "Food for Thought" logo',
@@ -34,7 +34,7 @@ export const metadata = {
     title: "Food for Thought – A Delicious Guessing Game",
     description:
       "A daily global game about food and geography. Uncover the dish. Track it to its origin. Become a Chef.",
-    images: ["/og-image.jpeg"],
+    images: ["https://f4t.xyz/og-image.jpeg"], // ✅ absolute URL
   },
 };
 

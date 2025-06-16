@@ -2,7 +2,9 @@ import { CountryGuessFeedback } from "@/components/CountryGuessFeedback";
 import { GuessInput } from "@/components/GuessInput";
 import { useGameStore } from "@/store/gameStore";
 import posthog from "posthog-js";
+import { CountrySkeleton } from "../../components/GameSkeleton";
 import { MapGuessVisualizer } from "../../components/MapGuessVisualizer";
+import { useTodaysDish } from "../../hooks/useDishes";
 import { getCountryCoordsMap, getCountryNames } from "../../utils/countries";
 
 export function CountryPhase() {
@@ -16,6 +18,11 @@ export function CountryPhase() {
   const isComplete = isCountryPhaseComplete();
   const countryNames = getCountryNames();
   const countryCoords = getCountryCoordsMap();
+  const { isLoading } = useTodaysDish();
+
+  if (isLoading) {
+    return <CountrySkeleton />;
+  }
 
   const handleGuess = (guess: string) => {
     const match = countryGuessResults.find(

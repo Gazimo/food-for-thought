@@ -12,6 +12,7 @@ interface NumberInputProps {
   shake: boolean;
   min?: number;
   max?: number;
+  disabled?: boolean;
 }
 
 export const NumberInput: React.FC<NumberInputProps> = ({
@@ -22,6 +23,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
   shake,
   min = 0,
   max = 1000,
+  disabled = false,
 }) => {
   const { activePhase, isPhaseComplete } = useGameStore();
   const isComplete = isPhaseComplete(activePhase);
@@ -57,7 +59,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
           "border-gray-200 focus:border-blue-500 focus:outline-none",
           shake && "animate-shake"
         )}
-        disabled={isComplete}
+        disabled={isComplete || disabled}
       />
     </div>
   );

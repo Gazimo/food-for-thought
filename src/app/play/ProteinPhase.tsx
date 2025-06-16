@@ -1,6 +1,8 @@
 import { GuessInput } from "@/components/GuessInput";
 import { useGameStore } from "@/store/gameStore";
+import { ProteinSkeleton } from "../../components/GameSkeleton";
 import { ProteinGuessFeedback } from "../../components/ProteinGuessFeedback";
+import { useTodaysDish } from "../../hooks/useDishes";
 
 export function ProteinPhase() {
   const {
@@ -10,6 +12,11 @@ export function ProteinPhase() {
     currentDish,
     isProteinPhaseComplete,
   } = useGameStore();
+  const { isLoading } = useTodaysDish();
+
+  if (isLoading) {
+    return <ProteinSkeleton />;
+  }
 
   const isComplete = isProteinPhaseComplete();
 

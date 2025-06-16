@@ -27,7 +27,6 @@ export function Tile({
   }, [imageUrl]);
 
   const handleImageError = () => {
-    console.warn(`Failed to load image: ${imgSrc}`);
     setImgSrc(FALLBACK_IMAGE);
   };
 
@@ -49,7 +48,6 @@ export function Tile({
         }`}
       >
         <div className="absolute w-full h-full bg-transparent backface-hidden" />
-
 
         <div className="absolute w-full h-full overflow-hidden backface-hidden transform rotate-y-180">
           <div

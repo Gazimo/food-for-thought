@@ -5,6 +5,7 @@ export function generateShareText({
   dish,
   country,
   streak,
+  acceptableGuesses = [],
 }: {
   dishGuesses: string[];
   countryGuesses: { name: string; distance: number; direction: string }[];
@@ -12,6 +13,7 @@ export function generateShareText({
   dish: string;
   country: string;
   streak: number;
+  acceptableGuesses?: string[];
 }) {
   const dayNumber = getGameDayNumber();
   const today = new Date().toLocaleDateString("en-GB");
@@ -19,12 +21,20 @@ export function generateShareText({
   const lastDishGuess = dishGuesses.at(-1)?.toLowerCase();
   const lastCountryGuess = countryGuesses.at(-1)?.name.toLowerCase();
 
-  const dishCorrect = lastDishGuess === dish.toLowerCase();
+  const dishCorrect =
+    lastDishGuess === dish.toLowerCase() ||
+    acceptableGuesses.some(
+      (acceptable) => acceptable.toLowerCase() === lastDishGuess
+    );
   const countryCorrect = lastCountryGuess === country.toLowerCase();
 
   const dishTiles = dishGuesses
     .map((guess, i, arr) => {
-      const isCorrect = guess.toLowerCase() === dish.toLowerCase();
+      const isCorrect =
+        guess.toLowerCase() === dish.toLowerCase() ||
+        acceptableGuesses.some(
+          (acceptable) => acceptable.toLowerCase() === guess.toLowerCase()
+        );
       const isLast = i === arr.length - 1;
       if (isCorrect) return "🟩";
       if (isLast) return "🏳️";
