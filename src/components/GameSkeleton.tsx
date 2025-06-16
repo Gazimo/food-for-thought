@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import React from "react";
 
 const TileGridSkeleton = () => {
   const width =
@@ -11,10 +10,8 @@ const TileGridSkeleton = () => {
       className="relative mx-auto bg-gray-200 rounded-lg overflow-hidden"
       style={{ width: `${width}px`, height: `${height}px`, maxWidth: "100vw" }}
     >
-      {/* Shimmer overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 animate-[shimmer_2s_infinite]" />
 
-      {/* Grid overlay */}
       <div className="absolute inset-0 grid grid-cols-3 grid-rows-2 border border-gray-300/50 z-[2] pointer-events-none">
         {Array.from({ length: 6 }).map((_, i) => (
           <div key={i} className="border border-gray-300/50" />
@@ -26,37 +23,34 @@ const TileGridSkeleton = () => {
 
 const InputSkeleton = () => (
   <div className="w-full flex gap-2 items-center">
-    {/* Give up button skeleton */}
     <div className="relative w-12 h-12 bg-gray-200 rounded-lg overflow-hidden">
       <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/60 to-transparent" />
     </div>
 
-    {/* Input field skeleton */}
     <div className="flex-1 relative h-12 bg-gray-200 rounded-lg overflow-hidden">
       <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/60 to-transparent" />
     </div>
 
-    {/* Submit button skeleton */}
     <div className="relative w-24 h-12 bg-gray-200 rounded-lg overflow-hidden">
       <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/60 to-transparent" />
     </div>
   </div>
 );
 
-const TextSkeleton = ({
-  lines = 1,
-  className,
-}: {
-  lines?: number;
-  className?: string;
-}) => (
-  <div className={cn("space-y-2", className)}>
+const MapSkeleton = () => (
+  <div className="relative w-full aspect-[3/2] max-w-[500px] mx-auto bg-gray-200 rounded-lg overflow-hidden">
+    <div className="absolute inset-0 animate-[shimmer_2s_infinite] bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200" />
+  </div>
+);
+
+const ParagraphSkeleton = ({ lines = 2 }: { lines?: number }) => (
+  <div className="space-y-2">
     {Array.from({ length: lines }).map((_, i) => (
       <div
         key={i}
         className={cn(
-          "relative h-4 bg-gray-200 rounded overflow-hidden",
-          i === lines - 1 ? "w-3/4" : "w-full"
+          "h-4 bg-gray-200 rounded overflow-hidden",
+          i === lines - 1 ? "w-2/3" : "w-full"
         )}
       >
         <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/60 to-transparent" />
@@ -65,38 +59,34 @@ const TextSkeleton = ({
   </div>
 );
 
-export const GameSkeleton: React.FC = () => {
+export const DishSkeleton = () => {
   return (
-    <div className="space-y-6">
-      {/* Header skeleton */}
-      <div className="text-center space-y-2">
-        <div className="relative h-8 w-48 mx-auto bg-gray-200 rounded overflow-hidden">
+    <>
+      <TileGridSkeleton />
+      <InputSkeleton />
+    </>
+  );
+};
+
+export const CountrySkeleton = () => {
+  return (
+    <>
+      <MapSkeleton />
+      <InputSkeleton />
+    </>
+  );
+};
+
+export const ProteinSkeleton = () => {
+  return (
+    <>
+      <ParagraphSkeleton lines={2} />
+      <InputSkeleton />
+      <div className="text-center text-sm text-gray-400">
+        <div className="w-24 h-4 mx-auto bg-gray-200 rounded overflow-hidden relative">
           <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/60 to-transparent" />
         </div>
       </div>
-
-      {/* Tile grid skeleton */}
-      <TileGridSkeleton />
-
-      {/* Help text skeleton */}
-      <div className="text-center">
-        <TextSkeleton className="max-w-xs mx-auto" />
-      </div>
-
-      {/* Input skeleton */}
-      <InputSkeleton />
-
-      {/* Navigation skeleton */}
-      <div className="flex justify-center space-x-4 mt-8">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div
-            key={i}
-            className="relative w-16 h-8 bg-gray-200 rounded overflow-hidden"
-          >
-            <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/60 to-transparent" />
-          </div>
-        ))}
-      </div>
-    </div>
+    </>
   );
 };

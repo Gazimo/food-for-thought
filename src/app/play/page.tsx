@@ -3,7 +3,6 @@
 import { GameFooter } from "@/components/GameFooter";
 import { GameHeader } from "@/components/GameHeader";
 import { GameNavigation, ShowResultsButton } from "@/components/GameNavigation";
-import { GameSkeleton } from "@/components/GameSkeleton";
 import { PhaseContainer } from "@/components/PhaseContainer";
 import { PhaseRenderer } from "@/components/PhaseRenderer";
 import { ResultModal } from "@/components/ResultModal";
@@ -138,18 +137,6 @@ export default function GamePage() {
     );
   }
 
-  if (isLoading || !dish) {
-    return (
-      <main className="p-4 sm:p-6 max-w-full sm:max-w-xl mx-auto flex flex-col min-h-screen">
-        <GameHeader />
-        <PhaseContainer>
-          <GameSkeleton />
-        </PhaseContainer>
-        <GameFooter />
-      </main>
-    );
-  }
-
   const renderPhaseContent = () => {
     const phaseConfig = getPhaseConfig(activePhase);
     if (!phaseConfig) return null;
@@ -158,6 +145,36 @@ export default function GamePage() {
       phaseKey: activePhase,
       title: phaseConfig.title,
     };
+
+    if (!hasInitialized.current || isLoading || !dish) {
+      let correctPhase = activePhase;
+
+      if (typeof window !== "undefined" && !hasInitialized.current) {
+        try {
+          const saved = localStorage.getItem("fft-game-state");
+          if (saved) {
+            const parsedState = JSON.parse(saved);
+            correctPhase = parsedState.activePhase || "dish";
+          }
+        } catch (error) {
+          console.warn("Failed to read phase from localStorage:", error);
+        }
+      }
+
+      const correctPhaseConfig = getPhaseConfig(correctPhase);
+      const correctCommonProps = {
+        phaseKey: correctPhase,
+        title: correctPhaseConfig?.title || phaseConfig.title,
+      };
+
+      return (
+        <PhaseRenderer {...correctCommonProps}>
+          {correctPhase === "dish" && <DishPhase />}
+          {correctPhase === "country" && <CountryPhase />}
+          {correctPhase === "protein" && <ProteinPhase />}
+        </PhaseRenderer>
+      );
+    }
 
     switch (activePhase) {
       case "dish":

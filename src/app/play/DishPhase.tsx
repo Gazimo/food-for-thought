@@ -3,6 +3,8 @@ import { GuessInput } from "@/components/GuessInput";
 import { useGameStore } from "@/store/gameStore";
 import posthog from "posthog-js";
 import { TileGrid } from "../../components/dish-image/TileGrid";
+import { DishSkeleton } from "../../components/GameSkeleton";
+import { useTodaysDish } from "../../hooks/useDishes";
 
 export function DishPhase() {
   const {
@@ -13,6 +15,12 @@ export function DishPhase() {
     gameResults,
     isDishPhaseComplete,
   } = useGameStore();
+
+  const { dish, isLoading } = useTodaysDish();
+
+  if (isLoading || !dish) {
+    return <DishSkeleton />;
+  }
 
   const isComplete = isDishPhaseComplete();
 
