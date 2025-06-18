@@ -174,7 +174,7 @@ export function getClosestGuess(
   }
 
   const fuse = new Fuse(options, {
-    threshold: 0.1,
+    threshold: 0.4,
     includeScore: true,
     ignoreLocation: false,
     distance: 10,
@@ -190,24 +190,33 @@ export function getClosestGuess(
   const target = bestMatch.item.toLowerCase();
   const score = bestMatch.score || 0;
 
+  const similarityRatio = normalizedInput.length / target.length;
+
   let acceptableScoreThreshold: number;
-  if (normalizedInput.length >= target.length * 0.7) {
+  if (similarityRatio >= 0.8) {
+    acceptableScoreThreshold = 0.4;
+  } else if (similarityRatio >= 0.7) {
+    acceptableScoreThreshold = 0.3;
+  } else if (similarityRatio >= 0.5) {
     acceptableScoreThreshold = 0.2;
-  } else if (normalizedInput.length >= target.length * 0.5) {
-    acceptableScoreThreshold = 0.1;
   } else {
-    acceptableScoreThreshold = 0.05;
+    acceptableScoreThreshold = 0.1;
   }
 
   const isMeaningfulSubstring =
     target.includes(normalizedInput) &&
     normalizedInput.length / target.length > 0.3;
 
-  if (score <= acceptableScoreThreshold && isMeaningfulSubstring) {
-    return bestMatch.item;
-  }
+  const isReverseSubstring =
+    normalizedInput.includes(target) &&
+    target.length / normalizedInput.length > 0.3;
 
-  if (score <= 0.05) {
+  if (
+    score <= acceptableScoreThreshold ||
+    isMeaningfulSubstring ||
+    isReverseSubstring ||
+    score <= 0.15
+  ) {
     return bestMatch.item;
   }
 

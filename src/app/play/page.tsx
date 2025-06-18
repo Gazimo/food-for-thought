@@ -157,7 +157,16 @@ export default function GamePage() {
           const saved = localStorage.getItem("fft-game-state");
           if (saved) {
             const parsedState = JSON.parse(saved);
-            correctPhase = parsedState.activePhase || "dish";
+
+            const today = new Date().toISOString().split("T")[0];
+            const savedDate = parsedState.savedDate;
+
+            if (savedDate && savedDate === today) {
+              correctPhase = parsedState.activePhase || "dish";
+            } else {
+
+              correctPhase = "dish";
+            }
           }
         } catch (error) {
           console.warn("Failed to read phase from localStorage:", error);
