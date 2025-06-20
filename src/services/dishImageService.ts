@@ -49,10 +49,7 @@ class DishImageService {
         style: "natural",
       });
 
-      const imageUrl = response.data[0].url;
-      if (!imageUrl) {
-        throw new Error("No image URL returned from DALL-E 3");
-      }
+      const imageUrl = response.data?.[0]?.url || "/images/404.png";
 
       // Download and save the image with MD5 hash filename
       const filename = await this.downloadAndHashImage(imageUrl);
@@ -220,8 +217,7 @@ class DishImageService {
           style: "natural",
         });
 
-        const imageUrl = response.data[0].url;
-        if (!imageUrl) continue;
+        const imageUrl = response.data?.[0]?.url || "/images/404.png";
 
         const filename = await this.downloadAndHashImage(imageUrl);
 
