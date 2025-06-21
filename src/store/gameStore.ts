@@ -7,7 +7,7 @@ import {
   normalizeString,
 } from "@/utils/gameHelpers";
 import { create } from "zustand";
-import { Dish } from "../../public/data/dishes";
+import { Dish } from "@/types/dishes";
 import { GameResults, GameState, LoadingStates } from "../types/game";
 import { emojiThemes, launchEmojiBurst } from "../utils/celebration";
 import { updateStreak } from "../utils/streak";

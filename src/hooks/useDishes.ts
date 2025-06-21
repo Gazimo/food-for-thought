@@ -1,6 +1,6 @@
 import { loadDishes } from "@/utils/gameHelpers";
 import { useQuery } from "@tanstack/react-query";
-import { Dish } from "../../public/data/dishes";
+import { Dish } from "../types/dishes";
 
 export const useDishes = () => {
   return useQuery({

@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextApiRequest, NextApiResponse } from "next";
-import { Dish, enrichDishesWithCoords } from "../../../public/data/dishes";
+import { Dish, enrichDishesWithCoords } from "@/types/dishes";
 import PostHogClient from "../../lib/posthog";
 import { getCountryCoordsMap } from "../../utils/countries";
 import { getDailySalt, obfuscateData } from "../../utils/encryption";
