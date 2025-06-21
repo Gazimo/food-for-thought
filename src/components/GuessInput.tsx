@@ -89,6 +89,19 @@ export const GuessInput: React.FC<GuessInputProps> = ({
     const trimmed = guess.trim().toLowerCase();
     if (!trimmed) return;
 
+    if (suggestions.length > 0) {
+      const isValidSuggestion = suggestions.some(
+        (suggestion) => suggestion.toLowerCase() === trimmed
+      );
+
+      if (!isValidSuggestion) {
+        toast.error(
+          `"${guess.trim()}" is not a valid country name. Please select from the suggestions.`
+        );
+        return;
+      }
+    }
+
     if (previousGuesses.includes(trimmed)) {
       triggerShake();
       toast.error("You already guessed that!");
