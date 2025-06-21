@@ -85,6 +85,10 @@ module.exports = {
           '0%': { transform: 'translateX(-100%)' },
           '100%': { transform: 'translateX(100%)' },
         },
+        shine: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
       },
       animation: {
         'streak-pop': 'streak-pop 0.3s ease-in-out',
@@ -92,8 +96,8 @@ module.exports = {
         'pulseCorrect': 'pulseCorrect 1.2s ease-in-out infinite',
         'tileHint': 'tileHint 3s ease-in-out infinite',
         'shimmer': 'shimmer 2s ease-in-out infinite',
+        'shine': 'shine 2s linear infinite',
       },
-
     }
   },
   plugins: [require("tailwindcss-animate")],

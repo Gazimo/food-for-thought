@@ -2,14 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import { useGameStore } from "@/store/gameStore";
-import { ChefHat, Copy, Minimize2 } from "lucide-react";
 import Image from "next/image";
 import posthog from "posthog-js";
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { generateShareText } from "../utils/shareText";
 import { alreadyPlayedToday } from "../utils/streak";
-import { CircularShareMenu } from "./ShareSocial";
 
 export const ResultModal: React.FC = () => {
   const {
@@ -153,23 +151,20 @@ export const ResultModal: React.FC = () => {
             </div>
           )}
 
-          {/* <div className="flex gap-1  sm:gap-4 mt-4"> */}
-          <div className="flex justify-between items-center gap-2 mt-4">
+          <div className="flex justify-between gap-2">
             <Button
               onClick={() => setShowRecipe(!showRecipe)}
               variant="neutral"
-              className="w-[42px] h-[42px]"
             >
-              {showRecipe ? <Minimize2 /> : <ChefHat />}
+              {showRecipe ? "Close" : "🍽️ View Recipe"}
             </Button>
-            <div className="flex items-center gap-2">
-              <div className="w-[42px] h-[42px] relative">
-                <CircularShareMenu shareText={shareText} />
-              </div>
-              <Button onClick={handleCopyResults} variant="share" className="w-[42px] h-[42px]">
-                <Copy />
-              </Button>
-            </div>
+            <Button
+              onClick={handleCopyResults}
+              variant="share"
+              className="animate-shine"
+            >
+              📋 Share Your Results
+            </Button>
           </div>
 
           {currentDish.recipe && (
