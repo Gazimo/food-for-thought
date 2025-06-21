@@ -21,7 +21,7 @@ export const metadata = {
     siteName: "Food for Thought",
     images: [
       {
-        url: "https://f4t.xyz/og-image.jpeg", // ✅ absolute URL
+        url: "https://f4t.xyz/og-image.jpeg",
         width: 1200,
         height: 630,
         alt: 'Cartoon chef holding a world map with "Food for Thought" logo',
