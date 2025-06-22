@@ -1,4 +1,3 @@
-// pages/api/dish-tiles-blurred.ts
 import fs from "fs";
 import type { NextApiRequest, NextApiResponse } from "next";
 import path from "path";
@@ -82,7 +81,7 @@ export default async function handler(
 
     const tileBuffer = await resized
       .extract({ left, top, width: actualWidth, height: actualHeight })
-      .blur(30)
+      .blur(40)
       .modulate({
         brightness: 0.8,
         saturation: 0.6,

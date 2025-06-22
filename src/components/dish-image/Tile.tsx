@@ -1,37 +1,26 @@
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const FALLBACK_IMAGE = "/images/404.png";
 
 export function Tile({
-  dishId,
-  tileIndex,
+  tileUrl,
   rotate,
   width,
   height,
   showBorder,
 }: {
-  dishId: string;
-  tileIndex: number;
+  tileUrl: string;
   rotate: boolean;
   width: number;
   height: number;
   showBorder: boolean;
 }) {
-  const [imgSrc, setImgSrc] = useState<string>("");
-
-  useEffect(() => {
-    if (rotate && !imgSrc) {
-      const tileUrl = `/api/dish-tiles?dishId=${encodeURIComponent(
-        dishId
-      )}&tileIndex=${tileIndex}`;
-      setImgSrc(tileUrl);
-    }
-  }, [dishId, tileIndex, rotate, imgSrc]);
+  const [src, setSrc] = useState(tileUrl);
 
   const handleImageError = () => {
-    console.error(`Failed to load tile ${tileIndex} for dish ${dishId}`);
-    setImgSrc(FALLBACK_IMAGE);
+    console.error(`Failed to load tile: ${tileUrl}`);
+    setSrc(FALLBACK_IMAGE);
   };
 
   return (
@@ -54,14 +43,14 @@ export function Tile({
         <div className="absolute w-full h-full bg-transparent backface-hidden" />
 
         <div className="absolute w-full h-full overflow-hidden backface-hidden transform rotate-y-180">
-          {rotate && imgSrc && (
+          {rotate && (
             <Image
-              src={imgSrc}
-              alt={`dish tile ${tileIndex + 1}`}
+              src={src}
+              alt="dish tile"
               fill
               className="w-full h-full object-cover"
               onError={handleImageError}
-              priority={true}
+              priority
               sizes="(max-width: 768px) 33vw, 166px"
             />
           )}
