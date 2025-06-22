@@ -54,9 +54,8 @@ export function DishPhase() {
 
   return (
     <>
-      {currentDish?.imageUrl && (
+      {dishId && (
         <TileGrid
-          imageUrl={currentDish.imageUrl}
           revealedTiles={revealedTiles}
           blurredTiles={blurredTiles}
           fullTiles={fullTiles}
