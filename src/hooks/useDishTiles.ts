@@ -18,7 +18,7 @@ export function useDishTiles(dishId: string | undefined) {
 
 export function useBlurredTiles(dishId: string | undefined) {
   return useQuery({
-    queryKey: ["blurred-tiles"ŵ, dishId],
+    queryKey: ["blurred-tiles", dishId],
     queryFn: async () => {
       if (!dishId) return [];
       return Array.from({ length: 6 }).map(
