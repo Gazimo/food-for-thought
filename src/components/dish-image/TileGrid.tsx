@@ -2,12 +2,10 @@ import Image from "next/image";
 import { Tile } from "./Tile";
 
 export function TileGrid({
-  imageUrl,
   revealedTiles,
   blurredTiles,
   fullTiles,
 }: {
-  imageUrl: string;
   revealedTiles: boolean[];
   blurredTiles: string[];
   fullTiles: string[];
