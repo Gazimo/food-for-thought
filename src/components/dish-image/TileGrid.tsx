@@ -12,10 +12,6 @@ export function TileGrid({
   const width =
     typeof window !== "undefined" ? Math.min(window.innerWidth - 32, 500) : 500;
   const height = (width / 3) * 2; // Maintain 3:2 aspect ratio
-  const cols = 3;
-  const rows = 2;
-  const tileWidth = width / cols;
-  const tileHeight = height / rows;
 
   // Extract dish ID from the image URL (e.g., from "/images/dishes/abc123.png" get "abc123")
   const getDishIdFromImageUrl = (imageUrl: string): string => {
