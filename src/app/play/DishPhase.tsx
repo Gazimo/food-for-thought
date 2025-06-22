@@ -1,5 +1,6 @@
 import { GuessFeedback } from "@/components/GuessFeedback";
 import { GuessInput } from "@/components/GuessInput";
+import { useBlurredTiles, useDishTiles } from "@/hooks/useDishTiles";
 import { useGameStore } from "@/store/gameStore";
 import posthog from "posthog-js";
 import { TileGrid } from "../../components/dish-image/TileGrid";
@@ -16,9 +17,24 @@ export function DishPhase() {
     isDishPhaseComplete,
   } = useGameStore();
 
-  const { dish, isLoading } = useTodaysDish();
+  const { dish, isLoading: isDishLoading } = useTodaysDish();
 
-  if (isLoading || !dish) {
+  const getDishIdFromImageUrl = (imageUrl: string): string => {
+    const filename = imageUrl.split("/").pop() || "";
+    return filename.split(".")[0];
+  };
+
+  const dishId = dish?.imageUrl
+    ? getDishIdFromImageUrl(dish.imageUrl)
+    : undefined;
+
+  const { data: blurredTiles, isLoading: isBlurredLoading } =
+    useBlurredTiles(dishId);
+  const { data: fullTiles, isLoading: isTilesLoading } = useDishTiles(dishId);
+
+  const isLoading = isDishLoading || isBlurredLoading || isTilesLoading;
+
+  if (isLoading || !dish || !blurredTiles || !fullTiles) {
     return <DishSkeleton />;
   }
 
@@ -42,8 +58,11 @@ export function DishPhase() {
         <TileGrid
           imageUrl={currentDish.imageUrl}
           revealedTiles={revealedTiles}
+          blurredTiles={blurredTiles}
+          fullTiles={fullTiles}
         />
       )}
+
       {!isComplete && (
         <div className="flex flex-col gap-2">
           {gameResults.dishGuesses.length === 0 && (
@@ -51,14 +70,12 @@ export function DishPhase() {
               Make a guess to reveal the first tile
             </div>
           )}
-          <div>
-            <GuessInput
-              placeholder="e.g. Spaghetti, Sushi, Tacos..."
-              onGuess={handleGuess}
-              previousGuesses={dishGuesses}
-              acceptableGuesses={currentDish?.acceptableGuesses}
-            />
-          </div>
+          <GuessInput
+            placeholder="e.g. Spaghetti, Sushi, Tacos..."
+            onGuess={handleGuess}
+            previousGuesses={dishGuesses}
+            acceptableGuesses={currentDish?.acceptableGuesses}
+          />
         </div>
       )}
 
@@ -69,7 +86,7 @@ export function DishPhase() {
           <div className="text-sm text-gray-600">
             Guesses: {gameResults.dishGuesses.length} of 6
           </div>
-          <div className="flex flex-wrap gap-1 ">
+          <div className="flex flex-wrap gap-1">
             {gameResults.dishGuesses.map((guess, index) => {
               const isCorrectGuess =
                 currentDish?.acceptableGuesses?.some(
