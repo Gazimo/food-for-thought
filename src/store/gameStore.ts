@@ -169,8 +169,16 @@ export const useGameStore = create<GameState>((set, get) => ({
     const newTiles = [...revealedTiles];
     newTiles[index] = true;
 
+    if (process.env.NODE_ENV === "development") {
+      console.log("Revealing tile:", index, "New tiles state:", newTiles);
+    }
+
     set({ revealedTiles: newTiles });
-    get().saveCurrentGameState();
+
+    // Force a small delay to ensure state propagation
+    setTimeout(() => {
+      get().saveCurrentGameState();
+    }, 0);
   },
 
   revealAllTiles: () => {
