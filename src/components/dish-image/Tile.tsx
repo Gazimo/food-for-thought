@@ -25,7 +25,7 @@ export function Tile({
 
   return (
     <div
-      className={`relative perspective-[1000px] max-w-full transition-all duration-500 ${
+      className={`relative perspective-1000 max-w-full transition-all duration-500 ${
         !showBorder ? "border-transparent" : "border border-gray-200"
       }`}
       style={{
@@ -36,7 +36,7 @@ export function Tile({
       }}
     >
       <div
-        className={`relative w-full h-full transition-transform duration-700 transform-style preserve-3d ${
+        className={`relative w-full h-full transition-transform duration-700 transform-style-preserve-3d ${
           rotate ? "rotate-y-180" : ""
         }`}
       >
