@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const FALLBACK_IMAGE = "/images/404.png";
 
@@ -17,6 +17,19 @@ export function Tile({
   showBorder: boolean;
 }) {
   const [src, setSrc] = useState(tileUrl);
+  const [isRotated, setIsRotated] = useState(false);
+
+  // Debug logging
+  useEffect(() => {
+    if (process.env.NODE_ENV === "development") {
+      console.log("Tile rotate prop changed:", rotate, "for URL:", tileUrl);
+    }
+  }, [rotate, tileUrl]);
+
+  // Force re-render when rotate changes
+  useEffect(() => {
+    setIsRotated(rotate);
+  }, [rotate]);
 
   const handleImageError = () => {
     console.error(`Failed to load tile: ${tileUrl}`);
@@ -37,13 +50,13 @@ export function Tile({
     >
       <div
         className={`relative w-full h-full transition-transform duration-700 transform-style-preserve-3d ${
-          rotate ? "rotate-y-180" : ""
+          isRotated ? "rotate-y-180" : ""
         }`}
       >
         <div className="absolute w-full h-full bg-transparent backface-hidden" />
 
         <div className="absolute w-full h-full overflow-hidden backface-hidden transform rotate-y-180">
-          {rotate && (
+          {isRotated && (
             <Image
               src={src}
               alt="dish tile"

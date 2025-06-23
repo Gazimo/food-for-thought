@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { Tile } from "./Tile";
 
 export function TileGrid({
@@ -10,7 +11,24 @@ export function TileGrid({
   blurredTiles: string[];
   fullTiles: string[];
 }) {
-  const fullyRevealed = revealedTiles.every(Boolean);
+  const [isClient, setIsClient] = useState(false);
+  const [clientRevealedTiles, setClientRevealedTiles] = useState<boolean[]>([]);
+
+  // Handle hydration
+  useEffect(() => {
+    setIsClient(true);
+    setClientRevealedTiles(revealedTiles);
+  }, []);
+
+  // Update client tiles when prop changes
+  useEffect(() => {
+    if (isClient) {
+      setClientRevealedTiles(revealedTiles);
+    }
+  }, [revealedTiles, isClient]);
+
+  const tilesToUse = isClient ? clientRevealedTiles : revealedTiles;
+  const fullyRevealed = tilesToUse.every(Boolean);
   const width =
     typeof window !== "undefined" ? Math.min(window.innerWidth - 32, 500) : 500;
   const height = (width / 3) * 2;
@@ -45,9 +63,9 @@ export function TileGrid({
       <div className="absolute inset-0 grid grid-cols-3 grid-rows-2 z-[4]">
         {fullTiles.map((tileUrl, index) => (
           <Tile
-            key={index}
+            key={`${index}-${isClient}`}
             tileUrl={tileUrl}
-            rotate={revealedTiles[index]}
+            rotate={tilesToUse[index] || false}
             width={width}
             height={height}
             showBorder={!fullyRevealed}
