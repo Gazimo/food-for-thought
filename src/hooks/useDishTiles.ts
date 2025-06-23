@@ -25,7 +25,7 @@ export function useBlurredTiles(dishId: string | undefined) {
         (_, index) =>
           `/api/dish-tiles-blurred?dishId=${encodeURIComponent(
             dishId
-          )}&tileIndex=${index}&cb=${Date.now()}`
+          )}&tileIndex=${index}`
       );
     },
     enabled: !!dishId,
