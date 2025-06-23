@@ -7,6 +7,16 @@ module.exports = {
     "./src/app/**/*.{js,ts,jsx,tsx}",
     "./src/components/**/*.{js,ts,jsx,tsx}",
   ],
+  safelist: [
+    'rotate-y-180',
+    'transform-style-preserve-3d',
+    'backface-hidden',
+    'perspective-1000',
+    'border',
+    'border-gray-200',
+    'relative',
+    'overflow-hidden',
+  ],
   theme: {
     extend: {
       borderRadius: {
