@@ -182,7 +182,7 @@ class DishImageService {
       const filename = `${hash}.png`;
 
       // Upload to Supabase Storage
-      const { data, error } = await this.supabase.storage
+      const { error } = await this.supabase.storage
         .from("dish-images")
         .upload(filename, buffer, {
           contentType: "image/png",
