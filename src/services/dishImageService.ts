@@ -1,7 +1,6 @@
+import { createClient } from "@supabase/supabase-js";
 import crypto from "crypto";
-import fs from "fs/promises";
 import OpenAI from "openai";
-import path from "path";
 
 interface DishImageData {
   name: string;
@@ -21,15 +20,22 @@ interface ImageGenerationResult {
 
 class DishImageService {
   private openai: OpenAI;
+  private supabase: ReturnType<typeof createClient>;
 
   constructor() {
     this.openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
     });
+
+    // Initialize Supabase client with service role key for storage operations
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+
+    this.supabase = createClient(supabaseUrl, supabaseServiceKey);
   }
 
   /**
-   * Generate an image for a dish using DALL-E 3
+   * Generate an image for a dish using DALL-E 3 and upload to Supabase
    */
   async generateDishImage(
     dishData: DishImageData
@@ -49,15 +55,20 @@ class DishImageService {
         style: "natural",
       });
 
-      const imageUrl = response.data?.[0]?.url || "/images/404.png";
+      const imageUrl = response.data?.[0]?.url;
+      if (!imageUrl) {
+        throw new Error("No image URL returned from DALL-E");
+      }
 
-      // Download and save the image with MD5 hash filename
-      const filename = await this.downloadAndHashImage(imageUrl);
+      // Upload image to Supabase Storage
+      const { filename, publicUrl } = await this.uploadImageToSupabase(
+        imageUrl
+      );
 
-      console.log(`✅ Image generated and saved: ${filename}`);
+      console.log(`✅ Image generated and uploaded to Supabase: ${filename}`);
 
       return {
-        imageUrl: `/images/dishes/${filename}`,
+        imageUrl: publicUrl,
         source: "dall-e-3",
         cost: 0.04, // Current DALL-E 3 pricing for 1024x1024
         prompt: prompt,
@@ -151,9 +162,11 @@ class DishImageService {
   }
 
   /**
-   * Download image and save with MD5 hash filename (matching your existing pattern)
+   * Upload image to Supabase Storage
    */
-  private async downloadAndHashImage(imageUrl: string): Promise<string> {
+  private async uploadImageToSupabase(
+    imageUrl: string
+  ): Promise<{ filename: string; publicUrl: string }> {
     try {
       // Download the image
       const response = await fetch(imageUrl);
@@ -168,18 +181,27 @@ class DishImageService {
       const hash = crypto.createHash("md5").update(buffer).digest("hex");
       const filename = `${hash}.png`;
 
-      // Ensure the dishes directory exists
-      const dishesDir = path.join(process.cwd(), "public", "images", "dishes");
-      await fs.mkdir(dishesDir, { recursive: true });
+      // Upload to Supabase Storage
+      const { data, error } = await this.supabase.storage
+        .from("dish-images")
+        .upload(filename, buffer, {
+          contentType: "image/png",
+          upsert: true,
+        });
 
-      // Save the image
-      const filepath = path.join(dishesDir, filename);
-      await fs.writeFile(filepath, buffer);
+      if (error) {
+        throw new Error(`Failed to upload to Supabase: ${error.message}`);
+      }
+
+      // Get public URL
+      const {
+        data: { publicUrl },
+      } = this.supabase.storage.from("dish-images").getPublicUrl(filename);
 
       console.log(`💾 Image saved as: ${filename}`);
-      return filename;
+      return { filename, publicUrl };
     } catch (error) {
-      console.error("💥 Failed to download and save image:", error);
+      console.error("💥 Failed to upload image to Supabase:", error);
       throw error;
     }
   }
@@ -219,10 +241,12 @@ class DishImageService {
 
         const imageUrl = response.data?.[0]?.url || "/images/404.png";
 
-        const filename = await this.downloadAndHashImage(imageUrl);
+        const { filename, publicUrl } = await this.uploadImageToSupabase(
+          imageUrl
+        );
 
         results.push({
-          imageUrl: `/images/dishes/${filename}`,
+          imageUrl: publicUrl,
           source: "dall-e-3",
           cost: 0.04,
           prompt: prompt,
