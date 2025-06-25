@@ -1,7 +1,7 @@
-import fs from "fs";
+import { createClient } from "@supabase/supabase-js";
 import type { NextApiRequest, NextApiResponse } from "next";
-import path from "path";
 import sharp from "sharp";
+import type { Database } from "../../types/database";
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,24 +14,38 @@ export default async function handler(
   }
 
   try {
-    const dishesDir = path.join(process.cwd(), "public", "images", "dishes");
-    const possibleExtensions = [".png", ".jpg", ".jpeg"];
-    let imagePath = "";
+    // Initialize Supabase client
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const supabase = createClient<Database>(supabaseUrl, supabaseServiceKey);
 
-    for (const ext of possibleExtensions) {
-      const testPath = path.join(dishesDir, `${dishId}${ext}`);
-      if (fs.existsSync(testPath)) {
-        imagePath = testPath;
-        break;
-      }
+    // Get dish data from database to find image URL
+    const { data: dish, error: fetchError } = await supabase
+      .from("dishes")
+      .select("image_url")
+      .eq("id", parseInt(dishId as string))
+      .single();
+
+    if (fetchError || !dish) {
+      console.error(`Dish not found for dishId: ${dishId}`, fetchError);
+      return res.status(404).json({ error: "Dish not found" });
     }
 
-    if (!imagePath) {
-      console.error(`Image not found for dishId: ${dishId}`);
-      return res.status(404).json({ error: "Image not found" });
+    if (!dish.image_url) {
+      console.error(`No image URL for dishId: ${dishId}`);
+      return res.status(404).json({ error: "No image available" });
     }
 
-    const image = sharp(imagePath);
+    // Fetch image from Supabase Storage
+    const imageResponse = await fetch(dish.image_url);
+    if (!imageResponse.ok) {
+      console.error(`Failed to fetch image: ${dish.image_url}`);
+      return res.status(404).json({ error: "Image not accessible" });
+    }
+
+    const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
+
+    const image = sharp(imageBuffer);
     const metadata = await image.metadata();
 
     if (!metadata.width || !metadata.height) {

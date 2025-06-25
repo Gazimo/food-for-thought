@@ -19,14 +19,8 @@ export function DishPhase() {
 
   const { dish, isLoading: isDishLoading } = useTodaysDish();
 
-  const getDishIdFromImageUrl = (imageUrl: string): string => {
-    const filename = imageUrl.split("/").pop() || "";
-    return filename.split(".")[0];
-  };
-
-  const dishId = dish?.imageUrl
-    ? getDishIdFromImageUrl(dish.imageUrl)
-    : undefined;
+  // Use database ID instead of extracting from filename
+  const dishId = dish?.id?.toString();
 
   const { data: blurredTiles, isLoading: isBlurredLoading } =
     useBlurredTiles(dishId);

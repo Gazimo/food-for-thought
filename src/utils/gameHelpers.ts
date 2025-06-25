@@ -119,6 +119,7 @@ export async function loadDishes(): Promise<Dish[]> {
   // Reconstruct the complete dish object
   const completeDish: Dish = {
     ...todayObfuscatedDish,
+    id: todayObfuscatedDish.id, // Include database ID for tile APIs
     name: sensitiveData.name,
     country: sensitiveData.country,
     acceptableGuesses: sensitiveData.acceptableGuesses,

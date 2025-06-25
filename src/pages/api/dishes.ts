@@ -1,6 +1,6 @@
+import { Dish, enrichDishesWithCoords } from "@/types/dishes";
 import { createClient } from "@supabase/supabase-js";
 import { NextApiRequest, NextApiResponse } from "next";
-import { Dish, enrichDishesWithCoords } from "@/types/dishes";
 import PostHogClient from "../../lib/posthog";
 import { getCountryCoordsMap } from "../../utils/countries";
 import { getDailySalt, obfuscateData } from "../../utils/encryption";
@@ -104,6 +104,7 @@ export default async function handler(
     // Return only today's dish with sensitive fields removed and obfuscated data added
     const safeDish = {
       // Keep only non-sensitive visual data
+      id: todaysDish.id, // Add database ID for tile APIs
       tags: enrichedDish.tags,
       region: enrichedDish.region,
 
