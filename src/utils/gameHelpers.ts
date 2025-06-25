@@ -1,5 +1,5 @@
+import { Dish } from "@/types/dishes";
 import Fuse from "fuse.js";
-import { Dish } from "../../public/data/dishes";
 import { deobfuscateData } from "./encryption";
 
 // Type for the sensitive data that gets encrypted/decrypted
@@ -119,6 +119,7 @@ export async function loadDishes(): Promise<Dish[]> {
   // Reconstruct the complete dish object
   const completeDish: Dish = {
     ...todayObfuscatedDish,
+    id: todayObfuscatedDish.id, // Include database ID for tile APIs
     name: sensitiveData.name,
     country: sensitiveData.country,
     acceptableGuesses: sensitiveData.acceptableGuesses,

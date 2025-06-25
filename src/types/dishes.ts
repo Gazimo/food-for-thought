@@ -1,4 +1,5 @@
 export interface Dish {
+  id?: number; // Add database ID for tile APIs
   name: string;
   ingredients: string[];
   acceptableGuesses: string[];
