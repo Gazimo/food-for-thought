@@ -18,7 +18,6 @@ export function DishPhase() {
   } = useGameStore();
 
   const { dish, isLoading: isDishLoading } = useTodaysDish();
-
   // Use database ID instead of extracting from filename
   const dishId = dish?.id?.toString();
 

@@ -47,6 +47,7 @@ export default async function handler(
 
     // Get original image
     const image = sharp(imageBuffer);
+
     const metadata = await image.metadata();
 
     if (!metadata.width || !metadata.height) {
