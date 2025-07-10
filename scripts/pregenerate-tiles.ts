@@ -88,6 +88,14 @@ class TilePregeneration {
       }
     }
 
+    // Check if this is a Supabase URL (avoid egress costs)
+    if (dish.image_url.includes("supabase.co")) {
+      console.log(
+        `⚠️  Skipping Supabase image to avoid egress costs: ${dish.name}`
+      );
+      return;
+    }
+
     // Fetch original image
     const imageResponse = await fetch(dish.image_url);
     if (!imageResponse.ok) {
@@ -123,7 +131,7 @@ class TilePregeneration {
 
     for (let tileIndex = 0; tileIndex < 6; tileIndex++) {
       console.log(`🔲 Processing tile ${tileIndex}...`);
-      
+
       const row = Math.floor(tileIndex / cols);
       const col = tileIndex % cols;
 
@@ -170,12 +178,14 @@ class TilePregeneration {
         .jpeg({ quality: 40 })
         .toBuffer();
 
-      console.log(`📊 Tile ${tileIndex} sizes: regular=${regularTileBuffer.length} bytes, blurred=${blurredTileBuffer.length} bytes`);
+      console.log(
+        `📊 Tile ${tileIndex} sizes: regular=${regularTileBuffer.length} bytes, blurred=${blurredTileBuffer.length} bytes`
+      );
 
       // Upload tiles to Supabase
       await this.uploadTile(dish.id, tileIndex, regularTileBuffer, false);
       await this.uploadTile(dish.id, tileIndex, blurredTileBuffer, true);
-      
+
       console.log(`✅ Uploaded tile ${tileIndex}`);
     }
   }

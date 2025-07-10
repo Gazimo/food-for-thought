@@ -2,9 +2,9 @@ import { config } from "dotenv";
 config({ path: ".env.local" });
 
 import { createClient } from "@supabase/supabase-js";
+import sharp from "sharp";
 import { getCountryCoordsMap } from "../src/utils/countries";
 import RecipeDataFetcher from "../src/utils/recipeDataFetcher";
-import sharp from "sharp";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -80,10 +80,10 @@ class SmartDishGenerator {
         coordinates
       );
 
-      // Step 6: Generate tiles immediately
-      if (savedDish && savedDish.id) {
+      // Step 6: Generate tiles immediately using the original image
+      if (savedDish && savedDish.id && dishData.imageUrl) {
         console.log("\n🔲 Generating tiles for optimal performance...");
-        await this.generateTilesForDish(savedDish);
+        await this.generateTilesFromOriginalImage(savedDish, dishData.imageUrl);
       }
 
       console.log(
@@ -204,7 +204,39 @@ class SmartDishGenerator {
   }
 
   /**
-   * Generate tiles for a newly created dish
+   * Generate tiles from original DALL-E image URL (before Supabase upload)
+   */
+  private async generateTilesFromOriginalImage(
+    dish: any,
+    originalImageUrl: string
+  ): Promise<void> {
+    try {
+      console.log(
+        `🔄 Generating tiles from original image for ${dish.name}...`
+      );
+
+      // Fetch the original image from the provided URL
+      const imageResponse = await fetch(originalImageUrl);
+      if (!imageResponse.ok) {
+        throw new Error(
+          `Failed to fetch original image: ${imageResponse.statusText}`
+        );
+      }
+
+      const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
+      await this.generateTilesFromBuffer(dish, imageBuffer);
+
+      console.log(`✅ Tiles generated successfully for ${dish.name}`);
+    } catch (error) {
+      console.error(`❌ Failed to generate tiles for ${dish.name}:`, error);
+      console.log(
+        `   You can generate tiles manually later with: npm run pregenerate-tiles generate`
+      );
+    }
+  }
+
+  /**
+   * Generate tiles for a newly created dish (fallback method)
    */
   private async generateTilesForDish(dish: any): Promise<void> {
     try {
@@ -215,7 +247,9 @@ class SmartDishGenerator {
 
       // Check if this is a Supabase URL (avoid egress costs)
       if (dish.image_url.includes("supabase.co")) {
-        console.log(`⚠️  Skipping tile generation for Supabase image: ${dish.name}`);
+        console.log(
+          `⚠️  Skipping tile generation for Supabase image: ${dish.name}`
+        );
         console.log(`   Use: npm run pregenerate-tiles generate`);
         return;
       }
@@ -229,88 +263,100 @@ class SmartDishGenerator {
       }
 
       const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
-      const image = sharp(imageBuffer);
-      const metadata = await image.metadata();
-
-      if (!metadata.width || !metadata.height) {
-        throw new Error("Invalid image metadata");
-      }
-
-      // Calculate resize dimensions (3:2 aspect ratio)
-      const targetAspectRatio = 3 / 2;
-      const currentAspectRatio = metadata.width / metadata.height;
-
-      let resizeWidth: number;
-      let resizeHeight: number;
-
-      if (currentAspectRatio > targetAspectRatio) {
-        resizeHeight = metadata.height;
-        resizeWidth = Math.round(resizeHeight * targetAspectRatio);
-      } else {
-        resizeWidth = metadata.width;
-        resizeHeight = Math.round(resizeWidth / targetAspectRatio);
-      }
-
-      // Generate all 6 tiles
-      const cols = 3;
-      const rows = 2;
-
-      for (let tileIndex = 0; tileIndex < 6; tileIndex++) {
-        const row = Math.floor(tileIndex / cols);
-        const col = tileIndex % cols;
-
-        const tileWidth = Math.floor(resizeWidth / cols);
-        const tileHeight = Math.floor(resizeHeight / rows);
-
-        const left = col * tileWidth;
-        const top = row * tileHeight;
-        const actualWidth = col === cols - 1 ? resizeWidth - left : tileWidth;
-        const actualHeight = row === rows - 1 ? resizeHeight - top : tileHeight;
-
-        // Create fresh Sharp instance for each tile
-        const baseImage = image.resize(resizeWidth, resizeHeight, {
-          fit: "cover",
-          position: "center",
-        });
-
-        // Generate regular tile (NO BLUR)
-        const regularTileBuffer = await baseImage
-          .clone()
-          .extract({
-            left,
-            top,
-            width: actualWidth,
-            height: actualHeight,
-          })
-          .jpeg({ quality: 95, progressive: false })
-          .toBuffer();
-
-        // Generate blurred tile (WITH BLUR)
-        const blurredTileBuffer = await baseImage
-          .clone()
-          .extract({
-            left,
-            top,
-            width: actualWidth,
-            height: actualHeight,
-          })
-          .blur(40)
-          .modulate({
-            brightness: 0.8,
-            saturation: 0.6,
-          })
-          .jpeg({ quality: 40 })
-          .toBuffer();
-
-        // Upload tiles to Supabase
-        await this.uploadTile(dish.id, tileIndex, regularTileBuffer, false);
-        await this.uploadTile(dish.id, tileIndex, blurredTileBuffer, true);
-      }
+      await this.generateTilesFromBuffer(dish, imageBuffer);
 
       console.log(`✅ Tiles generated for ${dish.name}`);
     } catch (error) {
       console.error(`❌ Failed to generate tiles for ${dish.name}:`, error);
-      console.log(`   You can generate tiles manually later with: npm run pregenerate-tiles generate`);
+      console.log(
+        `   You can generate tiles manually later with: npm run pregenerate-tiles generate`
+      );
+    }
+  }
+
+  /**
+   * Generate tiles from image buffer (shared method)
+   */
+  private async generateTilesFromBuffer(
+    dish: any,
+    imageBuffer: Buffer
+  ): Promise<void> {
+    const image = sharp(imageBuffer);
+    const metadata = await image.metadata();
+
+    if (!metadata.width || !metadata.height) {
+      throw new Error("Invalid image metadata");
+    }
+
+    // Calculate resize dimensions (3:2 aspect ratio)
+    const targetAspectRatio = 3 / 2;
+    const currentAspectRatio = metadata.width / metadata.height;
+
+    let resizeWidth: number;
+    let resizeHeight: number;
+
+    if (currentAspectRatio > targetAspectRatio) {
+      resizeHeight = metadata.height;
+      resizeWidth = Math.round(resizeHeight * targetAspectRatio);
+    } else {
+      resizeWidth = metadata.width;
+      resizeHeight = Math.round(resizeWidth / targetAspectRatio);
+    }
+
+    // Generate all 6 tiles
+    const cols = 3;
+    const rows = 2;
+
+    for (let tileIndex = 0; tileIndex < 6; tileIndex++) {
+      const row = Math.floor(tileIndex / cols);
+      const col = tileIndex % cols;
+
+      const tileWidth = Math.floor(resizeWidth / cols);
+      const tileHeight = Math.floor(resizeHeight / rows);
+
+      const left = col * tileWidth;
+      const top = row * tileHeight;
+      const actualWidth = col === cols - 1 ? resizeWidth - left : tileWidth;
+      const actualHeight = row === rows - 1 ? resizeHeight - top : tileHeight;
+
+      // Create fresh Sharp instance for each tile
+      const baseImage = image.resize(resizeWidth, resizeHeight, {
+        fit: "cover",
+        position: "center",
+      });
+
+      // Generate regular tile (NO BLUR)
+      const regularTileBuffer = await baseImage
+        .clone()
+        .extract({
+          left,
+          top,
+          width: actualWidth,
+          height: actualHeight,
+        })
+        .jpeg({ quality: 95, progressive: false })
+        .toBuffer();
+
+      // Generate blurred tile (WITH BLUR)
+      const blurredTileBuffer = await baseImage
+        .clone()
+        .extract({
+          left,
+          top,
+          width: actualWidth,
+          height: actualHeight,
+        })
+        .blur(40)
+        .modulate({
+          brightness: 0.8,
+          saturation: 0.6,
+        })
+        .jpeg({ quality: 40 })
+        .toBuffer();
+
+      // Upload tiles to Supabase
+      await this.uploadTile(dish.id, tileIndex, regularTileBuffer, false);
+      await this.uploadTile(dish.id, tileIndex, blurredTileBuffer, true);
     }
   }
 
