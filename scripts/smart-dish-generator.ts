@@ -2,6 +2,8 @@ import { config } from "dotenv";
 config({ path: ".env.local" });
 
 import { createClient } from "@supabase/supabase-js";
+import fs from "fs/promises";
+import path from "path";
 import sharp from "sharp";
 import { getCountryCoordsMap } from "../src/utils/countries";
 import RecipeDataFetcher from "../src/utils/recipeDataFetcher";
@@ -281,6 +283,12 @@ class SmartDishGenerator {
     dish: any,
     imageBuffer: Buffer
   ): Promise<void> {
+    const TILE_IMAGES_DIR = path.join(
+      process.cwd(),
+      "public",
+      "images",
+      "tiles"
+    );
     const image = sharp(imageBuffer);
     const metadata = await image.metadata();
 
@@ -354,33 +362,21 @@ class SmartDishGenerator {
         .jpeg({ quality: 40 })
         .toBuffer();
 
-      // Upload tiles to Supabase
-      await this.uploadTile(dish.id, tileIndex, regularTileBuffer, false);
-      await this.uploadTile(dish.id, tileIndex, blurredTileBuffer, true);
-    }
-  }
+      // Save tiles to public directory
+      const dishTileDir = path.join(TILE_IMAGES_DIR, String(dish.id));
+      await fs.mkdir(dishTileDir, { recursive: true });
 
-  /**
-   * Upload a tile to Supabase storage
-   */
-  private async uploadTile(
-    dishId: number,
-    tileIndex: number,
-    buffer: Buffer,
-    isBlurred: boolean
-  ): Promise<void> {
-    const prefix = isBlurred ? "blurred" : "regular";
-    const filename = `tiles/${dishId}/${prefix}-${tileIndex}.jpg`;
+      const regularTilePath = path.join(
+        dishTileDir,
+        `regular-${tileIndex}.jpg`
+      );
+      await fs.writeFile(regularTilePath, regularTileBuffer);
 
-    const { error } = await this.supabase.storage
-      .from("dish-tiles")
-      .upload(filename, buffer, {
-        contentType: "image/jpeg",
-        upsert: true,
-      });
-
-    if (error) {
-      throw new Error(`Failed to upload tile: ${error.message}`);
+      const blurredTilePath = path.join(
+        dishTileDir,
+        `blurred-${tileIndex}.jpg`
+      );
+      await fs.writeFile(blurredTilePath, blurredTileBuffer);
     }
   }
 }
