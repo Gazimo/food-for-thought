@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef } from "react";
 
 // Performance monitoring configuration
@@ -242,7 +243,7 @@ export const performanceMonitor = new PerformanceMonitor();
 
 // Hook to track component renders
 export function useRenderTracker(componentName: string, props?: any) {
-  const renderStartTime = useRef<number>();
+  const renderStartTime = useRef<number | undefined>(undefined);
   const renderCount = useRef(0);
   const prevProps = useRef(props);
 
@@ -297,7 +298,7 @@ export function useStateChangeTracker() {
 
 // Hook to track expensive operations
 export function usePerformanceTimer(operationName: string) {
-  const startTime = useRef<number>();
+  const startTime = useRef<number | undefined>(undefined);
 
   const start = () => {
     startTime.current = performance.now();
