@@ -9,7 +9,9 @@ export function useDishTiles(dishId: string | undefined) {
       const TILE_VERSION = "v2"; // Increment this when tiles change
       return Array.from({ length: 6 }).map(
         (_, index) =>
-          `/images/tiles/${dishId}/regular-${index}.jpg?v=${TILE_VERSION}`
+          `/api/dish-tiles?dishId=${encodeURIComponent(
+            dishId
+          )}&tileIndex=${index}&v=${TILE_VERSION}`
       );
     },
     enabled: !!dishId,
@@ -25,7 +27,9 @@ export function useBlurredTiles(dishId: string | undefined) {
       const TILE_VERSION = "v2"; // Increment this when tiles change
       return Array.from({ length: 6 }).map(
         (_, index) =>
-          `/images/tiles/${dishId}/blurred-${index}.jpg?v=${TILE_VERSION}`
+          `/api/dish-tiles-blurred?dishId=${encodeURIComponent(
+            dishId
+          )}&tileIndex=${index}&v=${TILE_VERSION}`
       );
     },
     enabled: !!dishId,
