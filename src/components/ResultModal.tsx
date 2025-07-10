@@ -71,11 +71,18 @@ export const ResultModal: React.FC = () => {
             </div>
           )}
         </div>
-
-        {currentDish.imageUrl && (
+        {currentDish.imageUrl ? (
           <Image
             src={currentDish.imageUrl}
             alt="Dish image"
+            className="rounded-lg w-full object-cover max-h-52"
+            width={1000}
+            height={1000}
+          />
+        ) : (
+          <Image
+            src="/images/404.png"
+            alt="Fallback image"
             className="rounded-lg w-full object-cover max-h-52"
             width={1000}
             height={1000}

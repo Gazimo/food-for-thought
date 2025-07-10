@@ -5,13 +5,8 @@ export function useDishTiles(dishId: string | undefined) {
     queryKey: ["dish-tiles", dishId],
     queryFn: async () => {
       if (!dishId) return [];
-      // Version-based cache busting - only changes when we need to invalidate cache
-      const TILE_VERSION = "v2"; // Increment this when tiles change
       return Array.from({ length: 6 }).map(
-        (_, index) =>
-          `/api/dish-tiles?dishId=${encodeURIComponent(
-            dishId
-          )}&tileIndex=${index}&v=${TILE_VERSION}`
+        (_, index) => `/images/tiles/${dishId}/regular-${index}.jpg`
       );
     },
     enabled: !!dishId,
@@ -23,13 +18,8 @@ export function useBlurredTiles(dishId: string | undefined) {
     queryKey: ["blurred-tiles", dishId],
     queryFn: async () => {
       if (!dishId) return [];
-      // Version-based cache busting - only changes when we need to invalidate cache
-      const TILE_VERSION = "v2"; // Increment this when tiles change
       return Array.from({ length: 6 }).map(
-        (_, index) =>
-          `/api/dish-tiles-blurred?dishId=${encodeURIComponent(
-            dishId
-          )}&tileIndex=${index}&v=${TILE_VERSION}`
+        (_, index) => `/images/tiles/${dishId}/blurred-${index}.jpg`
       );
     },
     enabled: !!dishId,
