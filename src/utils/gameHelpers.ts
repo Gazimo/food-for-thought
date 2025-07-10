@@ -116,9 +116,6 @@ export async function loadDishes(): Promise<Dish[]> {
     return [];
   }
 
-  // Get the file extension from the original (now outdated) imageUrl
-  const fileExtension = sensitiveData.imageUrl.split(".").pop() || "png";
-
   // Reconstruct the complete dish object
   const completeDish: Dish = {
     ...todayObfuscatedDish,
@@ -130,8 +127,8 @@ export async function loadDishes(): Promise<Dish[]> {
     ingredients: sensitiveData.ingredients,
     recipe: sensitiveData.recipe,
     blurb: sensitiveData.blurb,
-    // Construct the correct local path with the original file extension
-    imageUrl: `/images/dishes/${todayObfuscatedDish.id}.${fileExtension}`,
+    // Extract imageUrl and releaseDate from sensitive data
+    imageUrl: sensitiveData.imageUrl,
     releaseDate: sensitiveData.releaseDate,
     // Extract coordinates from sensitive data
     coordinates: sensitiveData.coordinates,
