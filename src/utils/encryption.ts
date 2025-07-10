@@ -1,25 +1,17 @@
-// Simple XOR encryption that works both server and client side
+// Ultra-simple Base64 obfuscation - just encoding with salt
 export function obfuscateData<T>(data: T, salt: string): string {
   try {
-    const key = salt + "food-for-thought-secret";
-    const jsonString = JSON.stringify(data);
+    // Add salt to the data to make it non-obvious
+    const saltedData = { _salt: salt, _data: data };
+    const jsonString = JSON.stringify(saltedData);
 
-    let encrypted = "";
-    for (let i = 0; i < jsonString.length; i++) {
-      const charCode = jsonString.charCodeAt(i);
-      const keyCode = key.charCodeAt(i % key.length);
-      // XOR and ensure we get a valid character
-      const encryptedChar = String.fromCharCode((charCode ^ keyCode) % 256);
-      encrypted += encryptedChar;
-    }
-
-    // Convert to base64 for safe transport
+    // Simple Base64 encoding
     if (typeof Buffer !== "undefined") {
       // Node.js environment
-      return Buffer.from(encrypted, "binary").toString("base64");
+      return Buffer.from(jsonString, "utf8").toString("base64");
     } else {
       // Browser environment
-      return btoa(encrypted);
+      return btoa(jsonString);
     }
   } catch (error) {
     console.error("Obfuscation failed:", error);
@@ -33,37 +25,31 @@ export function getDailySalt(): string {
   return `fft-${today}`;
 }
 
-// Simple XOR decryption
+// Simple Base64 decoding
 export function deobfuscateData<T>(
   obfuscatedData: string,
   salt: string
 ): T | null {
   try {
-    const key = salt + "food-for-thought-secret";
-
     // Decode from base64
-    let encrypted: string;
+    let jsonString: string;
     if (typeof Buffer !== "undefined") {
       // Node.js environment
-      encrypted = Buffer.from(obfuscatedData, "base64").toString("binary");
+      jsonString = Buffer.from(obfuscatedData, "base64").toString("utf8");
     } else {
       // Browser environment
-      encrypted = atob(obfuscatedData);
+      jsonString = atob(obfuscatedData);
     }
 
-    let decrypted = "";
-    for (let i = 0; i < encrypted.length; i++) {
-      const charCode = encrypted.charCodeAt(i);
-      const keyCode = key.charCodeAt(i % key.length);
-      // XOR back to get original character
-      const decryptedChar = String.fromCharCode((charCode ^ keyCode) % 256);
-      decrypted += decryptedChar;
+    const saltedData = JSON.parse(jsonString);
+
+    // Verify salt matches
+    if (saltedData._salt !== salt) {
+      console.error("Salt mismatch during deobfuscation");
+      return null;
     }
 
-    // Sanitize the decrypted string to remove invalid JSON characters
-    const sanitized = decrypted.replace(/[\x00-\x1F\x7F-\x9F]/g, "");
-
-    return JSON.parse(sanitized);
+    return saltedData._data;
   } catch (error) {
     console.error("Deobfuscation failed:", error);
     return null;
