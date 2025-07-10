@@ -59,11 +59,4 @@ const nextConfig = {
   skipTrailingSlashRedirect: true,
 };
 
-if (process.env.NEXT_PUBLIC_VERCEL_URL) {
-  nextConfig.images.remotePatterns.push({
-    protocol: 'https',
-    hostname: process.env.NEXT_PUBLIC_VERCEL_URL,
-  });
-}
-
 module.exports = nextConfig;
