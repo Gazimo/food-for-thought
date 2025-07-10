@@ -4,7 +4,7 @@ import { Dish } from "../types/dishes";
 
 export const useDishes = () => {
   return useQuery({
-    queryKey: ["dishes"],
+    queryKey: ["dishes-v2"],
     queryFn: loadDishes,
     staleTime: 60 * 60 * 1000, // 1 hour
     gcTime: 24 * 60 * 60 * 1000, // 24 hours
