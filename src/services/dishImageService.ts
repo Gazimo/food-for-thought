@@ -50,8 +50,8 @@ class DishImageService {
         model: "dall-e-3",
         prompt: prompt,
         n: 1,
-        size: "1024x1024",
-        quality: "standard",
+        size: "1024x1024", // Keep 1024x1024 for good quality
+        quality: "standard", // Use standard instead of hd to reduce cost
         style: "natural",
       });
 

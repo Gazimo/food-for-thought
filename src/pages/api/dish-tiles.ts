@@ -19,6 +19,30 @@ export default async function handler(
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
     const supabase = createClient<Database>(supabaseUrl, supabaseServiceKey);
 
+    // Try to fetch pre-generated tile first
+    const tileFilename = `tiles/${dishId}/regular-${tileIndex}.jpg`;
+    const { data: tileData, error: tileError } = await supabase.storage
+      .from("dish-tiles")
+      .download(tileFilename);
+
+    if (!tileError && tileData) {
+      console.log(`✅ Serving pre-generated tile: ${tileFilename}`);
+      
+      // Convert blob to buffer
+      const tileBuffer = Buffer.from(await tileData.arrayBuffer());
+      
+      // Set aggressive caching headers for pre-generated tiles
+      res.setHeader("Cache-Control", "public, max-age=2592000, immutable"); // 30 days
+      res.setHeader("Content-Type", "image/jpeg");
+      res.setHeader("X-Content-Type-Options", "nosniff");
+      res.setHeader("X-Frame-Options", "DENY");
+      
+      return res.send(tileBuffer);
+    }
+
+    // Fallback to on-demand generation if pre-generated tile not found
+    console.log(`⚠️ Pre-generated tile not found: ${tileFilename}, generating on-demand`);
+
     // Get dish data from database to find image URL
     const { data: dish, error: fetchError } = await supabase
       .from("dishes")
@@ -118,8 +142,8 @@ export default async function handler(
       })
       .toBuffer();
 
-    // Set headers
-    res.setHeader("Cache-Control", "public, max-age=86400");
+    // Set headers for on-demand generated tiles (shorter cache)
+    res.setHeader("Cache-Control", "public, max-age=86400"); // 24 hours
     res.setHeader("Content-Type", "image/jpeg");
     res.setHeader("X-Content-Type-Options", "nosniff");
     res.setHeader("X-Frame-Options", "DENY");

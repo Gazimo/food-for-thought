@@ -8,7 +8,12 @@
     "start": "next start",
     "lint": "next lint",
     "migrate": "tsx scripts/migrate-data.ts",
-    "smart-generate": "tsx scripts/smart-dish-generator.ts"
+    "smart-generate": "tsx scripts/smart-dish-generator.ts",
+    "pregenerate-tiles": "tsx scripts/pregenerate-tiles.ts",
+    "optimize-tiles": "npm run pregenerate-tiles full",
+    "check-tiles": "tsx scripts/pregenerate-tiles.ts generate",
+    "fix-tiles": "tsx scripts/pregenerate-tiles.ts force-regenerate",
+    "monitor-optimization": "tsx scripts/monitor-optimization.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.13",
