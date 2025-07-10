@@ -281,12 +281,6 @@ class SmartDishGenerator {
     dish: any,
     imageBuffer: Buffer
   ): Promise<void> {
-    const TILE_IMAGES_DIR = path.join(
-      process.cwd(),
-      "public",
-      "images",
-      "tiles"
-    );
     const image = sharp(imageBuffer);
     const metadata = await image.metadata();
 
