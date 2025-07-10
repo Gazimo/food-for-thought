@@ -60,7 +60,10 @@ export function deobfuscateData<T>(
       decrypted += decryptedChar;
     }
 
-    return JSON.parse(decrypted);
+    // Sanitize the decrypted string to remove invalid JSON characters
+    const sanitized = decrypted.replace(/[\x00-\x1F\x7F-\x9F]/g, "");
+
+    return JSON.parse(sanitized);
   } catch (error) {
     console.error("Deobfuscation failed:", error);
     return null;
