@@ -10,7 +10,8 @@ import {
 import { create } from "zustand";
 import { GameResults, GameState, LoadingStates } from "../types/game";
 import { emojiThemes, launchEmojiBurst } from "../utils/celebration";
-import { updateStreak } from "../utils/streak";
+import { getStreak, updateStreak } from "../utils/streak";
+
 const countryCoords = getCountryCoordsMap();
 
 function getSortedCountryCoords() {
@@ -23,12 +24,13 @@ function getSortedCountryCoords() {
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
+  streak: 0, // Initialize streak to 0 for SSR
+  setStreak: (value: number) => set({ streak: value }),
+  hasRestoredState: false,
+
   saveCurrentGameState: () => {
     if (typeof window === "undefined") return;
-
     const state = get();
-
-    // Store only the essential game state WITHOUT sensitive dish data
     const gameStateToSave = {
       gamePhase: state.gamePhase,
       activePhase: state.activePhase,
@@ -42,34 +44,24 @@ export const useGameStore = create<GameState>((set, get) => ({
       gameResults: state.gameResults,
       savedDate: new Date().toISOString().split("T")[0],
     };
-
     localStorage.setItem("fft-game-state", JSON.stringify(gameStateToSave));
   },
 
   restoreGameStateFromStorage: () => {
     if (typeof window === "undefined") return false;
-
     try {
       const saved = localStorage.getItem("fft-game-state");
       if (!saved) return false;
-
       const parsedState = JSON.parse(saved);
-
-      // Check if the saved game state is from today
       const today = new Date().toISOString().split("T")[0];
       const savedDate = parsedState.savedDate;
-
-      // If no saved date or it's from a different day, clear the saved state and return
       if (!savedDate || savedDate !== today) {
         localStorage.removeItem("fft-game-state");
         return false;
       }
-
       const isComplete = parsedState.gamePhase === "complete";
-
       if (parsedState.gameResults) {
         set({
-          // Don't restore currentDish - it will be loaded fresh from API
           gamePhase: parsedState.gamePhase || "dish",
           activePhase: parsedState.activePhase || "dish",
           gameResults: parsedState.gameResults || {
@@ -81,14 +73,8 @@ export const useGameStore = create<GameState>((set, get) => ({
             proteinGuessSuccess: false,
             tracked: false,
           },
-          revealedTiles: parsedState.revealedTiles || [
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-          ],
+          revealedTiles:
+            parsedState.revealedTiles || Array(6).fill(false),
           revealedIngredients: parsedState.revealedIngredients || 1,
           countryGuessResults: parsedState.countryGuessResults || [],
           proteinGuessResults: parsedState.proteinGuessResults || [],
@@ -127,6 +113,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   gamePhase: "dish",
+  activePhase: "dish",
   revealedIngredients: 1,
   dishGuesses: [],
   countryGuesses: [],
@@ -140,17 +127,15 @@ export const useGameStore = create<GameState>((set, get) => ({
     proteinGuessSuccess: false,
     tracked: false,
   },
-  revealedTiles: [false, false, false, false, false, false],
+  revealedTiles: Array(6).fill(false),
   countryGuessResults: [],
   proteinGuessResults: [],
   modalVisible: true,
+
   toggleModal: (visible?: boolean) => {
-    if (visible !== undefined) {
-      set({ modalVisible: visible });
-    } else {
-      set((state) => ({ modalVisible: !state.modalVisible }));
-    }
+    set((state) => ({ modalVisible: visible ?? !state.modalVisible }));
   },
+
   updateGameResults: (results: Partial<GameResults>) => {
     set((state) => ({
       gameResults: { ...state.gameResults, ...results },
@@ -162,27 +147,16 @@ export const useGameStore = create<GameState>((set, get) => ({
     const unrevealed = revealedTiles
       .map((val, idx) => (!val ? idx : null))
       .filter((v) => v !== null) as number[];
-
     if (unrevealed.length === 0) return;
-
     const index = unrevealed[Math.floor(Math.random() * unrevealed.length)];
     const newTiles = [...revealedTiles];
     newTiles[index] = true;
-
-    if (process.env.NODE_ENV === "development") {
-      console.log("Revealing tile:", index, "New tiles state:", newTiles);
-    }
-
     set({ revealedTiles: newTiles });
-
-    // Force a small delay to ensure state propagation
-    setTimeout(() => {
-      get().saveCurrentGameState();
-    }, 0);
+    setTimeout(() => get().saveCurrentGameState(), 0);
   },
 
   revealAllTiles: () => {
-    set({ revealedTiles: [true, true, true, true, true, true] });
+    set({ revealedTiles: Array(6).fill(true) });
     get().saveCurrentGameState();
   },
 
@@ -190,7 +164,6 @@ export const useGameStore = create<GameState>((set, get) => ({
     if (typeof window !== "undefined") {
       localStorage.removeItem("fft-game-state");
     }
-
     const dishes = get().dishes;
     const dish =
       dishes.length > 0
@@ -199,6 +172,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     set({
       currentDish: dish,
       gamePhase: "dish",
+      activePhase: "dish",
       revealedIngredients: 1,
       dishGuesses: [],
       countryGuesses: [],
@@ -212,7 +186,7 @@ export const useGameStore = create<GameState>((set, get) => ({
         proteinGuessSuccess: false,
         tracked: false,
       },
-      revealedTiles: [false, false, false, false, false, false],
+      revealedTiles: Array(6).fill(false),
       countryGuessResults: [],
       proteinGuessResults: [],
     });
@@ -221,7 +195,6 @@ export const useGameStore = create<GameState>((set, get) => ({
   makeDishGuess: (guess: string): boolean => {
     const { currentDish, gamePhase, loading } = get();
     if (!currentDish || loading.dishGuess) return false;
-
     try {
       get().setLoading("dishGuess", true);
       const normalizedGuess = normalizeString(guess);
@@ -248,63 +221,35 @@ export const useGameStore = create<GameState>((set, get) => ({
   makeCountryGuess: (guess: string): boolean => {
     const { currentDish, gamePhase, loading } = get();
     if (!currentDish || loading.countryGuess) return false;
-
     try {
       get().setLoading("countryGuess", true);
       const normalizedGuess = normalizeString(guess);
       if (gamePhase === "country") {
-        const isCorrect =
-          normalizedGuess === normalizeString(currentDish.country);
-
-        const newGuesses = [...get().countryGuesses, normalizedGuess];
-        const results = get().countryGuessResults;
-        const updatedResults = [...results];
-        if (isCorrect) {
-          updatedResults.push({
-            country: capitalizeFirst(normalizedGuess),
-            isCorrect: true,
-            distance: 0,
-            direction: "N/A",
-          });
-        } else {
-          const coords = countryCoords[normalizedGuess];
-          if (!coords) {
-            updatedResults.push({
-              country: capitalizeFirst(normalizedGuess),
-              isCorrect: false,
-              distance: NaN,
-              direction: "Invalid",
-            });
-          } else {
-            const distance = calculateDistance(
-              coords.lat,
-              coords.lng,
-              currentDish.coordinates?.lat || 0,
-              currentDish.coordinates?.lng || 0
-            );
-            const direction = calculateDirection(
-              coords.lat,
-              coords.lng,
-              currentDish.coordinates?.lat || 0,
-              currentDish.coordinates?.lng || 0
-            );
-            updatedResults.push({
-              country: capitalizeFirst(normalizedGuess),
-              isCorrect: false,
-              distance,
-              direction,
-            });
-          }
-        }
+        const isCorrect = normalizeString(currentDish.country) === normalizedGuess;
+        const [lat, lng] = countryCoords[currentDish.country]
+          ? [countryCoords[currentDish.country].lat, countryCoords[currentDish.country].lng]
+          : [0, 0];
+        const [guessLat, guessLng] = countryCoords[capitalizeFirst(normalizedGuess)]
+          ? [
+              countryCoords[capitalizeFirst(normalizedGuess)].lat,
+              countryCoords[capitalizeFirst(normalizedGuess)].lng,
+            ]
+          : [0, 0];
+        const distance = calculateDistance(lat, lng, guessLat, guessLng);
+        const direction = calculateDirection(lat, lng, guessLat, guessLng);
         set((state) => ({
           countryGuesses: newGuesses,
-          countryGuessResults: updatedResults,
+          countryGuessResults: [
+            ...state.countryGuessResults,
+            { country: guess, distance, direction, isCorrect },
+          ],
           gameResults: {
             ...state.gameResults,
             countryGuesses: newGuesses,
             countryGuessSuccess: isCorrect,
           },
         }));
+        if (isCorrect) launchEmojiBurst(emojiThemes.correct);
         get().saveCurrentGameState();
         return isCorrect;
       }
@@ -316,237 +261,136 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   makeProteinGuess: (guess: number): boolean => {
     const { currentDish, gamePhase, loading } = get();
-    if (!currentDish || gamePhase !== "protein" || loading.proteinGuess)
-      return false;
-
+    if (!currentDish || !currentDish.proteinPerServing || loading.proteinGuess) return false;
     try {
       get().setLoading("proteinGuess", true);
-      const actualProtein = currentDish.proteinPerServing || 0;
-      const isCorrect = guess === actualProtein;
-      const difference = Math.abs(guess - actualProtein);
-
-      const newGuesses = [...get().proteinGuesses, guess];
-      const results = get().proteinGuessResults;
-      const updatedResults = [
-        ...results,
-        {
-          guess,
-          actualProtein,
-          difference,
-          isCorrect,
-        },
-      ];
-
-      set((state) => ({
-        proteinGuesses: newGuesses,
-        proteinGuessResults: updatedResults,
-        gameResults: {
-          ...state.gameResults,
+      if (gamePhase === "protein") {
+        const isCorrect = guess === currentDish.proteinPerServing;
+        const newGuesses = [...get().proteinGuesses, guess];
+        const difference = Math.abs(guess - currentDish.proteinPerServing);
+        set((state) => ({
           proteinGuesses: newGuesses,
-          proteinGuessSuccess: isCorrect,
-        },
-      }));
-      get().saveCurrentGameState();
-
-      return isCorrect;
+          proteinGuessResults: [
+            ...state.proteinGuessResults,
+            { guess, actualProtein: currentDish.proteinPerServing!, difference, isCorrect },
+          ],
+          gameResults: {
+            ...state.gameResults,
+            proteinGuesses: newGuesses,
+            proteinGuessSuccess: isCorrect,
+          },
+        }));
+        if (isCorrect) launchEmojiBurst(emojiThemes.correct);
+        get().saveCurrentGameState();
+        return isCorrect;
+      }
+      return false;
     } finally {
       get().setLoading("proteinGuess", false);
     }
   },
 
   revealNextIngredient: () => {
-    const { revealedIngredients, currentDish } = get();
-
-    if (revealedIngredients < (currentDish?.ingredients.length || 0)) {
-      set((state) => ({ revealedIngredients: state.revealedIngredients + 1 }));
-      get().saveCurrentGameState();
-    } else if (currentDish) {
-      get().moveToCountryPhase();
-    }
+    set((state) => ({
+      revealedIngredients: Math.min(
+        state.revealedIngredients + 1,
+        state.currentDish?.recipe.ingredients.length || 1
+      ),
+    }));
   },
 
   moveToCountryPhase: () => {
-    set({ gamePhase: "country" });
+    set({ gamePhase: "country", activePhase: "country" });
     get().saveCurrentGameState();
   },
 
   moveToProteinPhase: () => {
-    set({ gamePhase: "protein" });
+    set({ gamePhase: "protein", activePhase: "protein" });
     get().saveCurrentGameState();
   },
 
   completeGame: () => {
-    const newStreak = updateStreak();
-    const state = get();
-
-    const hasAnySuccess =
-      state.gameResults.dishGuessSuccess ||
-      state.gameResults.countryGuessSuccess ||
-      state.gameResults.proteinGuessSuccess;
-
-    const finalStatus = hasAnySuccess ? "won" : "lost";
-
-    set({
-      gamePhase: "complete",
-      modalVisible: true,
-      streak: newStreak,
-      gameResults: {
-        ...state.gameResults,
-        status: finalStatus,
-        tracked: false,
-      },
-    });
-
+    updateStreak();
+    set({ gamePhase: "complete", modalVisible: true });
     get().saveCurrentGameState();
   },
 
-  resetCountryGuesses: () => set({ countryGuessResults: [] }),
-  resetProteinGuesses: () => set({ proteinGuessResults: [] }),
+  resetCountryGuesses: () => set({ countryGuesses: [] }),
+  resetProteinGuesses: () => set({ proteinGuesses: [] }),
 
   revealCorrectCountry: () => {
     const { currentDish } = get();
-    if (!currentDish || !currentDish.coordinates) return;
-
-    const newGuesses = [
-      ...get().countryGuesses,
-      currentDish.country.toLowerCase(),
-    ];
-    const results = get().countryGuessResults;
-    const updatedResults = [
-      ...results,
-      {
-        country: currentDish.country,
-        isCorrect: true,
-        distance: 0,
-        direction: "",
-      },
-    ];
-
-    set(() => ({
-      countryGuesses: newGuesses,
-      countryGuessResults: updatedResults,
-    }));
-    get().moveToProteinPhase();
+    if (currentDish) {
+      set({ countryGuesses: [currentDish.country], countryGuessResults: [] });
+    }
   },
 
   revealCorrectProtein: () => {
     const { currentDish } = get();
-    if (!currentDish?.proteinPerServing) return;
-
-    const actualProtein = currentDish.proteinPerServing;
-    const newGuesses = [...get().proteinGuesses, actualProtein];
-    const results = get().proteinGuessResults;
-    const updatedResults = [
-      ...results,
-      {
-        guess: actualProtein,
-        actualProtein,
-        difference: 0,
-        isCorrect: true,
-      },
-    ];
-
-    set(() => ({
-      proteinGuesses: newGuesses,
-      proteinGuessResults: updatedResults,
-    }));
-    get().completeGame();
+    if (currentDish?.proteinPerServing) {
+      set({ proteinGuesses: [currentDish.proteinPerServing] });
+    }
   },
 
-  getSortedCountryCoords,
-  guessDish: (guess: string): boolean => {
-    const {
-      currentDish,
-      makeDishGuess,
-      revealAllTiles,
-      moveToCountryPhase,
-      revealRandomTile,
-      revealNextIngredient,
-    } = get();
-    if (!currentDish) return false;
-    const isCorrect = makeDishGuess(guess);
+  getSortedCountryCoords: () => getSortedCountryCoords(),
+
+  guessDish: (guess: string) => {
+    const isCorrect = get().makeDishGuess(guess);
     if (isCorrect) {
-      if (typeof window !== "undefined") launchEmojiBurst(emojiThemes.dish);
-      revealAllTiles();
-      moveToCountryPhase();
-    } else {
-      const { dishGuesses, revealedIngredients } = get();
-      const ingredientsLength = currentDish.ingredients.length || 0;
-      if (dishGuesses.length >= 6) {
-        revealAllTiles();
-        moveToCountryPhase();
-      } else {
-        revealRandomTile();
-        if (revealedIngredients < ingredientsLength) {
-          revealNextIngredient();
-        }
-      }
+      launchEmojiBurst(emojiThemes.correct);
+      setTimeout(() => get().moveToCountryPhase(), 1200);
     }
     return isCorrect;
   },
-  guessCountry: (guess: string): boolean => {
-    const { currentDish, makeCountryGuess, moveToProteinPhase } = get();
-    if (!currentDish || !currentDish.coordinates) return false;
-    const isCorrect = makeCountryGuess(guess);
+
+  guessCountry: (guess: string) => {
+    const isCorrect = get().makeCountryGuess(guess);
     if (isCorrect) {
-      if (typeof window !== "undefined") launchEmojiBurst(emojiThemes.country);
-      moveToProteinPhase();
+      launchEmojiBurst(emojiThemes.correct);
+      setTimeout(() => get().moveToProteinPhase(), 1200);
     }
     return isCorrect;
   },
-  guessProtein: (guess: number): boolean => {
-    const { currentDish, makeProteinGuess, completeGame } = get();
-    if (!currentDish) return false;
-    const isCorrect = makeProteinGuess(guess);
+
+  guessProtein: (guess: number) => {
+    const isCorrect = get().makeProteinGuess(guess);
     if (isCorrect) {
-      if (typeof window !== "undefined") launchEmojiBurst(emojiThemes.protein);
-      completeGame();
-    } else {
-      const { proteinGuesses } = get();
-      if (proteinGuesses.length >= 4) {
-        completeGame();
-      }
+      launchEmojiBurst(emojiThemes.correct);
+      setTimeout(() => get().completeGame(), 1200);
     }
     return isCorrect;
   },
-  activePhase: "dish",
-  hasRestoredState: false,
+
   setActivePhase: (phase: "dish" | "country" | "protein") => {
     set({ activePhase: phase });
-    get().saveCurrentGameState();
   },
-  streak: 0,
-  setStreak: (value: number) => set({ streak: value }),
+
   markGameTracked: () => {
     set((state) => ({
       gameResults: { ...state.gameResults, tracked: true },
     }));
+    get().saveCurrentGameState();
   },
-  isDishPhaseComplete: () => {
-    const { gamePhase } = get();
-    return gamePhase === "complete" || gamePhase !== "dish";
-  },
-  isCountryPhaseComplete: () => {
-    const { gamePhase } = get();
-    return gamePhase === "complete" || gamePhase === "protein";
-  },
-  isProteinPhaseComplete: () => {
-    const { gamePhase } = get();
-    return gamePhase === "complete";
-  },
-  isPhaseComplete: (phase: "dish" | "country" | "protein") => {
-    const { gamePhase } = get();
-    if (gamePhase === "complete") return true;
 
-    switch (phase) {
-      case "dish":
-        return gamePhase !== "dish";
-      case "country":
-        return gamePhase === "protein";
-      case "protein":
-        return false;
-      default:
-        return false;
-    }
+  isDishPhaseComplete: () => {
+    const { gameResults, dishGuesses } = get();
+    return gameResults.dishGuessSuccess || dishGuesses.length >= 3;
+  },
+
+  isCountryPhaseComplete: () => {
+    const { gameResults, countryGuesses } = get();
+    return gameResults.countryGuessSuccess || countryGuesses.length >= 3;
+  },
+
+  isProteinPhaseComplete: () => {
+    const { gameResults, proteinGuesses } = get();
+    return gameResults.proteinGuessSuccess || proteinGuesses.length >= 3;
+  },
+
+  isPhaseComplete: (phase: "dish" | "country" | "protein") => {
+    if (phase === "dish") return get().isDishPhaseComplete();
+    if (phase === "country") return get().isCountryPhaseComplete();
+    if (phase === "protein") return get().isProteinPhaseComplete();
+    return false;
   },
 }));

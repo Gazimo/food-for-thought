@@ -9,21 +9,14 @@ import { DishSkeleton } from "../../components/GameSkeleton";
 import { useTodaysDish } from "../../hooks/useDishes";
 
 export const DishPhase = memo(() => {
-  const {
-    guessDish,
-    dishGuesses,
-    currentDish,
-    revealedTiles,
-    gameResults,
-    isDishPhaseComplete,
-  } = useGameStore((state) => ({
-    guessDish: state.guessDish,
-    dishGuesses: state.dishGuesses,
-    currentDish: state.currentDish,
-    revealedTiles: state.revealedTiles,
-    gameResults: state.gameResults,
-    isDishPhaseComplete: state.isDishPhaseComplete,
-  }));
+  const guessDish = useGameStore((state) => state.guessDish);
+  const dishGuesses = useGameStore((state) => state.dishGuesses);
+  const currentDish = useGameStore((state) => state.currentDish);
+  const revealedTiles = useGameStore((state) => state.revealedTiles);
+  const gameResults = useGameStore((state) => state.gameResults);
+  const isDishPhaseComplete = useGameStore(
+    (state) => state.isDishPhaseComplete
+  );
 
   const { dish, isLoading: isDishLoading } = useTodaysDish();
   // Use database ID instead of extracting from filename
@@ -87,10 +80,10 @@ export const DishPhase = memo(() => {
             Guesses: {gameResults.dishGuesses.length} of 6
           </div>
           <div className="flex flex-wrap gap-1">
-            {gameResults.dishGuesses.map((guess, index) => {
+            {gameResults.dishGuesses.map((guess: string, index: number) => {
               const isCorrectGuess =
                 currentDish?.acceptableGuesses?.some(
-                  (acceptable) =>
+                  (acceptable: string) =>
                     acceptable.toLowerCase() === guess.toLowerCase()
                 ) || currentDish?.name.toLowerCase() === guess.toLowerCase();
 
