@@ -1,7 +1,8 @@
 import Image from "next/image";
+import { memo } from "react";
 import { Tile } from "./Tile";
 
-export function TileGrid({
+export const TileGrid = memo(function TileGrid({
   revealedTiles,
   blurredTiles,
   fullTiles,
@@ -56,4 +57,4 @@ export function TileGrid({
       </div>
     </div>
   );
-}
+});

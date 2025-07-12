@@ -31,27 +31,15 @@ export const GuessInput: React.FC<GuessInputProps> = memo(
   }) => {
     const [input, setInput] = useState("");
     const [shake, setShake] = useState(false);
-    const {
-      revealAllTiles,
-      completeGame,
-      moveToCountryPhase,
-      activePhase,
-      currentDish,
-      revealCorrectCountry,
-      revealCorrectProtein,
-      isPhaseComplete,
-      loading,
-    } = useGameStore((state) => ({
-      revealAllTiles: state.revealAllTiles,
-      completeGame: state.completeGame,
-      moveToCountryPhase: state.moveToCountryPhase,
-      activePhase: state.activePhase,
-      currentDish: state.currentDish,
-      revealCorrectCountry: state.revealCorrectCountry,
-      revealCorrectProtein: state.revealCorrectProtein,
-      isPhaseComplete: state.isPhaseComplete,
-      loading: state.loading,
-    }));
+    const revealAllTiles = useGameStore((state) => state.revealAllTiles);
+    const completeGame = useGameStore((state) => state.completeGame);
+    const moveToCountryPhase = useGameStore((state) => state.moveToCountryPhase);
+    const activePhase = useGameStore((state) => state.activePhase);
+    const currentDish = useGameStore((state) => state.currentDish);
+    const revealCorrectCountry = useGameStore((state) => state.revealCorrectCountry);
+    const revealCorrectProtein = useGameStore((state) => state.revealCorrectProtein);
+    const isPhaseComplete = useGameStore((state) => state.isPhaseComplete);
+    const loading = useGameStore((state) => state.loading);
 
     const isProteinPhase = activePhase === "protein";
     const isComplete = isPhaseComplete(activePhase);
