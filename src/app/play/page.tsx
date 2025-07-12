@@ -11,6 +11,7 @@ import { AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import posthog from "posthog-js";
 import { useEffect, useRef } from "react";
+import { ClientOnly } from "../../components/ClientOnly";
 import { getPhaseConfig } from "../../config/gamePhases";
 import { alreadyPlayedToday, getStreak } from "../../utils/streak";
 import { CountryPhase } from "./CountryPhase";
@@ -221,7 +222,9 @@ export default function GamePage() {
 
   return (
     <main className="p-4 sm:p-6 max-w-full sm:max-w-xl mx-auto flex flex-col min-h-screen">
-      <IntroModal />
+      <ClientOnly>
+        <IntroModal />
+      </ClientOnly>
       <GameHeader />
 
       <PhaseContainer>
@@ -241,7 +244,9 @@ export default function GamePage() {
         />
       </PhaseContainer>
 
-      <ResultModal />
+      <ClientOnly>
+        <ResultModal />
+      </ClientOnly>
       <GameFooter />
     </main>
   );
