@@ -9,12 +9,26 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  // Calculate expiry time for the cache. The data is for the whole day,
+  // so we can cache it until the next day.
+  const now = new Date();
+  const tomorrow = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1
+  );
+  const secondsUntilTomorrow = Math.floor(
+    (tomorrow.getTime() - now.getTime()) / 1000
+  );
+
+  // Set aggressive caching headers for the CDN.
+  // s-maxage tells the CDN how long to cache.
+  // stale-while-revalidate tells it to serve stale content while fetching a new version.
   res.setHeader(
     "Cache-Control",
-    "no-store, no-cache, must-revalidate, proxy-revalidate"
+    `public, s-maxage=${secondsUntilTomorrow}, stale-while-revalidate=60`
   );
-  res.setHeader("Pragma", "no-cache");
-  res.setHeader("Expires", "0");
+  // Add a security header back.
   res.setHeader("X-Content-Type-Options", "nosniff");
 
   // Initialize Supabase client
