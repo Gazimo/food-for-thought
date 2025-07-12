@@ -3,11 +3,12 @@ import { GuessInput } from "@/components/GuessInput";
 import { useBlurredTiles, useDishTiles } from "@/hooks/useDishTiles";
 import { useGameStore } from "@/store/gameStore";
 import posthog from "posthog-js";
+import { memo } from "react";
 import { TileGrid } from "../../components/dish-image/TileGrid";
 import { DishSkeleton } from "../../components/GameSkeleton";
 import { useTodaysDish } from "../../hooks/useDishes";
 
-export function DishPhase() {
+export const DishPhase = memo(() => {
   const {
     guessDish,
     dishGuesses,
@@ -15,7 +16,14 @@ export function DishPhase() {
     revealedTiles,
     gameResults,
     isDishPhaseComplete,
-  } = useGameStore();
+  } = useGameStore((state) => ({
+    guessDish: state.guessDish,
+    dishGuesses: state.dishGuesses,
+    currentDish: state.currentDish,
+    revealedTiles: state.revealedTiles,
+    gameResults: state.gameResults,
+    isDishPhaseComplete: state.isDishPhaseComplete,
+  }));
 
   const { dish, isLoading: isDishLoading } = useTodaysDish();
   // Use database ID instead of extracting from filename
@@ -104,4 +112,6 @@ export function DishPhase() {
       )}
     </>
   );
-}
+});
+
+DishPhase.displayName = "DishPhase";
