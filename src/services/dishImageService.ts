@@ -183,7 +183,7 @@ class DishImageService {
 
       // Upload to Supabase Storage
       const { error } = await this.supabase.storage
-        .from("dish-images")
+        .from("dish-images-v2")
         .upload(filename, buffer, {
           contentType: "image/png",
           upsert: true,
@@ -196,7 +196,7 @@ class DishImageService {
       // Get public URL
       const {
         data: { publicUrl },
-      } = this.supabase.storage.from("dish-images").getPublicUrl(filename);
+      } = this.supabase.storage.from("dish-images-v2").getPublicUrl(filename);
 
       console.log(`💾 Image saved as: ${filename}`);
       return { filename, publicUrl };
