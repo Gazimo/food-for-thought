@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
 import { useEffect } from "react";
+import { useGameStore } from "../store/gameStore";
+import { getStreak } from "../utils/streak";
 
 export default function ClientProviders({
   children,
@@ -13,6 +15,12 @@ export default function ClientProviders({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const setStreak = useGameStore((state) => state.setStreak);
+
+  useEffect(() => {
+    // Hydrate streak from localStorage on client mount
+    setStreak(getStreak());
+  }, [setStreak]);
 
   useEffect(() => {
     if (!posthog.__loaded) {
