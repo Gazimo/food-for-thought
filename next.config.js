@@ -2,11 +2,11 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['upload.wikimedia.org', 'dummyimage.com'],
+    domains: ['upload.wikimedia.org', 'dummyimage.com', 'ezzplfaajvjuttejxhwb.supabase.co'],
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '*.supabase.co',
+        hostname: 'ezzplfaajvjuttejxhwb.supabase.co',
         port: '',
         pathname: '/storage/v1/object/public/**',
       },
