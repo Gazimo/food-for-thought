@@ -5,18 +5,26 @@ import { GameHeader } from "@/components/GameHeader";
 import { GameNavigation, ShowResultsButton } from "@/components/GameNavigation";
 import { PhaseContainer } from "@/components/PhaseContainer";
 import { PhaseRenderer } from "@/components/PhaseRenderer";
-import { ResultModal } from "@/components/ResultModal";
 import { useTodaysDish } from "@/hooks/useDishes";
 import { useGameStore } from "@/store/gameStore";
 import { AnimatePresence } from "framer-motion";
+import dynamic from "next/dynamic";
 import posthog from "posthog-js";
 import { useEffect, useRef } from "react";
-import { IntroModal } from "../../components/IntroModal";
 import { getPhaseConfig } from "../../config/gamePhases";
 import { alreadyPlayedToday, getStreak } from "../../utils/streak";
 import { CountryPhase } from "./CountryPhase";
 import { DishPhase } from "./DishPhase";
 import { ProteinPhase } from "./ProteinPhase";
+
+const IntroModal = dynamic(
+  () => import("../../components/IntroModal").then((mod) => mod.IntroModal),
+  { ssr: false }
+);
+const ResultModal = dynamic(
+  () => import("@/components/ResultModal").then((mod) => mod.ResultModal),
+  { ssr: false }
+);
 
 export default function GamePage() {
   const {
@@ -164,7 +172,6 @@ export default function GamePage() {
             if (savedDate && savedDate === today) {
               correctPhase = parsedState.activePhase || "dish";
             } else {
-
               correctPhase = "dish";
             }
           }
