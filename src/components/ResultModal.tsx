@@ -2,13 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { useGameStore } from "@/store/gameStore";
+import Image from "next/image";
 import posthog from "posthog-js";
 import React, { memo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { generateShareText } from "../utils/shareText";
 import { alreadyPlayedToday } from "../utils/streak";
 
-export const ResultModal: React.FC = memo(() => {
+export const ResultModal: React.FC = memo(function ResultModal() {
   const {
     currentDish,
     gamePhase,
@@ -71,15 +72,19 @@ export const ResultModal: React.FC = memo(() => {
           )}
         </div>
         {currentDish.imageUrl ? (
-          <img
+          <Image
             src={currentDish.imageUrl}
             alt="Dish image"
+            width={500}
+            height={300}
             className="rounded-lg w-full object-cover max-h-52"
           />
         ) : (
-          <img
+          <Image
             src="/images/404.png"
             alt="Fallback image"
+            width={500}
+            height={300}
             className="rounded-lg w-full object-cover max-h-52"
           />
         )}
