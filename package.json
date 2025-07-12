@@ -58,6 +58,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/topojson-client": "^3.1.5",
+    "@types/topojson-specification": "^1.0.5",
     "autoprefixer": "^10.4.21",
     "dotenv": "^16.4.5",
     "eslint": "^9",
