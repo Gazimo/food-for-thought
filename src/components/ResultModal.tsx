@@ -3,12 +3,12 @@
 import { Button } from "@/components/ui/button";
 import { useGameStore } from "@/store/gameStore";
 import posthog from "posthog-js";
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { generateShareText } from "../utils/shareText";
 import { alreadyPlayedToday } from "../utils/streak";
 
-export const ResultModal: React.FC = () => {
+export const ResultModal: React.FC = memo(function ResultModal() {
   const {
     currentDish,
     gamePhase,
@@ -214,4 +214,4 @@ export const ResultModal: React.FC = () => {
       </div>
     </div>
   );
-};
+});
