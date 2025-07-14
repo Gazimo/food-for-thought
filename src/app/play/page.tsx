@@ -10,7 +10,7 @@ import { useGameStore } from "@/store/gameStore";
 import { AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import posthog from "posthog-js";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getPhaseConfig } from "../../config/gamePhases";
 import { alreadyPlayedToday, getStreak } from "../../utils/streak";
 import { CountryPhase } from "./CountryPhase";
@@ -40,6 +40,19 @@ export default function GamePage() {
   const { dish, isLoading, isError } = useTodaysDish();
   const setStreak = useGameStore((s) => s.setStreak);
   const hasInitialized = useRef(false);
+  const [isIntroModalOpen, setIntroModalOpen] = useState(false);
+
+  useEffect(() => {
+    const hasSeenIntro = localStorage.getItem("hasSeenIntro");
+    if (!hasSeenIntro) {
+      setIntroModalOpen(true);
+    }
+  }, []);
+
+  const closeIntroModal = () => {
+    localStorage.setItem("hasSeenIntro", "true");
+    setIntroModalOpen(false);
+  };
 
   useEffect(() => {
     posthog.capture("game_start", {
@@ -221,8 +234,8 @@ export default function GamePage() {
 
   return (
     <main className="p-4 sm:p-6 max-w-full sm:max-w-xl mx-auto flex flex-col min-h-screen">
-      <IntroModal />
-      <GameHeader />
+      <IntroModal isOpen={isIntroModalOpen} onClose={closeIntroModal} />
+      <GameHeader onShowRules={() => setIntroModalOpen(true)} />
 
       <PhaseContainer>
         <AnimatePresence mode="wait">{renderPhaseContent()}</AnimatePresence>

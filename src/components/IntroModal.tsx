@@ -8,37 +8,35 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useEffect, useState } from "react";
 
-export const IntroModal = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  useEffect(() => {
-    const hasSeenIntro = localStorage.getItem("hasSeenIntro");
-    if (!hasSeenIntro) {
-      setIsOpen(true);
-    }
-  }, []);
+interface IntroModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
-  const handleClose = () => {
-    localStorage.setItem("hasSeenIntro", "true");
-    setIsOpen(false);
-  };
+export const IntroModal = ({ isOpen, onClose }: IntroModalProps) => {
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md text-center">
         <DialogHeader>
           <DialogTitle className="text-2xl">How to Play</DialogTitle>
           <DialogDescription className="text-base mt-2 space-y-2">
             <p>
-              🧠 Guess the <strong>dish</strong> based on revealed ingredients.
+              🍔 <strong>Guess the dish:</strong> You'll see a blurred image of a
+              food dish. With each incorrect guess, the image will become a
+              little clearer.
             </p>
             <p>
-              🌍 Then guess the <strong>country</strong> it’s from.
+              🌍 <strong>Guess the country:</strong> Once you've guessed the
+              dish, guess its country of origin.
             </p>
-            <p>🎯 Each wrong guess reveals part of the dish image!</p>
+            <p>
+              💪 <strong>Guess the protein:</strong> You have 4 tries to guess the
+              protein per serving.
+            </p>
           </DialogDescription>
         </DialogHeader>
-        <Button onClick={handleClose} variant="cta">
+        <Button onClick={onClose} variant="cta">
           Let&apos;s Go!
         </Button>
       </DialogContent>
