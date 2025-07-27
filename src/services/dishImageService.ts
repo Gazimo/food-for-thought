@@ -86,9 +86,9 @@ class DishImageService {
   private createOptimizedPrompt(dishData: DishImageData): string {
     const { name, ingredients, country, blurb, tags } = dishData;
 
-    // Base style that matches your existing images
+    // Base style that emphasizes centered composition
     const baseStyle =
-      "professional food photography, overhead or 45-degree elevated angle view, natural lighting, rustic wooden table or neutral background, high resolution, detailed textures, appetizing presentation, vibrant colors";
+      "professional food photography, centered composition with the dish as the main focal point, overhead or 45-degree elevated angle view, natural lighting, rustic wooden table or neutral background, high resolution, detailed textures, appetizing presentation, vibrant colors, perfectly centered in frame";
 
     // Get dish-specific styling cues
     const dishStyle = this.getDishStyle(tags, blurb);
@@ -100,7 +100,7 @@ class DishImageService {
         ? ` featuring ${primaryIngredients} among other ingredients`
         : ` made with ${primaryIngredients}`;
 
-    return `A beautiful, appetizing photograph of ${name}, a traditional dish from ${country}${ingredientNote}. ${dishStyle}${baseStyle}. Restaurant-quality plating, mouth-watering presentation. No text, watermarks, people, or artificial elements in the image.`;
+    return `A beautiful, appetizing photograph of ${name}, a traditional dish from ${country}${ingredientNote}. ${dishStyle}${baseStyle}. Restaurant-quality plating, mouth-watering presentation, dish positioned centrally in the frame. No text, watermarks, people, or artificial elements in the image.`;
   }
 
   /**
@@ -224,9 +224,9 @@ class DishImageService {
         // Add slight variation to prompt for different compositions
         const basePrompt = this.createOptimizedPrompt(dishData);
         const variations = [
-          ", overhead top-down view",
-          ", 45-degree elevated angle view",
-          ", slightly angled side view",
+          ", overhead top-down view with dish perfectly centered",
+          ", 45-degree elevated angle view with centered composition",
+          ", slightly angled view maintaining central focus on the dish",
         ];
         const prompt = basePrompt + variations[i % variations.length];
 
