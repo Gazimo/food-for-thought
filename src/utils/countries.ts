@@ -6,7 +6,10 @@ export function getCountryCoordsMap(): Record<
 > {
   const mapped: Record<string, { lat: number; lng: number }> = {};
   for (const [name, coords] of Object.entries(countries)) {
-    mapped[name.toLowerCase()] = coords;
+    const keyLower = name.toLowerCase();
+    const keyNormalized = keyLower.replace(/[^a-z0-9]+/g, "");
+    mapped[keyLower] = coords as any;
+    mapped[keyNormalized] = coords as any; // add no-whitespace key for robust lookup
   }
   return mapped;
 }

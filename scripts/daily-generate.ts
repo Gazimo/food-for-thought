@@ -231,6 +231,26 @@ async function main() {
 
   (generated as any).releaseDate = nextRelease;
 
+  // Compute coordinates based on country (same logic as SmartDishGenerator)
+  const coordsMap = getCountryCoordsMap();
+  const normCountry = (generated.country || "")
+    .toLowerCase()
+    .replace(/\s+/g, "");
+  let coords: { lat: number; lng: number } | null =
+    (coordsMap as any)[normCountry] || null;
+  if (!coords) {
+    for (const [countryKey, value] of Object.entries(coordsMap)) {
+      if (
+        countryKey.includes(normCountry) ||
+        normCountry.includes(countryKey)
+      ) {
+        coords = value as any;
+        break;
+      }
+    }
+  }
+  const coordinatesString = coords ? `(${coords.lng},${coords.lat})` : null;
+
   // Manually perform DB insert (same as SmartDishGenerator.saveDishToDatabase)
   const dishToInsert = {
     name: generated.name,
@@ -243,7 +263,7 @@ async function main() {
     recipe: generated.recipe,
     tags: generated.tags || [],
     release_date: (generated as any).releaseDate,
-    coordinates: null,
+    coordinates: coordinatesString,
     region: null,
   };
 
