@@ -223,12 +223,6 @@ async function main() {
 
   (generated as any).releaseDate = nextRelease;
 
-  // Reuse the SmartDishGenerator save + tiles by dynamic import
-  const { default: SmartDishGeneratorModule } = await import(
-    "./smart-dish-generator"
-  );
-  // Create a tiny wrapper to reuse its methods would require refactor; instead, mimic its save call inline here
-
   // Manually perform DB insert (same as SmartDishGenerator.saveDishToDatabase)
   const dishToInsert = {
     name: generated.name,
