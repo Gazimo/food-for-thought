@@ -13,7 +13,9 @@
     "optimize-tiles": "npm run pregenerate-tiles full",
     "check-tiles": "tsx scripts/pregenerate-tiles.ts generate",
     "fix-tiles": "tsx scripts/pregenerate-tiles.ts force-regenerate",
-    "monitor-optimization": "tsx scripts/monitor-optimization.ts"
+    "regenerate-dish-67": "tsx scripts/regenerate-dish-67.ts",
+    "monitor-optimization": "tsx scripts/monitor-optimization.ts",
+    "daily-generate": "tsx scripts/daily-generate.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.13",

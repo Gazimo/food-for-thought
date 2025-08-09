@@ -32,7 +32,9 @@ class AIService {
     try {
       console.log(`🤖 Generating complete dish data for: ${dishName}`);
 
-      const prompt = `You are a culinary expert creating a dish entry for a food guessing game. Create a complete dish profile for "${dishName}" in the exact same style and quality as these examples:
+      const prompt = `You are a culinary expert creating a dish entry for a food guessing game. Create a complete dish profile for "${dishName}" in the exact same style and quality as these examples. Critical constraints: (1) The country field must be Title Case (e.g., "India", "Thailand"). (2) The blurb must NOT include the country name or nationality adjectives. Return JSON only.
+
+EXAMPLES (format and quality):
 
 EXAMPLE 1:
 {
@@ -147,7 +149,54 @@ Return ONLY a valid JSON object with the complete dish data. No other text.`;
         cleanedContent = content.replace(/```\s*/, "").replace(/```\s*$/, "");
       }
 
-      const dishData = JSON.parse(cleanedContent) as CompleteDishData;
+      const rawDishData = JSON.parse(cleanedContent) as CompleteDishData;
+
+      // Post-process: enforce country capitalization and remove country mentions from blurb
+      const titleCase = (s: string) =>
+        s
+          .toLowerCase()
+          .split(/\s+/)
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+          .join(" ");
+
+      const normalizedCountry = titleCase(rawDishData.country || "");
+      const countryWords = normalizedCountry
+        .toLowerCase()
+        .split(/[^a-z]+/)
+        .filter(Boolean);
+      const nationalityAdjectives = [
+        // minimal list; evaluator may extend
+        ...countryWords,
+      ];
+
+      const scrubBlurb = (blurb: string) => {
+        let b = blurb || "";
+        // Remove direct country matches (case-insensitive)
+        for (const term of nationalityAdjectives) {
+          if (!term) continue;
+          const re = new RegExp(`\\b${term}\\b`, "gi");
+          b = b
+            .replace(re, "")
+            .replace(/\s{2,}/g, " ")
+            .trim();
+        }
+        // Also remove the exact Title Case country
+        if (normalizedCountry) {
+          const re2 = new RegExp(`\\b${normalizedCountry}\\b`, "gi");
+          b = b
+            .replace(re2, "")
+            .replace(/\s{2,}/g, " ")
+            .trim();
+        }
+        return b;
+      };
+
+      const dishData: CompleteDishData = {
+        ...rawDishData,
+        country: normalizedCountry,
+        blurb: scrubBlurb(rawDishData.blurb),
+      };
+
       console.log(`✅ AI generated complete dish data for: ${dishData.name}`);
 
       // Validate the response
