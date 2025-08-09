@@ -151,6 +151,18 @@ Return ONLY a valid JSON object with the complete dish data. No other text.`;
 
       const rawDishData = JSON.parse(cleanedContent) as CompleteDishData;
 
+      // Enforce name consistency: the generated dish name must match the requested dishName
+      const norm = (s: string) =>
+        (s || "")
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "")
+          .trim();
+      if (norm(rawDishData.name) !== norm(dishName)) {
+        throw new Error(
+          `Generated dish name '${rawDishData.name}' does not match requested '${dishName}'`
+        );
+      }
+
       // Post-process: enforce country capitalization and remove country mentions from blurb
       const titleCase = (s: string) =>
         s

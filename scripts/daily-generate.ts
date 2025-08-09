@@ -170,6 +170,14 @@ async function main() {
     return;
   }
 
+  // Double-check duplicates with the actual generated name
+  if (isDuplicate(generated.name || "", existing)) {
+    console.log(
+      `❌ Evaluator rejected: generated name duplicates existing dish/guess: ${generated.name}`
+    );
+    return;
+  }
+
   // Evaluator: enforce constraints before saving
   const countryTitle = titleCase(generated.country || "");
   const blurb = generated.blurb || "";
