@@ -1,19 +1,27 @@
 import countries from "../../public/data/countries.json";
 
-export function getCountryCoordsMap(): Record<
-  string,
-  { lat: number; lng: number }
-> {
-  const mapped: Record<string, { lat: number; lng: number }> = {};
-  for (const [name, coords] of Object.entries(countries)) {
+export type CountryCoords = { lat: number; lng: number };
+export type CountriesMap = Record<string, CountryCoords>;
+
+export function getCountryCoordsMap(): Record<string, CountryCoords> {
+  const mapped: Record<string, CountryCoords> = {};
+  const countriesMap = countries as unknown as CountriesMap;
+
+  const entries = Object.entries(countriesMap) as Array<
+    [string, CountryCoords]
+  >;
+
+  for (const [name, coords] of entries) {
     const keyLower = name.toLowerCase();
     const keyNormalized = keyLower.replace(/[^a-z0-9]+/g, "");
-    mapped[keyLower] = coords as any;
-    mapped[keyNormalized] = coords as any; // add no-whitespace key for robust lookup
+    mapped[keyLower] = coords;
+    mapped[keyNormalized] = coords; // add no-whitespace key for robust lookup
   }
   return mapped;
 }
 
 export function getCountryNames(): string[] {
-  return Object.keys(countries).sort((a, b) => a.localeCompare(b));
+  return Object.keys(countries as CountriesMap).sort((a, b) =>
+    a.localeCompare(b)
+  );
 }
