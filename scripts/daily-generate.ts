@@ -4,8 +4,11 @@ config({ path: ".env.local" });
 import { createClient } from "@supabase/supabase-js";
 import fs from "fs";
 import path from "path";
+import AIService from "../src/services/aiService";
+import DishImageService from "../src/services/dishImageService";
 import { getCountryCoordsMap } from "../src/utils/countries";
-import RecipeDataFetcher from "../src/utils/recipeDataFetcher";
+import { evaluateDishQuality } from "./agents/evaluate-dish";
+import { proposeDishCandidates } from "./agents/propose-dish";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -35,7 +38,7 @@ function titleCase(s: string) {
     .join(" ");
 }
 
-async function loadExistingDishes(supabase: ReturnType<typeof createClient>) {
+async function loadExistingDishes(supabase: any) {
   const { data, error } = await supabase
     .from("dishes")
     .select("id,name,acceptable_guesses,country,release_date,image_url")
@@ -44,10 +47,10 @@ async function loadExistingDishes(supabase: ReturnType<typeof createClient>) {
   return data || [];
 }
 
-function candidateFromArgsOrBacklog(): {
+async function candidateFromArgsOrBacklogOrAI(existing: any[]): Promise<{
   name: string;
   country?: string;
-} | null {
+} | null> {
   const argName = process.argv.slice(2).join(" ");
   if (argName) return { name: argName };
 
@@ -57,7 +60,20 @@ function candidateFromArgsOrBacklog(): {
     name: string;
     country?: string;
   }>;
-  return backlog.length ? backlog[0] : null;
+  if (backlog.length) return backlog[0];
+
+  // Fall back to AI proposer agent
+  const normalizedExisting = new Set<string>();
+  for (const d of existing) {
+    normalizedExisting.add(normalize(d.name));
+    const guesses: string[] = d.acceptable_guesses || [];
+    for (const g of guesses) normalizedExisting.add(normalize(g));
+  }
+  const proposals = await proposeDishCandidates({
+    existingNormalized: Array.from(normalizedExisting),
+    maxSuggestions: 3,
+  });
+  return proposals[0] || null;
 }
 
 function removeFromBacklog(consumedName: string) {
@@ -90,9 +106,7 @@ function countryValid(country?: string): boolean {
   return Boolean(coords[key]);
 }
 
-async function getNextReleaseDate(
-  supabase: ReturnType<typeof createClient>
-): Promise<string> {
+async function getNextReleaseDate(supabase: any): Promise<string> {
   const { data, error } = await supabase
     .from("dishes")
     .select("release_date")
@@ -101,14 +115,12 @@ async function getNextReleaseDate(
   const base =
     error || !data || data.length === 0
       ? new Date()
-      : new Date(data[0].release_date);
+      : new Date(String(data[0].release_date));
   base.setDate(base.getDate() + 1);
   return base.toISOString().split("T")[0];
 }
 
-async function countBufferDays(
-  supabase: ReturnType<typeof createClient>
-): Promise<number> {
+async function countBufferDays(supabase: any): Promise<number> {
   const today = new Date().toISOString().split("T")[0];
   const { data, error } = await supabase
     .from("dishes")
@@ -117,17 +129,17 @@ async function countBufferDays(
     .order("release_date", { ascending: true });
   if (error || !data) return 0;
   // days scheduled from today inclusive
-  const last = data[data.length - 1]?.release_date;
+  const last = data[data.length - 1]?.release_date as any;
   if (!last) return 0;
   const diff = Math.ceil(
-    (new Date(last).getTime() - new Date(today).getTime()) /
+    (new Date(String(last)).getTime() - new Date(today).getTime()) /
       (1000 * 60 * 60 * 24)
   );
   return Math.max(diff, 0);
 }
 
 async function main() {
-  const supabase = createClient(supabaseUrl!, supabaseServiceKey!);
+  const supabase: any = createClient(supabaseUrl!, supabaseServiceKey!);
   const existing = await loadExistingDishes(supabase);
 
   const bufferDays = await countBufferDays(supabase);
@@ -142,7 +154,7 @@ async function main() {
   let spent = 0;
   const maxSpend = DAILY_COST_CAP_USD;
 
-  const candidate = candidateFromArgsOrBacklog();
+  const candidate = await candidateFromArgsOrBacklogOrAI(existing);
   if (!candidate) {
     console.log("⚠️ No candidate found (args/backlog). Skipping.");
     return;
@@ -162,9 +174,53 @@ async function main() {
     // still try generation; AI may normalize
   }
 
-  // Generate full dish data + image using existing fetcher
-  const fetcher = new RecipeDataFetcher();
-  const generated = await fetcher.fetchDishData(candidate.name);
+  // Generate text-only dish data first (use AIService directly), evaluate, only then generate image
+  const ai = new AIService();
+  const textOnly = await ai.generateCompleteDish(candidate.name);
+  if (!textOnly) {
+    console.log("❌ Text generation failed.");
+    return;
+  }
+
+  // Evaluator agent (cheap model)
+  const evalResult = await evaluateDishQuality({
+    name: textOnly.name,
+    country: textOnly.country,
+    ingredients: textOnly.ingredients,
+    blurb: textOnly.blurb,
+    proteinPerServing: textOnly.proteinPerServing,
+    recipe: textOnly.recipe,
+    tags: textOnly.tags,
+  });
+
+  if (!evalResult.accept) {
+    console.log(
+      "❌ Evaluator rejected candidate:",
+      evalResult.reasons.join("; ")
+    );
+    return;
+  }
+
+  // After acceptance, generate exactly one image
+  const imageService = new DishImageService();
+  const imageResult = await imageService.generateDishImage({
+    name: textOnly.name,
+    ingredients: textOnly.ingredients,
+    country: textOnly.country,
+    blurb: textOnly.blurb,
+    tags: textOnly.tags,
+  });
+
+  const generated = {
+    ...textOnly,
+    imageUrl: imageResult.imageUrl,
+    imageGeneration: {
+      source: imageResult.source,
+      cost: imageResult.cost,
+      prompt: imageResult.prompt,
+      filename: imageResult.filename,
+    },
+  } as any;
   if (!generated) {
     console.log("❌ Generation failed.");
     return;
