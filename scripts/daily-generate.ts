@@ -47,22 +47,28 @@ async function loadExistingDishes(supabase: any) {
   return data || [];
 }
 
-async function candidateFromArgsOrBacklogOrAI(existing: any[]): Promise<{
+type Candidate = {
   name: string;
   country?: string;
-} | null> {
+  source: "arg" | "backlog" | "ai";
+};
+
+async function buildCandidateQueue(existing: any[]): Promise<Candidate[]> {
+  const queue: Candidate[] = [];
   const argName = process.argv.slice(2).join(" ");
-  if (argName) return { name: argName };
+  if (argName) queue.push({ name: argName, source: "arg" });
 
   const backlogPath = path.resolve(__dirname, "../src/data/dish_backlog.json");
-  if (!fs.existsSync(backlogPath)) return null;
-  const backlog = JSON.parse(fs.readFileSync(backlogPath, "utf-8")) as Array<{
-    name: string;
-    country?: string;
-  }>;
-  if (backlog.length) return backlog[0];
+  let backlog: Array<{ name: string; country?: string }> = [];
+  if (fs.existsSync(backlogPath)) {
+    backlog = JSON.parse(fs.readFileSync(backlogPath, "utf-8"));
+  }
+  // Take up to first 5 backlog items to try this run
+  for (const item of backlog.slice(0, 5)) {
+    queue.push({ name: item.name, country: item.country, source: "backlog" });
+  }
 
-  // Fall back to AI proposer agent
+  // Always fetch AI proposals (cheap) and append
   const normalizedExisting = new Set<string>();
   for (const d of existing) {
     normalizedExisting.add(normalize(d.name));
@@ -73,7 +79,20 @@ async function candidateFromArgsOrBacklogOrAI(existing: any[]): Promise<{
     existingNormalized: Array.from(normalizedExisting),
     maxSuggestions: 3,
   });
-  return proposals[0] || null;
+  for (const p of proposals) {
+    queue.push({ name: p.name, country: p.country, source: "ai" });
+  }
+
+  // De-duplicate by normalized name
+  const seen = new Set<string>();
+  const deduped: Candidate[] = [];
+  for (const c of queue) {
+    const key = normalize(c.name);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    deduped.push(c);
+  }
+  return deduped;
 }
 
 function removeFromBacklog(consumedName: string) {
@@ -154,75 +173,106 @@ async function main() {
   let spent = 0;
   const maxSpend = DAILY_COST_CAP_USD;
 
-  const candidate = await candidateFromArgsOrBacklogOrAI(existing);
-  if (!candidate) {
-    console.log("⚠️ No candidate found (args/backlog). Skipping.");
+  const candidates = await buildCandidateQueue(existing);
+  if (candidates.length === 0) {
+    console.log("⚠️ No candidate found (args/backlog/AI). Skipping.");
     return;
   }
 
-  if (isDuplicate(candidate.name, existing)) {
-    console.log(
-      `⚠️ Candidate duplicates existing dish/guess: ${candidate.name}`
-    );
-    // remove if from backlog to avoid re-try loop
-    removeFromBacklog(candidate.name);
-    return;
-  }
-
-  if (candidate.country && !countryValid(candidate.country)) {
-    console.log(`⚠️ Candidate country not recognized: ${candidate.country}`);
-    // still try generation; AI may normalize
-  }
-
-  // Generate text-only dish data first (use AIService directly), evaluate, only then generate image
   const ai = new AIService();
-  const textOnly = await ai.generateCompleteDish(candidate.name);
-  if (!textOnly) {
-    console.log("❌ Text generation failed.");
-    return;
-  }
-
-  // Evaluator agent (cheap model)
-  const evalResult = await evaluateDishQuality({
-    name: textOnly.name,
-    country: textOnly.country,
-    ingredients: textOnly.ingredients,
-    blurb: textOnly.blurb,
-    proteinPerServing: textOnly.proteinPerServing,
-    recipe: textOnly.recipe,
-    tags: textOnly.tags,
-  });
-
-  if (!evalResult.accept) {
-    console.log(
-      "❌ Evaluator rejected candidate:",
-      evalResult.reasons.join("; ")
-    );
-    return;
-  }
-
-  // After acceptance, generate exactly one image
   const imageService = new DishImageService();
-  const imageResult = await imageService.generateDishImage({
-    name: textOnly.name,
-    ingredients: textOnly.ingredients,
-    country: textOnly.country,
-    blurb: textOnly.blurb,
-    tags: textOnly.tags,
-  });
+  let generated: any = null;
+  let usedCandidate: Candidate | null = null;
 
-  const generated = {
-    ...textOnly,
-    imageUrl: imageResult.imageUrl,
-    imageGeneration: {
-      source: imageResult.source,
-      cost: imageResult.cost,
-      prompt: imageResult.prompt,
-      filename: imageResult.filename,
-    },
-  } as any;
+  const toTitleCase = (s: string) =>
+    (s || "")
+      .toLowerCase()
+      .split(/\s+/)
+      .map((w) => (w ? w[0].toUpperCase() + w.slice(1) : w))
+      .join(" ");
+
+  const stripCountryFromBlurb = (blurb: string, country: string) => {
+    let b = blurb || "";
+    const words = (country || "")
+      .toLowerCase()
+      .split(/[^a-z]+/)
+      .filter(Boolean);
+    for (const w of words) {
+      b = b.replace(new RegExp(`\\b${w}\\b`, "gi"), " ");
+    }
+    if (country) b = b.replace(new RegExp(`\\b${country}\\b`, "gi"), " ");
+    return b.replace(/\s{2,}/g, " ").trim();
+  };
+
+  for (const cand of candidates) {
+    console.log(`🔎 Trying candidate: ${cand.name} (${cand.source})`);
+    if (isDuplicate(cand.name, existing)) {
+      console.log(`⚠️ Duplicate found, skipping: ${cand.name}`);
+      if (cand.source === "backlog") removeFromBacklog(cand.name);
+      continue;
+    }
+    if (cand.country && !countryValid(cand.country)) {
+      console.log(`⚠️ Unrecognized country hint: ${cand.country} (continuing)`);
+    }
+
+    const textOnly = await ai.generateCompleteDish(cand.name);
+    if (!textOnly) {
+      console.log("❌ Text generation failed, trying next candidate.");
+      if (cand.source === "backlog") removeFromBacklog(cand.name);
+      continue;
+    }
+
+    // Sanitize before evaluation
+    const countryTitle = toTitleCase(textOnly.country || "");
+    const sanitizedBlurb = stripCountryFromBlurb(
+      textOnly.blurb || "",
+      countryTitle
+    );
+    const sanitizedTopIngredients = (textOnly.ingredients || []).slice(0, 6);
+
+    const evalResult = await evaluateDishQuality({
+      name: textOnly.name,
+      country: countryTitle,
+      ingredients: sanitizedTopIngredients,
+      blurb: sanitizedBlurb,
+      proteinPerServing: textOnly.proteinPerServing,
+      recipe: textOnly.recipe,
+      tags: textOnly.tags,
+    });
+
+    if (!evalResult.accept) {
+      console.log("❌ Evaluator rejected:", evalResult.reasons.join("; "));
+      if (cand.source === "backlog") removeFromBacklog(cand.name);
+      continue;
+    }
+
+    const imageResult = await imageService.generateDishImage({
+      name: textOnly.name,
+      ingredients: sanitizedTopIngredients,
+      country: countryTitle,
+      blurb: sanitizedBlurb,
+      tags: textOnly.tags,
+    });
+
+    generated = {
+      ...textOnly,
+      country: countryTitle,
+      ingredients: sanitizedTopIngredients,
+      blurb: sanitizedBlurb,
+      imageUrl: imageResult.imageUrl,
+      imageGeneration: {
+        source: imageResult.source,
+        cost: imageResult.cost,
+        prompt: imageResult.prompt,
+        filename: imageResult.filename,
+      },
+    };
+    usedCandidate = cand;
+    break;
+  }
+
   if (!generated) {
-    console.log("❌ Generation failed.");
+    console.log("🚫 No acceptable candidate found this run. Skipping save.");
     return;
   }
 
@@ -427,7 +477,9 @@ async function main() {
   }
 
   // Remove from backlog after success
-  removeFromBacklog(candidate.name);
+  if (usedCandidate && usedCandidate.source === "backlog") {
+    removeFromBacklog(usedCandidate.name);
+  }
 
   console.log("\n🎉 Daily generation completed successfully.");
 }
