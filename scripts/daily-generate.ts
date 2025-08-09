@@ -7,7 +7,7 @@ import path from "path";
 import AIService from "../src/services/aiService";
 import DishImageService from "../src/services/dishImageService";
 import { getCountryCoordsMap } from "../src/utils/countries";
-import { evaluateDishQuality } from "./agents/evaluate-dish";
+// Deterministic evaluator: simple structural rules to avoid noisy LLM rejections
 import { proposeDishCandidates } from "./agents/propose-dish";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -204,6 +204,34 @@ async function main() {
     return b.replace(/\s{2,}/g, " ").trim();
   };
 
+  const deterministicEvaluate = (draft: {
+    name: string;
+    country: string;
+    ingredients: string[];
+    blurb: string;
+    proteinPerServing: number;
+    recipe: { ingredients: string[]; instructions: string[] };
+    tags: string[];
+  }): { accept: boolean; reasons: string[] } => {
+    const reasons: string[] = [];
+    const countryOk = /^[A-Z][a-z]*(\s[A-Z][a-z]*)*$/.test(draft.country);
+    if (!countryOk) reasons.push("country not Title Case");
+    const blurbHasCountry = new RegExp(`\\b${draft.country}\\b`, "i").test(
+      draft.blurb || ""
+    );
+    if (blurbHasCountry) reasons.push("blurb contains country");
+    if (!draft.ingredients || draft.ingredients.length !== 6)
+      reasons.push("ingredients must be exactly 6");
+    if (!draft.recipe || (draft.recipe.ingredients || []).length < 6)
+      reasons.push("recipe.ingredients must be >= 6");
+    if (!draft.recipe || (draft.recipe.instructions || []).length < 6)
+      reasons.push("instructions must be >= 6 steps");
+    if (!draft.tags || draft.tags.length < 3 || draft.tags.length > 6)
+      reasons.push("tags must be 3-6 items");
+    const accept = reasons.length === 0;
+    return { accept, reasons };
+  };
+
   for (const cand of candidates) {
     console.log(`🔎 Trying candidate: ${cand.name} (${cand.source})`);
     if (isDuplicate(cand.name, existing)) {
@@ -230,7 +258,7 @@ async function main() {
     );
     const sanitizedTopIngredients = (textOnly.ingredients || []).slice(0, 6);
 
-    const evalResult = await evaluateDishQuality({
+    const evalResult = deterministicEvaluate({
       name: textOnly.name,
       country: countryTitle,
       ingredients: sanitizedTopIngredients,
@@ -239,7 +267,6 @@ async function main() {
       recipe: textOnly.recipe,
       tags: textOnly.tags,
     });
-
     if (!evalResult.accept) {
       console.log("❌ Evaluator rejected:", evalResult.reasons.join("; "));
       if (cand.source === "backlog") removeFromBacklog(cand.name);
