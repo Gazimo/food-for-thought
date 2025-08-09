@@ -15,7 +15,7 @@ export function getCountryCoordsMap(): Record<string, CountryCoords> {
     const keyLower = name.toLowerCase();
     const keyNormalized = keyLower.replace(/[^a-z0-9]+/g, "");
     mapped[keyLower] = coords;
-    mapped[keyNormalized] = coords; // add no-whitespace key for robust lookup
+    mapped[keyNormalized] = coords;
   }
   return mapped;
 }
