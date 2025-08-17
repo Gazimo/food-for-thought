@@ -33,6 +33,14 @@ function getIngredientIcon(
 ): React.ComponentType<{ className?: string }> {
   const name = item.name.toLowerCase();
 
+  // Exclude broths, stocks, and other liquid derivatives that shouldn't be mapped to their protein source
+  const isBrothOrStock =
+    name.includes("broth") ||
+    name.includes("stock") ||
+    name.includes("bouillon") ||
+    name.includes("consommé") ||
+    name.includes("soup base");
+
   // Specific ingredient icons
   if (name.includes("cheese") && !name.includes("cottage")) return ChefHat; // Hard cheeses
   if (
@@ -47,29 +55,32 @@ function getIngredientIcon(
     name.includes("kefir")
   )
     return Milk;
-  if (name.includes("egg")) return Egg;
+  if (name.includes("egg") && !isBrothOrStock) return Egg;
   if (
-    name.includes("chicken") ||
-    name.includes("turkey") ||
-    name.includes("duck")
+    (name.includes("chicken") ||
+      name.includes("turkey") ||
+      name.includes("duck")) &&
+    !isBrothOrStock
   )
     return Drumstick;
   if (
-    name.includes("beef") ||
-    name.includes("pork") ||
-    name.includes("lamb") ||
-    name.includes("bacon") ||
-    name.includes("ham")
+    (name.includes("beef") ||
+      name.includes("pork") ||
+      name.includes("lamb") ||
+      name.includes("bacon") ||
+      name.includes("ham")) &&
+    !isBrothOrStock
   )
     return Beef;
   if (
-    name.includes("fish") ||
-    name.includes("salmon") ||
-    name.includes("tuna") ||
-    name.includes("cod") ||
-    name.includes("shrimp") ||
-    name.includes("crab") ||
-    name.includes("lobster")
+    (name.includes("fish") ||
+      name.includes("salmon") ||
+      name.includes("tuna") ||
+      name.includes("cod") ||
+      name.includes("shrimp") ||
+      name.includes("crab") ||
+      name.includes("lobster")) &&
+    !isBrothOrStock
   )
     return Fish;
   if (
@@ -137,7 +148,6 @@ function findBestProteinMatch(
   let exactMatch: IngredientDbItem | null = null;
   let bestPartialMatch: IngredientDbItem | null = null;
   let bestCategoryMatch: IngredientDbItem | null = null;
-  let highestProtein = -1;
   let highestPartialProtein = -1;
   let highestCategoryProtein = -1;
 
@@ -322,7 +332,7 @@ export const IngredientProteinStrip: React.FC<IngredientProteinStripProps> = ({
             <div className="text-xs text-gray-600 font-medium">
               Key protein sources (per 100g):
             </div>
-            {topMatches.map((item, index) => {
+            {topMatches.map((item) => {
               const IconComp = getIngredientIcon(item);
               return (
                 <div
