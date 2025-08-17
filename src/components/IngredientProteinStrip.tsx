@@ -134,26 +134,113 @@ function findBestProteinMatch(
   const normalizedIngredient = normalize(ingredient);
   if (!normalizedIngredient) return null;
 
-  let bestMatch: IngredientDbItem | null = null;
+  let exactMatch: IngredientDbItem | null = null;
+  let bestPartialMatch: IngredientDbItem | null = null;
+  let bestCategoryMatch: IngredientDbItem | null = null;
   let highestProtein = -1;
+  let highestPartialProtein = -1;
+  let highestCategoryProtein = -1;
 
   for (const item of db) {
     if (!INCLUDED_CATEGORIES.has(item.category)) continue;
 
     const normalizedDbName = normalize(item.name);
-    const dbNameWords = new Set(normalizedDbName.split(" "));
+    const dbNameWords = normalizedDbName.split(" ");
 
-    // Check if the ingredient is a substring of the db name,
-    // e.g. "beef" in "beef sirloin"
-    if (dbNameWords.has(normalizedIngredient)) {
-      if (item.protein_g_per_100g > highestProtein) {
-        highestProtein = item.protein_g_per_100g;
-        bestMatch = item;
+    if (normalizedDbName === normalizedIngredient) {
+      if (
+        !exactMatch ||
+        item.protein_g_per_100g > exactMatch.protein_g_per_100g
+      ) {
+        exactMatch = item;
       }
+      continue;
+    }
+
+    const simplifiedIngredient = normalizedIngredient
+      .replace(/\b(cheese|meat|fish|sauce|oil)\b/g, "")
+      .trim();
+    if (simplifiedIngredient && normalizedDbName === simplifiedIngredient) {
+      if (
+        !exactMatch ||
+        item.protein_g_per_100g > exactMatch.protein_g_per_100g
+      ) {
+        exactMatch = item;
+      }
+      continue;
+    }
+
+    if (normalizedIngredient === "cheese" && item.category === "dairy_eggs") {
+      const cheeseTypes = [
+        "cheddar",
+        "mozzarella",
+        "parmesan",
+        "feta",
+        "gouda",
+        "brie",
+        "swiss",
+        "blue",
+        "cottage",
+        "cream",
+        "ricotta",
+        "halloumi",
+        "provolone",
+        "manchego",
+        "gruyere",
+        "emmental",
+      ];
+      const isCheeseType = cheeseTypes.some(
+        (cheeseType) =>
+          normalizedDbName.includes(cheeseType) ||
+          normalizedDbName.includes("cheese")
+      );
+
+      if (isCheeseType && item.protein_g_per_100g > highestCategoryProtein) {
+        highestCategoryProtein = item.protein_g_per_100g;
+        bestCategoryMatch = item;
+      }
+      continue;
+    }
+
+    const ingredientWords = normalizedIngredient.split(" ");
+    let isValidMatch = false;
+
+    // Avoid matching very common/generic words that appear in many entries
+    const commonWords = new Set([
+      "oil",
+      "sauce",
+      "water",
+      "salt",
+      "pepper",
+      "sugar",
+    ]);
+
+    for (const ingredientWord of ingredientWords) {
+      if (commonWords.has(ingredientWord)) continue;
+
+      for (const dbWord of dbNameWords) {
+        if (dbWord === ingredientWord || dbWord.startsWith(ingredientWord)) {
+          const dbWordIndex = dbNameWords.indexOf(dbWord);
+          if (
+            dbWord === ingredientWord ||
+            dbWordIndex === 0 ||
+            dbNameWords.length === 1
+          ) {
+            isValidMatch = true;
+            break;
+          }
+        }
+      }
+      if (isValidMatch) break;
+    }
+
+    if (isValidMatch && item.protein_g_per_100g > highestPartialProtein) {
+      highestPartialProtein = item.protein_g_per_100g;
+      bestPartialMatch = item;
     }
   }
 
-  return bestMatch;
+  return exactMatch || bestPartialMatch || bestCategoryMatch;
 }
 
 export const IngredientProteinStrip: React.FC<IngredientProteinStripProps> = ({
@@ -196,10 +283,12 @@ export const IngredientProteinStrip: React.FC<IngredientProteinStripProps> = ({
       }
     }
 
-    return matches
+    const filtered = matches
       .filter((m) => m.protein_g_per_100g >= 5)
       .sort((a, b) => b.protein_g_per_100g - a.protein_g_per_100g)
       .slice(0, maxItems);
+
+    return filtered;
   }, [db, keyIngredients, maxItems]);
 
   return (
