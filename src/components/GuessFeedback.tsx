@@ -35,13 +35,6 @@ export const GuessFeedback = () => {
           </div>
         </div>
       )}
-
-      {gamePhase === "country" && (
-        <div className="space-y-2">
-          <h3 className="font-semibold text-lg">Dish: {currentDish.name}</h3>
-          <p className="text-gray-700">{currentDish.blurb}</p>
-        </div>
-      )}
     </>
   );
 };

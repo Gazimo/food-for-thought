@@ -1,4 +1,5 @@
 import { GuessInput } from "@/components/GuessInput";
+import { IngredientProteinStrip } from "@/components/IngredientProteinStrip";
 import { useGameStore } from "@/store/gameStore";
 import { ProteinSkeleton } from "../../components/GameSkeleton";
 import { ProteinGuessFeedback } from "../../components/ProteinGuessFeedback";
@@ -31,10 +32,14 @@ export function ProteinPhase() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <p className="text-sm text-gray-600">
-        How many grams of protein per serving does this dish have?
-      </p>
+    <div className="flex flex-col gap-4 w-full">
+      <div className="w-full">
+        <IngredientProteinStrip
+          imageUrl={currentDish.imageUrl}
+          dishName={currentDish.name}
+          keyIngredients={currentDish.ingredients}
+        />
+      </div>
       {!isComplete && (
         <div className="flex flex-col gap-4">
           <GuessInput
@@ -44,9 +49,6 @@ export function ProteinPhase() {
             previousProteinGuesses={proteinGuesses}
             actualProtein={currentDish.proteinPerServing}
           />
-          <div className="text-sm text-gray-600 text-center">
-            Attempts: {proteinGuesses.length} of 4
-          </div>
         </div>
       )}
 
