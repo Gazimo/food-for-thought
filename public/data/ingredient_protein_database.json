@@ -1,1057 +1,407 @@
 [
+  { "name": "almonds", "protein_g_per_100g": 21, "category": "nuts_seeds" },
   {
-    "name": "chicken breast, skinless",
-    "protein_g_per_100g": 31,
-    "category": "meat_poultry"
+    "name": "apricot jam",
+    "protein_g_per_100g": 0.5,
+    "category": "spices_condiments"
   },
+  { "name": "apricots", "protein_g_per_100g": 0.5, "category": "fruits" },
+  { "name": "arepa", "protein_g_per_100g": 6, "category": "baked_goods" },
+  { "name": "avocado", "protein_g_per_100g": 2, "category": "fruits" },
+  { "name": "bacon", "protein_g_per_100g": 37, "category": "meat" },
+  { "name": "baguette", "protein_g_per_100g": 9, "category": "baked_goods" },
+  { "name": "basil", "protein_g_per_100g": 3, "category": "vegetables" },
+  { "name": "basmati rice", "protein_g_per_100g": 9, "category": "grains" },
   {
-    "name": "turkey breast",
-    "protein_g_per_100g": 29,
-    "category": "meat_poultry"
-  },
-  {
-    "name": "turkey thigh",
-    "protein_g_per_100g": 24,
-    "category": "meat_poultry"
-  },
-  {
-    "name": "beef sirloin",
-    "protein_g_per_100g": 27,
-    "category": "meat_poultry"
-  },
-  {
-    "name": "beef ground, 90% lean, cooked",
-    "protein_g_per_100g": 26,
-    "category": "meat_poultry"
-  },
-  {
-    "name": "beef tenderloin",
-    "protein_g_per_100g": 26,
-    "category": "meat_poultry"
-  },
-  {
-    "name": "beef brisket, cooked",
-    "protein_g_per_100g": 21,
-    "category": "meat_poultry"
-  },
-  {
-    "name": "pork loin, trimmed",
-    "protein_g_per_100g": 27,
-    "category": "meat_poultry"
-  },
-  {
-    "name": "pork chop, cooked",
-    "protein_g_per_100g": 26,
-    "category": "meat_poultry"
-  },
-  {
-    "name": "ham, lean",
-    "protein_g_per_100g": 21,
-    "category": "meat_poultry"
-  },
-  {
-    "name": "bacon, cooked",
-    "protein_g_per_100g": 37,
-    "category": "meat_poultry"
-  },
-  {
-    "name": "lamb leg",
-    "protein_g_per_100g": 25,
-    "category": "meat_poultry"
-  },
-  {
-    "name": "lamb shoulder, cooked",
-    "protein_g_per_100g": 24,
-    "category": "meat_poultry"
-  },
-  {
-    "name": "duck breast, skinless",
-    "protein_g_per_100g": 24,
-    "category": "meat_poultry"
-  },
-  {
-    "name": "goose, cooked",
-    "protein_g_per_100g": 29,
-    "category": "meat_poultry"
-  },
-  {
-    "name": "chicken thigh, skinless",
-    "protein_g_per_100g": 26,
-    "category": "meat_poultry"
-  },
-  {
-    "name": "chicken drumstick, skinless",
-    "protein_g_per_100g": 24,
-    "category": "meat_poultry"
-  },
-  {
-    "name": "chicken liver",
-    "protein_g_per_100g": 25,
-    "category": "offal"
-  },
-  {
-    "name": "beef liver",
-    "protein_g_per_100g": 20,
-    "category": "offal"
-  },
-  {
-    "name": "beef heart",
-    "protein_g_per_100g": 17,
-    "category": "offal"
-  },
-  {
-    "name": "venison",
-    "protein_g_per_100g": 30,
-    "category": "meat_poultry"
-  },
-  {
-    "name": "bison",
-    "protein_g_per_100g": 28,
-    "category": "meat_poultry"
-  },
-  {
-    "name": "rabbit",
-    "protein_g_per_100g": 33,
-    "category": "meat_poultry"
-  },
-  {
-    "name": "quail, meat only",
-    "protein_g_per_100g": 25,
-    "category": "meat_poultry"
-  },
-  {
-    "name": "pheasant, meat only",
-    "protein_g_per_100g": 25,
-    "category": "meat_poultry"
-  },
-  {
-    "name": "tuna, fresh",
-    "protein_g_per_100g": 29,
-    "category": "seafood"
-  },
-  {
-    "name": "tuna, canned in water, drained",
-    "protein_g_per_100g": 26,
-    "category": "seafood"
-  },
-  {
-    "name": "salmon, Atlantic",
-    "protein_g_per_100g": 25,
-    "category": "seafood"
-  },
-  {
-    "name": "salmon, sockeye",
-    "protein_g_per_100g": 24,
-    "category": "seafood"
-  },
-  {
-    "name": "cod",
-    "protein_g_per_100g": 20,
-    "category": "seafood"
-  },
-  {
-    "name": "haddock",
-    "protein_g_per_100g": 24,
-    "category": "seafood"
-  },
-  {
-    "name": "halibut",
-    "protein_g_per_100g": 27,
-    "category": "seafood"
-  },
-  {
-    "name": "tilapia",
-    "protein_g_per_100g": 26,
-    "category": "seafood"
-  },
-  {
-    "name": "sardines, canned in oil, drained",
-    "protein_g_per_100g": 25,
-    "category": "seafood"
-  },
-  {
-    "name": "anchovies, canned in oil, drained",
-    "protein_g_per_100g": 29,
-    "category": "seafood"
-  },
-  {
-    "name": "mackerel, Atlantic",
-    "protein_g_per_100g": 19,
-    "category": "seafood"
-  },
-  {
-    "name": "trout, rainbow",
-    "protein_g_per_100g": 21,
-    "category": "seafood"
-  },
-  {
-    "name": "shrimp",
-    "protein_g_per_100g": 24,
-    "category": "seafood"
-  },
-  {
-    "name": "prawns",
-    "protein_g_per_100g": 24,
-    "category": "seafood"
-  },
-  {
-    "name": "crab",
-    "protein_g_per_100g": 18,
-    "category": "seafood"
-  },
-  {
-    "name": "lobster",
-    "protein_g_per_100g": 19,
-    "category": "seafood"
-  },
-  {
-    "name": "mussels",
-    "protein_g_per_100g": 24,
-    "category": "seafood"
-  },
-  {
-    "name": "clams",
-    "protein_g_per_100g": 25,
-    "category": "seafood"
-  },
-  {
-    "name": "octopus, cooked",
-    "protein_g_per_100g": 29,
-    "category": "seafood"
-  },
-  {
-    "name": "squid, cooked",
-    "protein_g_per_100g": 15,
-    "category": "seafood"
-  },
-  {
-    "name": "eel",
-    "protein_g_per_100g": 19,
-    "category": "seafood"
-  },
-  {
-    "name": "scallops",
-    "protein_g_per_100g": 24,
-    "category": "seafood"
-  },
-  {
-    "name": "caviar",
-    "protein_g_per_100g": 24,
-    "category": "seafood"
-  },
-  {
-    "name": "egg, whole",
-    "protein_g_per_100g": 13,
-    "category": "dairy_eggs"
-  },
-  {
-    "name": "egg white",
-    "protein_g_per_100g": 11,
-    "category": "dairy_eggs"
-  },
-  {
-    "name": "egg yolk",
-    "protein_g_per_100g": 16,
-    "category": "dairy_eggs"
-  },
-  {
-    "name": "milk, whole",
-    "protein_g_per_100g": 3.4,
-    "category": "dairy_eggs"
-  },
-  {
-    "name": "milk, skim",
-    "protein_g_per_100g": 3.6,
-    "category": "dairy_eggs"
-  },
-  {
-    "name": "yogurt, plain",
-    "protein_g_per_100g": 10,
-    "category": "dairy_eggs"
-  },
-  {
-    "name": "Greek yogurt, plain",
-    "protein_g_per_100g": 10,
-    "category": "dairy_eggs"
-  },
-  {
-    "name": "kefir, plain",
-    "protein_g_per_100g": 3.6,
-    "category": "dairy_eggs"
-  },
-  {
-    "name": "cheddar cheese",
-    "protein_g_per_100g": 25,
-    "category": "dairy_eggs"
-  },
-  {
-    "name": "parmesan cheese",
-    "protein_g_per_100g": 36,
-    "category": "dairy_eggs"
-  },
-  {
-    "name": "mozzarella",
-    "protein_g_per_100g": 22,
-    "category": "dairy_eggs"
-  },
-  {
-    "name": "feta",
-    "protein_g_per_100g": 14,
-    "category": "dairy_eggs"
-  },
-  {
-    "name": "gouda",
-    "protein_g_per_100g": 25,
-    "category": "dairy_eggs"
-  },
-  {
-    "name": "ricotta, whole milk",
+    "name": "bay leaves",
     "protein_g_per_100g": 7,
+    "category": "spices_condiments"
+  },
+  { "name": "beans", "protein_g_per_100g": 21, "category": "legumes" },
+  { "name": "bean sprouts", "protein_g_per_100g": 3, "category": "vegetables" },
+  {
+    "name": "béchamel sauce",
+    "protein_g_per_100g": 3,
     "category": "dairy_eggs"
   },
+  { "name": "beef", "protein_g_per_100g": 26, "category": "meat" },
   {
-    "name": "cottage cheese, 2%",
-    "protein_g_per_100g": 11,
-    "category": "dairy_eggs"
+    "name": "beef broth",
+    "protein_g_per_100g": 1,
+    "category": "spices_condiments"
   },
+  { "name": "beets", "protein_g_per_100g": 1.6, "category": "vegetables" },
+  { "name": "bell pepper", "protein_g_per_100g": 1, "category": "vegetables" },
+  { "name": "bell peppers", "protein_g_per_100g": 1, "category": "vegetables" },
   {
-    "name": "cream cheese",
-    "protein_g_per_100g": 7,
-    "category": "dairy_eggs"
-  },
-  {
-    "name": "butter",
-    "protein_g_per_100g": 0.9,
-    "category": "dairy_eggs"
-  },
-  {
-    "name": "ghee",
-    "protein_g_per_100g": 0.3,
-    "category": "dairy_eggs"
-  },
-  {
-    "name": "quark",
+    "name": "berbere spice",
     "protein_g_per_100g": 12,
-    "category": "dairy_eggs"
+    "category": "spices_condiments"
   },
+  { "name": "black beans", "protein_g_per_100g": 21, "category": "legumes" },
   {
-    "name": "paneer",
-    "protein_g_per_100g": 18,
-    "category": "dairy_eggs"
+    "name": "black pepper",
+    "protein_g_per_100g": 10,
+    "category": "spices_condiments"
   },
+  { "name": "blue cheese", "protein_g_per_100g": 21, "category": "dairy_eggs" },
+  { "name": "boiled eggs", "protein_g_per_100g": 13, "category": "dairy_eggs" },
+  { "name": "bread", "protein_g_per_100g": 9, "category": "baked_goods" },
   {
-    "name": "halloumi",
-    "protein_g_per_100g": 22,
-    "category": "dairy_eggs"
+    "name": "breadcrumbs",
+    "protein_g_per_100g": 10,
+    "category": "baked_goods"
   },
+  { "name": "broth", "protein_g_per_100g": 1, "category": "spices_condiments" },
+  { "name": "butter", "protein_g_per_100g": 0.9, "category": "fats_oils" },
+  { "name": "cabbage", "protein_g_per_100g": 1.3, "category": "vegetables" },
+  { "name": "carrot", "protein_g_per_100g": 0.9, "category": "vegetables" },
+  { "name": "carrots", "protein_g_per_100g": 0.9, "category": "vegetables" },
+  { "name": "cashews", "protein_g_per_100g": 18, "category": "nuts_seeds" },
+  { "name": "cassava", "protein_g_per_100g": 1.4, "category": "grains" },
+  { "name": "cheese", "protein_g_per_100g": 25, "category": "dairy_eggs" },
   {
-    "name": "lentils, cooked",
-    "protein_g_per_100g": 9,
-    "category": "legumes"
-  },
-  {
-    "name": "chickpeas, cooked",
-    "protein_g_per_100g": 8.9,
-    "category": "legumes"
-  },
-  {
-    "name": "black beans, cooked",
-    "protein_g_per_100g": 8.9,
-    "category": "legumes"
-  },
-  {
-    "name": "kidney beans, cooked",
-    "protein_g_per_100g": 8.7,
-    "category": "legumes"
-  },
-  {
-    "name": "pinto beans, cooked",
-    "protein_g_per_100g": 9,
-    "category": "legumes"
-  },
-  {
-    "name": "navy beans, cooked",
-    "protein_g_per_100g": 8.2,
-    "category": "legumes"
-  },
-  {
-    "name": "white beans, cooked",
-    "protein_g_per_100g": 8.3,
-    "category": "legumes"
-  },
-  {
-    "name": "peas, cooked",
-    "protein_g_per_100g": 5,
-    "category": "legumes"
-  },
-  {
-    "name": "green peas, raw",
-    "protein_g_per_100g": 5.4,
-    "category": "legumes"
-  },
-  {
-    "name": "soybeans, cooked",
-    "protein_g_per_100g": 16.6,
-    "category": "legumes"
-  },
-  {
-    "name": "edamame",
-    "protein_g_per_100g": 11,
-    "category": "legumes"
-  },
-  {
-    "name": "tofu, firm",
-    "protein_g_per_100g": 8,
-    "category": "legumes"
-  },
-  {
-    "name": "tofu, extra firm",
-    "protein_g_per_100g": 13,
-    "category": "legumes"
-  },
-  {
-    "name": "tempeh",
-    "protein_g_per_100g": 19,
-    "category": "legumes"
-  },
-  {
-    "name": "seitan (wheat gluten)",
-    "protein_g_per_100g": 25,
-    "category": "plant_processed"
-  },
-  {
-    "name": "textured vegetable protein (TVP), dry",
-    "protein_g_per_100g": 50,
-    "category": "plant_processed"
-  },
-  {
-    "name": "almonds",
-    "protein_g_per_100g": 21,
-    "category": "nuts_seeds"
-  },
-  {
-    "name": "almond butter",
-    "protein_g_per_100g": 21,
-    "category": "nuts_seeds"
-  },
-  {
-    "name": "peanuts",
-    "protein_g_per_100g": 25,
-    "category": "nuts_seeds"
-  },
-  {
-    "name": "peanut butter",
-    "protein_g_per_100g": 25,
-    "category": "nuts_seeds"
-  },
-  {
-    "name": "cashews",
-    "protein_g_per_100g": 18,
-    "category": "nuts_seeds"
-  },
-  {
-    "name": "pistachios",
+    "name": "cheese curds",
     "protein_g_per_100g": 20,
-    "category": "nuts_seeds"
+    "category": "dairy_eggs"
   },
+  { "name": "chicken", "protein_g_per_100g": 27, "category": "meat" },
+  { "name": "chicken breast", "protein_g_per_100g": 31, "category": "meat" },
   {
-    "name": "walnuts",
-    "protein_g_per_100g": 15,
-    "category": "nuts_seeds"
+    "name": "chicken broth",
+    "protein_g_per_100g": 1,
+    "category": "spices_condiments"
   },
+  { "name": "chickpeas", "protein_g_per_100g": 19, "category": "legumes" },
+  { "name": "chili", "protein_g_per_100g": 2, "category": "vegetables" },
+  { "name": "chilies", "protein_g_per_100g": 2, "category": "vegetables" },
+  { "name": "chili pepper", "protein_g_per_100g": 2, "category": "vegetables" },
   {
-    "name": "hazelnuts",
-    "protein_g_per_100g": 15,
-    "category": "nuts_seeds"
-  },
-  {
-    "name": "macadamia nuts",
-    "protein_g_per_100g": 8,
-    "category": "nuts_seeds"
-  },
-  {
-    "name": "pecans",
-    "protein_g_per_100g": 9,
-    "category": "nuts_seeds"
-  },
-  {
-    "name": "pine nuts",
+    "name": "chili powder",
     "protein_g_per_100g": 14,
-    "category": "nuts_seeds"
+    "category": "spices_condiments"
   },
+  { "name": "chorizo", "protein_g_per_100g": 25, "category": "meat" },
+  { "name": "cilantro", "protein_g_per_100g": 2, "category": "vegetables" },
   {
-    "name": "chia seeds",
-    "protein_g_per_100g": 17,
-    "category": "nuts_seeds"
+    "name": "cinnamon",
+    "protein_g_per_100g": 4,
+    "category": "spices_condiments"
   },
+  { "name": "coconut milk", "protein_g_per_100g": 2, "category": "fats_oils" },
   {
-    "name": "flaxseeds",
+    "name": "coriander",
+    "protein_g_per_100g": 12,
+    "category": "spices_condiments"
+  },
+  { "name": "corn flour", "protein_g_per_100g": 7, "category": "grains" },
+  { "name": "crab", "protein_g_per_100g": 19, "category": "seafood" },
+  { "name": "cream", "protein_g_per_100g": 2, "category": "dairy_eggs" },
+  { "name": "cucumbers", "protein_g_per_100g": 0.7, "category": "vegetables" },
+  {
+    "name": "cumin",
     "protein_g_per_100g": 18,
-    "category": "nuts_seeds"
+    "category": "spices_condiments"
   },
   {
-    "name": "hemp seeds",
-    "protein_g_per_100g": 31,
-    "category": "nuts_seeds"
+    "name": "curry powder",
+    "protein_g_per_100g": 14,
+    "category": "spices_condiments"
   },
   {
-    "name": "pumpkin seeds",
-    "protein_g_per_100g": 30,
-    "category": "nuts_seeds"
+    "name": "dasheen leaves",
+    "protein_g_per_100g": 3,
+    "category": "vegetables"
+  },
+  { "name": "dill", "protein_g_per_100g": 2, "category": "vegetables" },
+  { "name": "dough", "protein_g_per_100g": 7, "category": "baked_goods" },
+  {
+    "name": "dried lime",
+    "protein_g_per_100g": 2,
+    "category": "spices_condiments"
+  },
+  { "name": "duck", "protein_g_per_100g": 19, "category": "meat" },
+  { "name": "egg", "protein_g_per_100g": 13, "category": "dairy_eggs" },
+  { "name": "eggplant", "protein_g_per_100g": 1, "category": "vegetables" },
+  { "name": "eggs", "protein_g_per_100g": 13, "category": "dairy_eggs" },
+  { "name": "fava beans", "protein_g_per_100g": 8, "category": "legumes" },
+  {
+    "name": "fenugreek",
+    "protein_g_per_100g": 23,
+    "category": "spices_condiments"
+  },
+  { "name": "feta cheese", "protein_g_per_100g": 14, "category": "dairy_eggs" },
+  { "name": "fillings", "protein_g_per_100g": 5, "category": "baked_goods" },
+  { "name": "fish", "protein_g_per_100g": 22, "category": "seafood" },
+  {
+    "name": "fish sauce",
+    "protein_g_per_100g": 5,
+    "category": "spices_condiments"
+  },
+  { "name": "flatbread", "protein_g_per_100g": 8, "category": "baked_goods" },
+  { "name": "flour", "protein_g_per_100g": 10, "category": "grains" },
+  { "name": "fried egg", "protein_g_per_100g": 14, "category": "dairy_eggs" },
+  { "name": "fried onions", "protein_g_per_100g": 3, "category": "vegetables" },
+  { "name": "fries", "protein_g_per_100g": 3, "category": "vegetables" },
+  {
+    "name": "garam masala",
+    "protein_g_per_100g": 12,
+    "category": "spices_condiments"
+  },
+  { "name": "garlic", "protein_g_per_100g": 6, "category": "vegetables" },
+  { "name": "ghee", "protein_g_per_100g": 0, "category": "fats_oils" },
+  { "name": "ginger", "protein_g_per_100g": 2, "category": "vegetables" },
+  {
+    "name": "gochugaru",
+    "protein_g_per_100g": 2,
+    "category": "spices_condiments"
   },
   {
-    "name": "sunflower seeds",
-    "protein_g_per_100g": 21,
-    "category": "nuts_seeds"
+    "name": "gochujang",
+    "protein_g_per_100g": 4,
+    "category": "spices_condiments"
   },
+  {
+    "name": "godamba roti",
+    "protein_g_per_100g": 8,
+    "category": "baked_goods"
+  },
+  { "name": "gravy", "protein_g_per_100g": 2, "category": "spices_condiments" },
+  {
+    "name": "greek yogurt",
+    "protein_g_per_100g": 10,
+    "category": "dairy_eggs"
+  },
+  { "name": "green beans", "protein_g_per_100g": 2, "category": "vegetables" },
+  { "name": "green onion", "protein_g_per_100g": 1, "category": "vegetables" },
+  { "name": "green onions", "protein_g_per_100g": 1, "category": "vegetables" },
+  { "name": "green papaya", "protein_g_per_100g": 0.5, "category": "fruits" },
+  { "name": "ground beef", "protein_g_per_100g": 26, "category": "meat" },
+  { "name": "ground lamb", "protein_g_per_100g": 25, "category": "meat" },
+  { "name": "ground meat", "protein_g_per_100g": 25, "category": "meat" },
+  { "name": "guanciale", "protein_g_per_100g": 27, "category": "meat" },
+  {
+    "name": "hard-boiled eggs",
+    "protein_g_per_100g": 13,
+    "category": "dairy_eggs"
+  },
+  {
+    "name": "herbes de provence",
+    "protein_g_per_100g": 7,
+    "category": "spices_condiments"
+  },
+  { "name": "herbs", "protein_g_per_100g": 3, "category": "vegetables" },
+  {
+    "name": "hoisin sauce",
+    "protein_g_per_100g": 3,
+    "category": "spices_condiments"
+  },
+  { "name": "jameed", "protein_g_per_100g": 20, "category": "dairy_eggs" },
+  { "name": "kale", "protein_g_per_100g": 3, "category": "vegetables" },
+  {
+    "name": "kashmiri chili",
+    "protein_g_per_100g": 2,
+    "category": "spices_condiments"
+  },
+  {
+    "name": "ketchup",
+    "protein_g_per_100g": 1,
+    "category": "spices_condiments"
+  },
+  { "name": "kidney beans", "protein_g_per_100g": 24, "category": "legumes" },
+  { "name": "lamb", "protein_g_per_100g": 25, "category": "meat" },
+  { "name": "lemon", "protein_g_per_100g": 1, "category": "fruits" },
+  { "name": "lentils", "protein_g_per_100g": 25, "category": "legumes" },
+  { "name": "lettuce", "protein_g_per_100g": 1.4, "category": "vegetables" },
+  { "name": "lime", "protein_g_per_100g": 0.7, "category": "fruits" },
+  { "name": "lobster", "protein_g_per_100g": 19, "category": "seafood" },
+  { "name": "mackerel", "protein_g_per_100g": 19, "category": "seafood" },
+  { "name": "mango", "protein_g_per_100g": 0.8, "category": "fruits" },
+  { "name": "margarine", "protein_g_per_100g": 0.2, "category": "fats_oils" },
+  { "name": "mascarpone", "protein_g_per_100g": 4, "category": "dairy_eggs" },
+  { "name": "mayonnaise", "protein_g_per_100g": 1, "category": "fats_oils" },
+  { "name": "milk", "protein_g_per_100g": 3.4, "category": "dairy_eggs" },
+  { "name": "mint", "protein_g_per_100g": 3, "category": "vegetables" },
+  { "name": "mozzarella", "protein_g_per_100g": 22, "category": "dairy_eggs" },
+  { "name": "mushrooms", "protein_g_per_100g": 3, "category": "vegetables" },
+  {
+    "name": "mustard",
+    "protein_g_per_100g": 5,
+    "category": "spices_condiments"
+  },
+  { "name": "mutton", "protein_g_per_100g": 25, "category": "meat" },
+  { "name": "noodles", "protein_g_per_100g": 7, "category": "grains" },
+  {
+    "name": "nutmeg",
+    "protein_g_per_100g": 6,
+    "category": "spices_condiments"
+  },
+  { "name": "oats", "protein_g_per_100g": 17, "category": "grains" },
+  { "name": "octopus", "protein_g_per_100g": 29, "category": "seafood" },
+  { "name": "olive oil", "protein_g_per_100g": 0, "category": "fats_oils" },
+  { "name": "olives", "protein_g_per_100g": 1, "category": "fruits" },
+  { "name": "onion", "protein_g_per_100g": 1, "category": "vegetables" },
+  { "name": "onions", "protein_g_per_100g": 1, "category": "vegetables" },
+  { "name": "orange", "protein_g_per_100g": 1, "category": "fruits" },
+  {
+    "name": "oregano",
+    "protein_g_per_100g": 9,
+    "category": "spices_condiments"
+  },
+  { "name": "oxtail", "protein_g_per_100g": 19, "category": "meat" },
+  {
+    "name": "oyster sauce",
+    "protein_g_per_100g": 2,
+    "category": "spices_condiments"
+  },
+  { "name": "oysters", "protein_g_per_100g": 9, "category": "seafood" },
+  { "name": "paneer", "protein_g_per_100g": 18, "category": "dairy_eggs" },
+  {
+    "name": "paprika",
+    "protein_g_per_100g": 14,
+    "category": "spices_condiments"
+  },
+  { "name": "parsley", "protein_g_per_100g": 3, "category": "vegetables" },
+  { "name": "parsnip", "protein_g_per_100g": 1, "category": "vegetables" },
+  { "name": "pasta", "protein_g_per_100g": 13, "category": "grains" },
+  { "name": "pastrami", "protein_g_per_100g": 21, "category": "meat" },
+  { "name": "peanuts", "protein_g_per_100g": 25, "category": "nuts_seeds" },
+  { "name": "peas", "protein_g_per_100g": 5, "category": "legumes" },
+  {
+    "name": "pecorino romano",
+    "protein_g_per_100g": 28,
+    "category": "dairy_eggs"
+  },
+  {
+    "name": "pepper",
+    "protein_g_per_100g": 10,
+    "category": "spices_condiments"
+  },
+  { "name": "pepperoni", "protein_g_per_100g": 20, "category": "meat" },
+  { "name": "pine nuts", "protein_g_per_100g": 14, "category": "nuts_seeds" },
+  { "name": "pita bread", "protein_g_per_100g": 9, "category": "baked_goods" },
+  { "name": "plantain", "protein_g_per_100g": 1.3, "category": "fruits" },
+  { "name": "pomegranate", "protein_g_per_100g": 1.7, "category": "fruits" },
+  { "name": "pork", "protein_g_per_100g": 27, "category": "meat" },
+  { "name": "pork belly", "protein_g_per_100g": 9, "category": "meat" },
+  { "name": "pork ribs", "protein_g_per_100g": 21, "category": "meat" },
+  { "name": "potato", "protein_g_per_100g": 2, "category": "vegetables" },
+  { "name": "prawns", "protein_g_per_100g": 24, "category": "seafood" },
+  { "name": "provolone", "protein_g_per_100g": 26, "category": "dairy_eggs" },
+  { "name": "pumpkin", "protein_g_per_100g": 1, "category": "vegetables" },
+  { "name": "quail eggs", "protein_g_per_100g": 13, "category": "dairy_eggs" },
+  { "name": "quinoa", "protein_g_per_100g": 14, "category": "grains" },
+  { "name": "radish", "protein_g_per_100g": 1, "category": "vegetables" },
+  { "name": "raisins", "protein_g_per_100g": 3, "category": "fruits" },
+  { "name": "red beans", "protein_g_per_100g": 24, "category": "legumes" },
+  {
+    "name": "red cabbage",
+    "protein_g_per_100g": 1.4,
+    "category": "vegetables"
+  },
+  {
+    "name": "red chili",
+    "protein_g_per_100g": 2,
+    "category": "spices_condiments"
+  },
+  { "name": "red onion", "protein_g_per_100g": 1, "category": "vegetables" },
+  { "name": "red peppers", "protein_g_per_100g": 1, "category": "vegetables" },
+  { "name": "ricotta", "protein_g_per_100g": 11, "category": "dairy_eggs" },
+  { "name": "rice", "protein_g_per_100g": 7, "category": "grains" },
+  { "name": "rice flour", "protein_g_per_100g": 6, "category": "grains" },
+  {
+    "name": "rosemary",
+    "protein_g_per_100g": 3,
+    "category": "spices_condiments"
+  },
+  { "name": "rum", "protein_g_per_100g": 0, "category": "spices_condiments" },
+  { "name": "sage", "protein_g_per_100g": 3, "category": "spices_condiments" },
+  { "name": "salami", "protein_g_per_100g": 22, "category": "meat" },
+  { "name": "salmon", "protein_g_per_100g": 20, "category": "seafood" },
+  { "name": "salt", "protein_g_per_100g": 0, "category": "spices_condiments" },
+  { "name": "sardines", "protein_g_per_100g": 25, "category": "seafood" },
+  { "name": "sausage", "protein_g_per_100g": 18, "category": "meat" },
+  { "name": "scallions", "protein_g_per_100g": 1, "category": "vegetables" },
+  { "name": "scallops", "protein_g_per_100g": 14, "category": "seafood" },
   {
     "name": "sesame seeds",
     "protein_g_per_100g": 18,
     "category": "nuts_seeds"
   },
-  {
-    "name": "tahini",
-    "protein_g_per_100g": 17,
-    "category": "nuts_seeds"
-  },
-  {
-    "name": "white rice, cooked",
-    "protein_g_per_100g": 2.7,
-    "category": "grains"
-  },
-  {
-    "name": "brown rice, cooked",
-    "protein_g_per_100g": 2.6,
-    "category": "grains"
-  },
-  {
-    "name": "basmati rice, cooked",
-    "protein_g_per_100g": 2.9,
-    "category": "grains"
-  },
-  {
-    "name": "quinoa, cooked",
-    "protein_g_per_100g": 4.4,
-    "category": "grains"
-  },
-  {
-    "name": "bulgur, cooked",
-    "protein_g_per_100g": 3.1,
-    "category": "grains"
-  },
-  {
-    "name": "couscous, cooked",
-    "protein_g_per_100g": 3.8,
-    "category": "grains"
-  },
-  {
-    "name": "barley, cooked",
-    "protein_g_per_100g": 2.3,
-    "category": "grains"
-  },
-  {
-    "name": "farro, cooked",
-    "protein_g_per_100g": 4.0,
-    "category": "grains"
-  },
-  {
-    "name": "oats, dry",
-    "protein_g_per_100g": 17,
-    "category": "grains"
-  },
-  {
-    "name": "rolled oats, cooked",
-    "protein_g_per_100g": 2.5,
-    "category": "grains"
-  },
-  {
-    "name": "millet, cooked",
-    "protein_g_per_100g": 3.5,
-    "category": "grains"
-  },
-  {
-    "name": "buckwheat, cooked",
-    "protein_g_per_100g": 3.4,
-    "category": "grains"
-  },
-  {
-    "name": "teff, cooked",
-    "protein_g_per_100g": 4.0,
-    "category": "grains"
-  },
-  {
-    "name": "amaranth, cooked",
-    "protein_g_per_100g": 3.8,
-    "category": "grains"
-  },
-  {
-    "name": "wheat flour, all-purpose",
-    "protein_g_per_100g": 10,
-    "category": "grains"
-  },
-  {
-    "name": "bread, white",
-    "protein_g_per_100g": 9,
-    "category": "grains"
-  },
-  {
-    "name": "bread, whole wheat",
-    "protein_g_per_100g": 13,
-    "category": "grains"
-  },
-  {
-    "name": "pasta, cooked",
-    "protein_g_per_100g": 5,
-    "category": "grains"
-  },
-  {
-    "name": "rice noodles, cooked",
-    "protein_g_per_100g": 1.8,
-    "category": "grains"
-  },
-  {
-    "name": "cornmeal, dry",
-    "protein_g_per_100g": 7,
-    "category": "grains"
-  },
-  {
-    "name": "polenta, cooked",
-    "protein_g_per_100g": 2,
-    "category": "grains"
-  },
-  {
-    "name": "tortilla, corn",
-    "protein_g_per_100g": 6,
-    "category": "grains"
-  },
-  {
-    "name": "tortilla, flour",
-    "protein_g_per_100g": 8,
-    "category": "grains"
-  },
-  {
-    "name": "panko breadcrumbs",
-    "protein_g_per_100g": 13,
-    "category": "grains"
-  },
-  {
-    "name": "breadcrumbs, regular",
-    "protein_g_per_100g": 9,
-    "category": "grains"
-  },
-  {
-    "name": "spinach, raw",
-    "protein_g_per_100g": 2.9,
-    "category": "vegetables"
-  },
-  {
-    "name": "kale, raw",
-    "protein_g_per_100g": 2.9,
-    "category": "vegetables"
-  },
-  {
-    "name": "broccoli, raw",
-    "protein_g_per_100g": 2.8,
-    "category": "vegetables"
-  },
-  {
-    "name": "broccoli, cooked",
-    "protein_g_per_100g": 2.4,
-    "category": "vegetables"
-  },
-  {
-    "name": "brussels sprouts, cooked",
-    "protein_g_per_100g": 3.4,
-    "category": "vegetables"
-  },
-  {
-    "name": "cauliflower, raw",
-    "protein_g_per_100g": 1.9,
-    "category": "vegetables"
-  },
-  {
-    "name": "asparagus, cooked",
-    "protein_g_per_100g": 2.2,
-    "category": "vegetables"
-  },
-  {
-    "name": "mushrooms, white, raw",
-    "protein_g_per_100g": 3.1,
-    "category": "vegetables"
-  },
-  {
-    "name": "portobello, grilled",
-    "protein_g_per_100g": 3.7,
-    "category": "vegetables"
-  },
-  {
-    "name": "sweet potato, baked",
-    "protein_g_per_100g": 1.6,
-    "category": "vegetables"
-  },
-  {
-    "name": "potato, baked",
-    "protein_g_per_100g": 2,
-    "category": "vegetables"
-  },
-  {
-    "name": "green beans, cooked",
-    "protein_g_per_100g": 1.8,
-    "category": "vegetables"
-  },
-  {
-    "name": "zucchini, cooked",
-    "protein_g_per_100g": 1.2,
-    "category": "vegetables"
-  },
-  {
-    "name": "eggplant, cooked",
-    "protein_g_per_100g": 1,
-    "category": "vegetables"
-  },
-  {
-    "name": "carrot, raw",
-    "protein_g_per_100g": 0.9,
-    "category": "vegetables"
-  },
-  {
-    "name": "onion, raw",
-    "protein_g_per_100g": 1.1,
-    "category": "vegetables"
-  },
-  {
-    "name": "tomato, raw",
-    "protein_g_per_100g": 0.9,
-    "category": "vegetables"
-  },
-  {
-    "name": "bell pepper, raw",
-    "protein_g_per_100g": 1,
-    "category": "vegetables"
-  },
-  {
-    "name": "cabbage, raw",
-    "protein_g_per_100g": 1.3,
-    "category": "vegetables"
-  },
-  {
-    "name": "beetroot, cooked",
-    "protein_g_per_100g": 1.6,
-    "category": "vegetables"
-  },
-  {
-    "name": "okra, cooked",
-    "protein_g_per_100g": 1.9,
-    "category": "vegetables"
-  },
-  {
-    "name": "artichoke, cooked",
-    "protein_g_per_100g": 3.3,
-    "category": "vegetables"
-  },
-  {
-    "name": "seaweed, nori, dry",
-    "protein_g_per_100g": 41,
-    "category": "vegetables"
-  },
-  {
-    "name": "avocado",
-    "protein_g_per_100g": 2,
-    "category": "fruits"
-  },
-  {
-    "name": "banana",
-    "protein_g_per_100g": 1.1,
-    "category": "fruits"
-  },
-  {
-    "name": "apple",
-    "protein_g_per_100g": 0.3,
-    "category": "fruits"
-  },
-  {
-    "name": "orange",
-    "protein_g_per_100g": 0.9,
-    "category": "fruits"
-  },
-  {
-    "name": "grapes",
-    "protein_g_per_100g": 0.6,
-    "category": "fruits"
-  },
-  {
-    "name": "mango",
-    "protein_g_per_100g": 0.8,
-    "category": "fruits"
-  },
-  {
-    "name": "blueberries",
-    "protein_g_per_100g": 0.7,
-    "category": "fruits"
-  },
-  {
-    "name": "strawberries",
-    "protein_g_per_100g": 0.7,
-    "category": "fruits"
-  },
-  {
-    "name": "kiwi",
-    "protein_g_per_100g": 1.1,
-    "category": "fruits"
-  },
-  {
-    "name": "pomegranate",
-    "protein_g_per_100g": 1.7,
-    "category": "fruits"
-  },
-  {
-    "name": "olive oil",
-    "protein_g_per_100g": 0,
-    "category": "oils_condiments"
-  },
-  {
-    "name": "vegetable oil",
-    "protein_g_per_100g": 0,
-    "category": "oils_condiments"
-  },
-  {
-    "name": "mayonnaise",
-    "protein_g_per_100g": 1,
-    "category": "oils_condiments"
-  },
-  {
-    "name": "ketchup",
-    "protein_g_per_100g": 1.3,
-    "category": "oils_condiments"
-  },
-  {
-    "name": "mustard",
-    "protein_g_per_100g": 4.4,
-    "category": "oils_condiments"
-  },
+  { "name": "shallot", "protein_g_per_100g": 1.8, "category": "vegetables" },
+  { "name": "shrimp", "protein_g_per_100g": 24, "category": "seafood" },
+  { "name": "smoked salmon", "protein_g_per_100g": 25, "category": "seafood" },
+  { "name": "sour cream", "protein_g_per_100g": 3, "category": "dairy_eggs" },
   {
     "name": "soy sauce",
-    "protein_g_per_100g": 5.6,
-    "category": "oils_condiments"
-  },
-  {
-    "name": "miso paste",
-    "protein_g_per_100g": 12,
-    "category": "oils_condiments"
-  },
-  {
-    "name": "hummus",
     "protein_g_per_100g": 8,
-    "category": "oils_condiments"
+    "category": "spices_condiments"
   },
+  { "name": "soybeans", "protein_g_per_100g": 36, "category": "legumes" },
+  { "name": "spinach", "protein_g_per_100g": 3, "category": "vegetables" },
+  { "name": "squid", "protein_g_per_100g": 16, "category": "seafood" },
+  { "name": "steak", "protein_g_per_100g": 27, "category": "meat" },
+  { "name": "stew meat", "protein_g_per_100g": 26, "category": "meat" },
+  { "name": "strawberries", "protein_g_per_100g": 0.8, "category": "fruits" },
+  { "name": "sugar", "protein_g_per_100g": 0, "category": "spices_condiments" },
+  { "name": "sunflower oil", "protein_g_per_100g": 0, "category": "fats_oils" },
   {
-    "name": "pesto",
-    "protein_g_per_100g": 4,
-    "category": "oils_condiments"
+    "name": "sunflower seeds",
+    "protein_g_per_100g": 21,
+    "category": "nuts_seeds"
   },
+  { "name": "sweet potato", "protein_g_per_100g": 2, "category": "vegetables" },
+  { "name": "tahini", "protein_g_per_100g": 17, "category": "nuts_seeds" },
+  { "name": "tamarind", "protein_g_per_100g": 3, "category": "fruits" },
+  { "name": "taro", "protein_g_per_100g": 1.5, "category": "vegetables" },
+  { "name": "thyme", "protein_g_per_100g": 5, "category": "spices_condiments" },
+  { "name": "tilapia", "protein_g_per_100g": 26, "category": "seafood" },
+  { "name": "tomato", "protein_g_per_100g": 0.9, "category": "vegetables" },
+  { "name": "tomato paste", "protein_g_per_100g": 5, "category": "vegetables" },
+  { "name": "tomatoes", "protein_g_per_100g": 0.9, "category": "vegetables" },
+  { "name": "tortilla", "protein_g_per_100g": 8, "category": "baked_goods" },
+  { "name": "tuna", "protein_g_per_100g": 29, "category": "seafood" },
+  { "name": "turkey", "protein_g_per_100g": 29, "category": "meat" },
   {
-    "name": "salsa",
-    "protein_g_per_100g": 1.5,
-    "category": "oils_condiments"
-  },
-  {
-    "name": "croissant",
-    "protein_g_per_100g": 8.2,
-    "category": "bakery"
-  },
-  {
-    "name": "baguette",
-    "protein_g_per_100g": 9,
-    "category": "bakery"
-  },
-  {
-    "name": "pizza dough, raw",
-    "protein_g_per_100g": 9,
-    "category": "bakery"
-  },
-  {
-    "name": "naan",
-    "protein_g_per_100g": 9.4,
-    "category": "bakery"
-  },
-  {
-    "name": "pita",
-    "protein_g_per_100g": 9.8,
-    "category": "bakery"
-  },
-  {
-    "name": "tortilla chips",
-    "protein_g_per_100g": 6.6,
-    "category": "snacks"
-  },
-  {
-    "name": "potato chips",
-    "protein_g_per_100g": 6.6,
-    "category": "snacks"
-  },
-  {
-    "name": "pretzels",
+    "name": "turmeric",
     "protein_g_per_100g": 10,
-    "category": "snacks"
+    "category": "spices_condiments"
   },
   {
-    "name": " popcorn, air-popped",
-    "protein_g_per_100g": 12,
-    "category": "snacks"
+    "name": "vanilla extract",
+    "protein_g_per_100g": 0,
+    "category": "spices_condiments"
   },
+  { "name": "veal", "protein_g_per_100g": 31, "category": "meat" },
   {
-    "name": "blue cheese",
-    "protein_g_per_100g": 21,
-    "category": "dairy_eggs"
+    "name": "vinegar",
+    "protein_g_per_100g": 0,
+    "category": "spices_condiments"
   },
+  { "name": "walnuts", "protein_g_per_100g": 15, "category": "nuts_seeds" },
+  { "name": "watercress", "protein_g_per_100g": 2.3, "category": "vegetables" },
+  { "name": "wheat flour", "protein_g_per_100g": 10, "category": "grains" },
+  { "name": "white beans", "protein_g_per_100g": 21, "category": "legumes" },
   {
-    "name": "emmental / swiss",
-    "protein_g_per_100g": 28,
-    "category": "dairy_eggs"
-  },
-  {
-    "name": "gruy\u00e8re",
-    "protein_g_per_100g": 30,
-    "category": "dairy_eggs"
-  },
-  {
-    "name": "manchego",
-    "protein_g_per_100g": 25,
-    "category": "dairy_eggs"
-  },
-  {
-    "name": "provolone",
-    "protein_g_per_100g": 26,
-    "category": "dairy_eggs"
-  },
-  {
-    "name": "brie",
-    "protein_g_per_100g": 21,
-    "category": "dairy_eggs"
-  },
-  {
-    "name": "red lentils, dry",
-    "protein_g_per_100g": 26,
-    "category": "legumes_dry"
-  },
-  {
-    "name": "green lentils, dry",
-    "protein_g_per_100g": 24,
-    "category": "legumes_dry"
-  },
-  {
-    "name": "chickpeas, dry",
-    "protein_g_per_100g": 21,
-    "category": "legumes_dry"
-  },
-  {
-    "name": "black beans, dry",
-    "protein_g_per_100g": 22,
-    "category": "legumes_dry"
-  },
-  {
-    "name": "split peas, dry",
-    "protein_g_per_100g": 24,
-    "category": "legumes_dry"
-  },
-  {
-    "name": "garlic",
-    "protein_g_per_100g": 6.4,
-    "category": "herbs_aromatics"
-  },
-  {
-    "name": "ginger",
-    "protein_g_per_100g": 1.8,
-    "category": "herbs_aromatics"
-  },
-  {
-    "name": "parsley",
-    "protein_g_per_100g": 3,
-    "category": "herbs_aromatics"
-  },
-  {
-    "name": "cilantro",
-    "protein_g_per_100g": 2.1,
-    "category": "herbs_aromatics"
-  },
-  {
-    "name": "basil",
-    "protein_g_per_100g": 3.2,
-    "category": "herbs_aromatics"
-  },
-  {
-    "name": "onion powder",
+    "name": "white pepper",
     "protein_g_per_100g": 10,
-    "category": "herbs_aromatics"
+    "category": "spices_condiments"
   },
   {
-    "name": "cocoa powder, unsweetened",
-    "protein_g_per_100g": 20,
-    "category": "pantry"
+    "name": "white wine",
+    "protein_g_per_100g": 0.1,
+    "category": "spices_condiments"
   },
   {
-    "name": "yeast, dry active",
-    "protein_g_per_100g": 40,
-    "category": "pantry"
-  },
-  {
-    "name": "pepperoni",
-    "protein_g_per_100g": 23,
-    "category": "processed_meat"
-  },
-  {
-    "name": "salami",
-    "protein_g_per_100g": 22,
-    "category": "processed_meat"
-  },
-  {
-    "name": "prosciutto",
-    "protein_g_per_100g": 26,
-    "category": "processed_meat"
-  },
-  {
-    "name": "chorizo",
-    "protein_g_per_100g": 24,
-    "category": "processed_meat"
-  },
-  {
-    "name": "mortadella",
-    "protein_g_per_100g": 16,
-    "category": "processed_meat"
-  },
-  {
-    "name": "sausage, Italian, cooked",
-    "protein_g_per_100g": 23,
-    "category": "processed_meat"
-  },
-  {
-    "name": "hot dog",
-    "protein_g_per_100g": 12,
-    "category": "processed_meat"
-  },
-  {
-    "name": "black eyed peas, cooked",
-    "protein_g_per_100g": 8,
-    "category": "legumes"
-  },
-  {
-    "name": "lupini beans, cooked",
-    "protein_g_per_100g": 15,
-    "category": "legumes"
-  },
-  {
-    "name": "mung beans, cooked",
-    "protein_g_per_100g": 7,
-    "category": "legumes"
-  },
-  {
-    "name": "kidney bean paste (rajma), cooked",
-    "protein_g_per_100g": 8.5,
-    "category": "legumes"
-  },
-  {
-    "name": "falafel",
+    "name": "whole wheat flour",
     "protein_g_per_100g": 13,
-    "category": "prepared"
-  }
+    "category": "grains"
+  },
+  {
+    "name": "wine",
+    "protein_g_per_100g": 0.1,
+    "category": "spices_condiments"
+  },
+  { "name": "yogurt", "protein_g_per_100g": 10, "category": "dairy_eggs" },
+  { "name": "zucchini", "protein_g_per_100g": 1.2, "category": "vegetables" }
 ]
