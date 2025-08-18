@@ -21,6 +21,7 @@ export default {
       match: '*.tsx',
       rules: [
         'no-comments',
+        'never-leave-comments',
         'prefer-readable-names',
         'no-abbreviations',
         'no-complex-nesting',

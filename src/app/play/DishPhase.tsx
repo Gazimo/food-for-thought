@@ -74,6 +74,13 @@ export const DishPhase = memo(() => {
 
       <GuessFeedback />
 
+      {isComplete && (
+        <div className="space-y-2">
+          <h3 className="font-semibold text-lg">Dish: {currentDish?.name}</h3>
+          <p className="text-gray-700">{currentDish?.blurb}</p>
+        </div>
+      )}
+
       {gameResults.dishGuesses.length > 0 && (
         <div className="flex flex-col gap-1">
           <div className="text-sm text-gray-600">
