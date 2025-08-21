@@ -11,6 +11,7 @@ concurrency:
 
 jobs:
   generate:
+    if: ${{ github.repository == 'gazimo/food-for-thought' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
