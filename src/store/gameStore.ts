@@ -23,12 +23,51 @@ function getSortedCountryCoords() {
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
+  archivesUnlock: undefined,
+  isPlayingArchive: false,
+  archiveDate: undefined,
+
+  isArchivesUnlockedNow: () => {
+    const { archivesUnlock } = get();
+    if (!archivesUnlock) return false;
+
+    const now = Date.now();
+    const today = new Date().toISOString().split("T")[0];
+
+    return (
+      now < archivesUnlock.expiresAt &&
+      archivesUnlock.grantedOnLocalISO === today
+    );
+  },
+
+  unlockArchives: () => {
+    const today = new Date().toISOString().split("T")[0];
+    const expiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours from now
+
+    set({
+      archivesUnlock: {
+        grantedOnLocalISO: today,
+        expiresAt,
+      },
+    });
+
+    // Persist to localStorage
+    if (typeof window !== "undefined") {
+      localStorage.setItem(
+        "fft-archives-unlock",
+        JSON.stringify({
+          grantedOnLocalISO: today,
+          expiresAt,
+        })
+      );
+    }
+  },
+
   saveCurrentGameState: () => {
     if (typeof window === "undefined") return;
 
     const state = get();
 
-    // Store only the essential game state WITHOUT sensitive dish data
     const gameStateToSave = {
       gamePhase: state.gamePhase,
       activePhase: state.activePhase,
@@ -48,6 +87,16 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   restoreGameStateFromStorage: () => {
     if (typeof window === "undefined") return false;
+
+    try {
+      const archiveUnlock = localStorage.getItem("fft-archives-unlock");
+      if (archiveUnlock) {
+        const parsed = JSON.parse(archiveUnlock);
+        set({ archivesUnlock: parsed });
+      }
+    } catch {
+      localStorage.removeItem("fft-archives-unlock");
+    }
 
     try {
       const saved = localStorage.getItem("fft-game-state");
