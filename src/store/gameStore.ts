@@ -96,89 +96,32 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   exitArchiveMode: () => {
-    // First, try to restore today's game state while still in archive mode
-    // This prevents the isPlayingArchive check from interfering
-    let todaysState = null;
-
-    if (typeof window !== "undefined") {
-      try {
-        const today = new Date().toISOString().split("T")[0];
-        console.log("🏠 exitArchiveMode: Looking for today's state with date:", today);
-
-        // Try to get today's specific game state first
-        let saved = localStorage.getItem(`fft-game-state-${today}`);
-        console.log("🏠 exitArchiveMode: Checking key:", `fft-game-state-${today}`);
-        console.log("🏠 exitArchiveMode: Found data:", saved ? "✅ Yes" : "❌ No");
-
-        // Fall back to legacy key if today's specific state doesn't exist
-        if (!saved) {
-          saved = localStorage.getItem("fft-game-state");
-        }
-
-        if (saved) {
-          const parsedState = JSON.parse(saved);
-
-          // Check if the saved game state is from today
-          const savedDate = parsedState.savedDate;
-
-          // If saved date matches today, prepare the state for restoration
-          if (savedDate && savedDate === today && parsedState.gameResults) {
-            console.log("🔄 Restoring today's game state from localStorage:", {
-              gamePhase: parsedState.gamePhase,
-              dishGuessSuccess: parsedState.gameResults.dishGuessSuccess,
-              countryGuessSuccess: parsedState.gameResults.countryGuessSuccess,
-              proteinGuessSuccess: parsedState.gameResults.proteinGuessSuccess,
-            });
-            todaysState = {
-              gamePhase: parsedState.gamePhase || "dish",
-              activePhase: parsedState.activePhase || "dish",
-              gameResults: parsedState.gameResults || {
-                dishGuesses: [],
-                dishGuessSuccess: false,
-                countryGuesses: [],
-                countryGuessSuccess: false,
-                proteinGuesses: [],
-                proteinGuessSuccess: false,
-                tracked: false,
-              },
-              revealedTiles: parsedState.revealedTiles || [
-                false,
-                false,
-                false,
-                false,
-                false,
-                false,
-              ],
-              revealedIngredients: parsedState.revealedIngredients || 1,
-              countryGuessResults: parsedState.countryGuessResults || [],
-              proteinGuessResults: parsedState.proteinGuessResults || [],
-              dishGuesses: parsedState.dishGuesses || [],
-              countryGuesses: parsedState.countryGuesses || [],
-              proteinGuesses: parsedState.proteinGuesses || [],
-            };
-          }
-        } else {
-          console.log("❌ No saved game state found for today");
-        }
-      } catch (error) {
-        console.error("Error restoring today's state:", error);
-        todaysState = null;
-      }
+    // Prevent double execution - this is critical!
+    const state = get();
+    if (!state.isPlayingArchive) {
+      console.log("🏠 exitArchiveMode: Already exited, preventing double execution");
+      return;
     }
 
-    console.log(
-      "🏠 Exiting archive mode, restored state:",
-      todaysState ? "✅ Found" : "❌ Not found"
-    );
+    console.log("🏠 exitArchiveMode: Starting exit process");
 
-    // Now exit archive mode and apply the restored state
+    // Exit archive mode first
     set({
       isPlayingArchive: false,
       archiveDate: undefined,
-      // Clear currentDish so it gets refreshed with today's dish data
       currentDish: null,
-      // Apply restored state if available
-      ...(todaysState || {
+    });
+
+    // Then restore state using the existing restoreGameStateFromStorage function
+    // This prevents code duplication and uses the tested restoration logic
+    const restored = get().restoreGameStateFromStorage();
+    
+    if (restored) {
+      console.log("🏠 exitArchiveMode: Successfully restored today's state");
+    } else {
+      console.log("🏠 exitArchiveMode: No saved state found, using fresh state");
+      // Set fresh state but DON'T save it - this prevents overwriting completed states
+      set({
         gamePhase: "dish",
         activePhase: "dish",
         revealedIngredients: 1,
@@ -197,10 +140,9 @@ export const useGameStore = create<GameState>((set, get) => ({
         revealedTiles: [false, false, false, false, false, false],
         countryGuessResults: [],
         proteinGuessResults: [],
-      }),
-      // Always ensure modal is not visible when returning from archive
-      modalVisible: false,
-    });
+        modalVisible: false,
+      });
+    }
   },
 
   saveCurrentGameState: () => {
