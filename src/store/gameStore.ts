@@ -225,6 +225,13 @@ export const useGameStore = create<GameState>((set, get) => ({
       savedDate: today,
     };
 
+    console.log("💾 Saving game state:", {
+      gamePhase: state.gamePhase,
+      dishSuccess: state.gameResults.dishGuessSuccess,
+      countrySuccess: state.gameResults.countryGuessSuccess,
+      proteinSuccess: state.gameResults.proteinGuessSuccess,
+    });
+
     // Always save today's game state with today's date as key
     localStorage.setItem(
       `fft-game-state-${today}`,
@@ -593,6 +600,7 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   completeGame: () => {
+    console.log("🎯 completeGame() called");
     const newStreak = updateStreak();
     const state = get();
 
@@ -602,6 +610,12 @@ export const useGameStore = create<GameState>((set, get) => ({
       state.gameResults.proteinGuessSuccess;
 
     const finalStatus = hasAnySuccess ? "won" : "lost";
+
+    console.log("🎯 Setting game to complete state:", {
+      gamePhase: "complete",
+      hasAnySuccess,
+      finalStatus,
+    });
 
     set({
       gamePhase: "complete",
@@ -617,6 +631,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     // Use setTimeout to ensure the state update is applied before saving
     // This fixes the timing issue where saveCurrentGameState was called before set() was applied
     setTimeout(() => {
+      console.log("🎯 About to save completed game state");
       get().saveCurrentGameState();
     }, 0);
   },
