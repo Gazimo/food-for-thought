@@ -97,9 +97,14 @@ export async function loadDishes(date?: string): Promise<Dish[]> {
   if (!res.ok) {
     if (res.status === 403) {
       const errorData = await res.json().catch(() => ({}));
-      const error = new Error(errorData.error || "Archive access denied");
-      (error as any).code = errorData.code || "ARCHIVE_LOCKED";
-      (error as any).status = 403;
+      const error = new Error(
+        errorData.error || "Archive access denied"
+      ) as Error & {
+        code?: string;
+        status?: number;
+      };
+      error.code = errorData.code || "ARCHIVE_LOCKED";
+      error.status = 403;
       throw error;
     }
     throw new Error("Failed to load dishes");

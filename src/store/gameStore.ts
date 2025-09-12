@@ -97,7 +97,6 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   exitArchiveMode: () => {
     // Save current archive state before exiting (in case user wants to return)
-    const state = get();
 
     set({
       isPlayingArchive: false,
@@ -214,7 +213,6 @@ export const useGameStore = create<GameState>((set, get) => ({
         return false;
       }
 
-      const isComplete = parsedState.gamePhase === "complete";
 
       if (parsedState.gameResults) {
         set({
