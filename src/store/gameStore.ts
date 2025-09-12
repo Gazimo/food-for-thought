@@ -103,9 +103,12 @@ export const useGameStore = create<GameState>((set, get) => ({
     if (typeof window !== "undefined") {
       try {
         const today = new Date().toISOString().split("T")[0];
+        console.log("🏠 exitArchiveMode: Looking for today's state with date:", today);
 
         // Try to get today's specific game state first
         let saved = localStorage.getItem(`fft-game-state-${today}`);
+        console.log("🏠 exitArchiveMode: Checking key:", `fft-game-state-${today}`);
+        console.log("🏠 exitArchiveMode: Found data:", saved ? "✅ Yes" : "❌ No");
 
         // Fall back to legacy key if today's specific state doesn't exist
         if (!saved) {
@@ -211,6 +214,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     }
 
     const today = new Date().toISOString().split("T")[0];
+    console.log("💾 Saving with date key:", today);
     const gameStateToSave = {
       gamePhase: state.gamePhase,
       activePhase: state.activePhase,
@@ -263,9 +267,12 @@ export const useGameStore = create<GameState>((set, get) => ({
 
     try {
       const today = new Date().toISOString().split("T")[0];
+      console.log("🔄 Looking for saved state with date key:", today);
 
       // Try to get today's specific game state first
       let saved = localStorage.getItem(`fft-game-state-${today}`);
+      console.log("🔄 Checking localStorage key:", `fft-game-state-${today}`);
+      console.log("🔄 Found data:", saved ? "✅ Yes" : "❌ No");
 
       // Fall back to legacy key if today's specific state doesn't exist
       if (!saved) {
