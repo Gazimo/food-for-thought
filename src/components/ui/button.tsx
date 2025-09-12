@@ -5,32 +5,33 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 relative transform-gpu active:scale-95 active:translate-y-1",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow hover:bg-primary/90",
+          "bg-gray-50 text-gray-900 border-2 border-gray-300 shadow-[0_4px_0_0_rgb(156,163,175)] hover:shadow-[0_2px_0_0_rgb(156,163,175)] hover:translate-y-0.5 active:shadow-[0_1px_0_0_rgb(156,163,175)]",
         destructive:
-          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+          "bg-red-50 text-red-700 border-2 border-red-300 shadow-[0_4px_0_0_rgb(239,68,68)] hover:shadow-[0_2px_0_0_rgb(239,68,68)] hover:translate-y-0.5 active:shadow-[0_1px_0_0_rgb(239,68,68)]",
         outline:
-          "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
+          "bg-white text-gray-700 border-2 border-gray-300 shadow-[0_4px_0_0_rgb(156,163,175)] hover:shadow-[0_2px_0_0_rgb(156,163,175)] hover:translate-y-0.5 active:shadow-[0_1px_0_0_rgb(156,163,175)]",
+        ghost:
+          "bg-transparent text-gray-700 hover:bg-gray-100 active:bg-gray-200",
         link: "text-primary underline-offset-4 hover:underline",
-        fun: "bg-yellow-400 text-black hover:bg-yellow-300 font-bold shadow-lg",
+        fun: "bg-yellow-100 text-yellow-800 border-2 border-yellow-400 shadow-[0_4px_0_0_rgb(251,191,36)] hover:shadow-[0_2px_0_0_rgb(251,191,36)] hover:translate-y-0.5 active:shadow-[0_1px_0_0_rgb(251,191,36)] font-bold",
         primary:
-          "bg-green-600 hover:bg-green-700 text-white focus:ring-green-500",
+          "bg-green-50 text-green-700 border-2 border-green-400 shadow-[0_4px_0_0_rgb(34,197,94)] hover:shadow-[0_2px_0_0_rgb(34,197,94)] hover:translate-y-0.5 active:shadow-[0_1px_0_0_rgb(34,197,94)]",
         danger:
-          "bg-red-100 hover:bg-red-300 border border-red-500 text-white focus:ring-red-500",
+          "bg-red-50 text-red-700 border-2 border-red-400 shadow-[0_4px_0_0_rgb(239,68,68)] hover:shadow-[0_2px_0_0_rgb(239,68,68)] hover:translate-y-0.5 active:shadow-[0_1px_0_0_rgb(239,68,68)]",
         secondary:
-          "bg-gray-700 hover:bg-gray-800 text-white focus:ring-gray-500",
+          "bg-gray-50 text-gray-700 border-2 border-gray-400 shadow-[0_4px_0_0_rgb(107,114,128)] hover:shadow-[0_2px_0_0_rgb(107,114,128)] hover:translate-y-0.5 active:shadow-[0_1px_0_0_rgb(107,114,128)]",
         neutral:
-          "bg-amber-500 hover:bg-amber-600 text-white focus:ring-amber-500 rounded-md h-full",
+          "bg-amber-50 text-amber-700 border-2 border-amber-400 shadow-[0_4px_0_0_rgb(245,158,11)] hover:shadow-[0_2px_0_0_rgb(245,158,11)] hover:translate-y-0.5 active:shadow-[0_1px_0_0_rgb(245,158,11)] rounded-md h-full",
         phase:
-          "bg-indigo-600 hover:bg-indigo-700 text-white focus:ring-indigo-500",
-        cta: "bg-emerald-600 hover:bg-emerald-700 text-white focus:ring-emerald-500",
+          "bg-indigo-50 text-indigo-700 border-2 border-indigo-400 shadow-[0_4px_0_0_rgb(99,102,241)] hover:shadow-[0_2px_0_0_rgb(99,102,241)] hover:translate-y-0.5 active:shadow-[0_1px_0_0_rgb(99,102,241)]",
+        cta: "bg-emerald-50 text-emerald-700 border-2 border-emerald-400 shadow-[0_4px_0_0_rgb(16,185,129)] hover:shadow-[0_2px_0_0_rgb(16,185,129)] hover:translate-y-0.5 active:shadow-[0_1px_0_0_rgb(16,185,129)]",
         share:
-          "relative overflow-hidden bg-gradient-to-r from-teal-600 via-teal-500 to-teal-600 bg-[length:200%_100%] animate-shine text-white focus:ring-teal-500 rounded-md h-full",
+          "bg-teal-50 text-teal-700 border-2 border-teal-400 shadow-[0_4px_0_0_rgb(20,184,166)] hover:shadow-[0_2px_0_0_rgb(20,184,166)] hover:translate-y-0.5 active:shadow-[0_1px_0_0_rgb(20,184,166)] rounded-md h-full animate-pulse-gentle",
       },
       size: {
         default: "h-9 px-4 py-2",

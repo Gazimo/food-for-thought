@@ -99,6 +99,14 @@ module.exports = {
           '0%': { backgroundPosition: '-200% 0' },
           '100%': { backgroundPosition: '200% 0' },
         },
+        'shine-light': {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+        'pulse-gentle': {
+          '0%, 100%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.005)' },
+        },
       },
       animation: {
         'streak-pop': 'streak-pop 0.3s ease-in-out',
@@ -107,6 +115,8 @@ module.exports = {
         'tileHint': 'tileHint 3s ease-in-out infinite',
         'shimmer': 'shimmer 2s ease-in-out infinite',
         'shine': 'shine 2s linear infinite',
+        'shine-light': 'shine-light 10s linear infinite',
+        'pulse-gentle': 'pulse-gentle 12s ease-in-out infinite',
       },
     }
   },
