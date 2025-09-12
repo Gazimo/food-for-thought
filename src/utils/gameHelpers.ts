@@ -91,9 +91,22 @@ export function capitalizeFirst(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-export async function loadDishes(): Promise<Dish[]> {
-  const res = await fetch("/api/dishes");
+export async function loadDishes(date?: string): Promise<Dish[]> {
+  const url = date ? `/api/dishes?date=${date}` : "/api/dishes";
+  const res = await fetch(url);
   if (!res.ok) {
+    if (res.status === 403) {
+      const errorData = await res.json().catch(() => ({}));
+      const error = new Error(
+        errorData.error || "Archive access denied"
+      ) as Error & {
+        code?: string;
+        status?: number;
+      };
+      error.code = errorData.code || "ARCHIVE_LOCKED";
+      error.status = 403;
+      throw error;
+    }
     throw new Error("Failed to load dishes");
   }
 

@@ -12,8 +12,9 @@ export function ProteinPhase() {
     proteinGuessResults,
     currentDish,
     isProteinPhaseComplete,
+    archiveDate,
   } = useGameStore();
-  const { isLoading } = useTodaysDish();
+  const { isLoading } = useTodaysDish(archiveDate);
 
   if (isLoading) {
     return <ProteinSkeleton />;

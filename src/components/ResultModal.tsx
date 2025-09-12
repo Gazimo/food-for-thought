@@ -2,11 +2,15 @@
 
 import { Button } from "@/components/ui/button";
 import { useGameStore } from "@/store/gameStore";
+import Image from "next/image";
 import posthog from "posthog-js";
 import React, { memo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { generateShareText } from "../utils/shareText";
 import { alreadyPlayedToday } from "../utils/streak";
+import { ArchiveStatus } from "./ArchiveStatus";
+import { GameSummary } from "./GameSummary";
+import { SharePopover } from "./SharePopover";
 
 export const ResultModal: React.FC = memo(function ResultModal() {
   const {
@@ -17,8 +21,11 @@ export const ResultModal: React.FC = memo(function ResultModal() {
     toggleModal,
     streak,
     countryGuessResults,
+    unlockArchives,
+    isArchivesUnlockedNow,
   } = useGameStore();
   const [showRecipe, setShowRecipe] = useState(false);
+  const [showSharePopover, setShowSharePopover] = useState(false);
 
   if (gamePhase !== "complete" || !currentDish || !modalVisible) return null;
 
@@ -38,13 +45,64 @@ export const ResultModal: React.FC = memo(function ResultModal() {
     streak,
     acceptableGuesses: currentDish.acceptableGuesses || [],
   });
-  const handleCopyResults = () => {
+  const handleCopyResults = async () => {
     posthog.capture("share_score_clicked", {
       mode: alreadyPlayedToday() ? "daily" : "freeplay",
     });
 
-    navigator.clipboard.writeText(shareText);
-    toast.success("Results copied to clipboard!");
+    try {
+      await navigator.clipboard.writeText(shareText);
+      toast.success("Results copied to clipboard!");
+      await unlockArchivesAfterShare();
+    } catch {
+      toast.error("Failed to copy results");
+    }
+  };
+
+  const handleSocialShare = async (platform: string) => {
+    posthog.capture("shared_to_social", { platform });
+    setShowSharePopover(false);
+    await unlockArchivesAfterShare();
+  };
+
+  const handleCopyFromPopover = async () => {
+    await handleCopyResults();
+    setShowSharePopover(false);
+  };
+
+  const unlockArchivesAfterShare = async () => {
+    try {
+      const today = new Date();
+      const tzOffsetMinutes = today.getTimezoneOffset();
+      const localDate = new Date(today.getTime() - tzOffsetMinutes * 60 * 1000)
+        .toISOString()
+        .split("T")[0];
+
+      const response = await fetch("/api/archive-unlock", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          localDate,
+          tzOffsetMinutes,
+        }),
+      });
+
+      if (response.ok) {
+        // Server unlock successful, also update client state
+        unlockArchives();
+      } else {
+        const errorData = await response.json();
+        console.warn("Server unlock failed:", errorData);
+        // Still unlock client-side for UX
+        unlockArchives();
+      }
+    } catch (error) {
+      console.warn("Archive unlock API failed:", error);
+      // Still unlock client-side for UX
+      unlockArchives();
+    }
   };
 
   return (
@@ -71,15 +129,19 @@ export const ResultModal: React.FC = memo(function ResultModal() {
           )}
         </div>
         {currentDish.imageUrl ? (
-          <img
+          <Image
             src={currentDish.imageUrl}
             alt="Dish image"
+            width={400}
+            height={208}
             className="rounded-lg w-full object-cover max-h-52"
           />
         ) : (
-          <img
+          <Image
             src="/images/404.png"
             alt="Fallback image"
+            width={400}
+            height={208}
             className="rounded-lg w-full object-cover max-h-52"
           />
         )}
@@ -92,125 +154,75 @@ export const ResultModal: React.FC = memo(function ResultModal() {
           <p className="text-gray-600">from {currentDish.country}</p>
         </div>
 
-        <div className="space-y-2">
-          <div className="flex flex-wrap items-center gap-2 text-sm sm:text-base">
-            <span className="text-gray-700">Dish phase:</span>
-            <span className="font-semibold">
-              {gameResults.dishGuesses.length} guesses
-            </span>
-            <span
-              className={
-                gameResults.dishGuessSuccess ? "text-green-600" : "text-red-600"
-              }
-            >
-              {gameResults.dishGuessSuccess ? "✓" : "✗"}
-            </span>
-          </div>
+        <GameSummary gameResults={gameResults} currentDish={currentDish} />
 
-          <div className="flex flex-wrap items-center gap-2 text-sm sm:text-base">
-            <span className="text-gray-700">Country phase:</span>
-            <span className="font-semibold">
-              {gameResults.countryGuesses.length} guesses
-            </span>
-            <span
-              className={
-                gameResults.countryGuessSuccess
-                  ? "text-green-600"
-                  : "text-red-600"
-              }
-            >
-              {gameResults.countryGuessSuccess ? "✓" : "✗"}
-            </span>
-          </div>
+        <ArchiveStatus isUnlocked={isArchivesUnlockedNow()} />
 
-          {currentDish.proteinPerServing && (
-            <div className="flex flex-wrap items-center gap-2 text-sm sm:text-base">
-              <span className="text-gray-700">Protein phase:</span>
-              <span className="font-semibold">
-                {gameResults.proteinGuesses.length} guesses
-              </span>
-              <span
-                className={
-                  gameResults.proteinGuessSuccess
-                    ? "text-green-600"
-                    : "text-red-600"
-                }
-              >
-                {gameResults.proteinGuessSuccess ? "✓" : "✗"}
-              </span>
-              {gameResults.proteinGuesses.length > 0 &&
-                !gameResults.proteinGuessSuccess && (
-                  <span className="text-gray-600 text-xs">
-                    (closest:{" "}
-                    {Math.abs(
-                      gameResults.proteinGuesses[
-                        gameResults.proteinGuesses.length - 1
-                      ] - currentDish.proteinPerServing
-                    )}
-                    g off)
-                  </span>
-                )}
-            </div>
-          )}
+        <div className="flex justify-between gap-2">
+          <Button onClick={() => setShowRecipe(!showRecipe)} variant="neutral">
+            {showRecipe ? "Close" : "🍽️ View Recipe"}
+          </Button>
 
-          <div className="flex justify-between gap-2">
+          <div className="relative flex-1">
             <Button
-              onClick={() => setShowRecipe(!showRecipe)}
-              variant="neutral"
-            >
-              {showRecipe ? "Close" : "🍽️ View Recipe"}
-            </Button>
-            <Button
-              onClick={handleCopyResults}
+              onClick={() => setShowSharePopover(!showSharePopover)}
               variant="share"
-              className="animate-shine"
+              className="animate-shine w-full"
             >
               📋 Share Your Results
             </Button>
+
+            {showSharePopover && (
+              <SharePopover
+                shareText={shareText}
+                onCopy={handleCopyFromPopover}
+                onSocialShare={handleSocialShare}
+                onClose={() => setShowSharePopover(false)}
+              />
+            )}
           </div>
+        </div>
 
-          {currentDish.recipe && (
-            <>
-              {showRecipe && (
-                <div className="relative p-4">
-                  <span className="absolute text-[120px] opacity-10 right-5 select-none pointer-events-none">
-                    👨🏻‍🍳
-                  </span>
+        {currentDish.recipe && (
+          <>
+            {showRecipe && (
+              <div className="relative p-4">
+                <span className="absolute text-[120px] opacity-10 right-5 select-none pointer-events-none">
+                  👨🏻‍🍳
+                </span>
 
-                  <div className="text-2xl font-bold">
-                    🍽️ {currentDish.name}
+                <div className="text-2xl font-bold">🍽️ {currentDish.name}</div>
+
+                <div className="space-y-4 max-h-[60vh] overflow-y-auto relative z-10">
+                  <div>
+                    <p className="text-gray-600 text-sm mb-2 italic">
+                      Here&apos;s how you make {currentDish.name} — straight
+                      from {currentDish.country}.
+                    </p>
+                    <p className="font-semibold">Ingredients:</p>
+                    <ul className="list-disc list-inside text-gray-700">
+                      {currentDish.recipe.ingredients.map((item, idx) => (
+                        <li key={idx}>{item}</li>
+                      ))}
+                    </ul>
                   </div>
-
-                  <div className="space-y-4 max-h-[60vh] overflow-y-auto relative z-10">
-                    <div>
-                      <p className="text-gray-600 text-sm mb-2 italic">
-                        Here&apos;s how you make {currentDish.name} — straight
-                        from {currentDish.country}.
-                      </p>
-                      <p className="font-semibold">Ingredients:</p>
-                      <ul className="list-disc list-inside text-gray-700">
-                        {currentDish.recipe.ingredients.map((item, idx) => (
-                          <li key={idx}>{item}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div>
-                      <p className="font-semibold">Instructions:</p>
-                      <ol className="list-decimal list-inside text-gray-700 space-y-1">
-                        {currentDish.recipe.instructions.map((step, idx) => (
-                          <li key={idx}>{step}</li>
-                        ))}
-                      </ol>
-                    </div>
+                  <div>
+                    <p className="font-semibold">Instructions:</p>
+                    <ol className="list-decimal list-inside text-gray-700 space-y-1">
+                      {currentDish.recipe.instructions.map((step, idx) => (
+                        <li key={idx}>{step}</li>
+                      ))}
+                    </ol>
                   </div>
                 </div>
-              )}
-            </>
-          )}
-          <p className="text-center text-gray-500 text-sm mt-4">
-            Come back tomorrow for a new challenge!
-          </p>
-        </div>
+              </div>
+            )}
+          </>
+        )}
+
+        <p className="text-center text-gray-500 text-sm mt-4">
+          Come back tomorrow for a new challenge!
+        </p>
       </div>
     </div>
   );

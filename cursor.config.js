@@ -1,18 +1,36 @@
-// cursor.config.js (TypeScript is fine here; Cursor will transpile)
-// Focus: rendering performance, React correctness, DX, and a11y.
+// cursor.config.js — Claude-ified upgrade
+// Focus: rendering perf, React correctness, DX, a11y — with Claude Code-style steerability
+// Philosophy: one loop, strong rules, examples, and agent-managed TODOs.
 
 import fs from "fs";
 import path from "path";
 
-const has = (p: string) => fs.existsSync(path.resolve(process.cwd(), p));
+const has = (p) => fs.existsSync(path.resolve(process.cwd(), p));
+const read = (p) => (has(p) ? fs.readFileSync(p, "utf8") : "");
 
-const isTailwindRepo = has("tailwind.config.js");
+// Repo feature flags
+const hasTailwind = has("tailwind.config.js");
 const hasShadcn = has("src/components/ui") || has("components/ui");
-const hasZustand = has("package.json") && /zustand/.test(fs.readFileSync("package.json", "utf8"));
-const hasRQ = has("package.json") && /@tanstack\/react-query/.test(fs.readFileSync("package.json", "utf8"));
+const pkg = read("package.json");
+const hasZustand = /"zustand"\s*:|\bzustand\b/.test(pkg);
+const hasRQ = /@tanstack\/react-query/.test(pkg);
+const hasNext = /"next"\s*:|\bnext\b/.test(pkg) || has("next.config.js");
+const hasVitest = /\bvitest\b/.test(pkg);
+const hasJest = /\bjest\b/.test(pkg);
+const hasStorybook = has(".storybook") || /\b@storybook\//.test(pkg);
 
 export default {
-  // Files/folders Cursor should ignore entirely (generated, vendor, etc.)
+  // ────────────────────────────────────────────────────────────────────────────
+  // GLOBAL GUARDRAILS (Tone & Style)
+  // These are injected contextually by Cursor. Keep them crisp and enforceable.
+  // IMPORTANT: Avoid pre/postambles. Prefer minimal diffs and inline rationale only on request.
+  // IMPORTANT: Do not use emojis unless explicitly asked. Keep messages concise.
+  // IMPORTANT: When editing code, return a unified diff or a patch block when possible.
+  // IMPORTANT: Prefer small, verifiable steps. If a plan is needed, first write TODOs, then execute.
+  // IMPORTANT: Use codebase search before guessing. Cite file paths in responses.
+  // IMPORTANT: If uncertain, propose a small spike behind a flag or separate commit.
+  // ────────────────────────────────────────────────────────────────────────────
+
   ignores: [
     "node_modules/**",
     ".next/**",
@@ -22,37 +40,88 @@ export default {
     "**/*.d.ts",
     "**/*.map",
     "**/__mocks__/**",
-  ],
+    "**/.cache/**",
+    "**/.turbo/**",
+    "**/.swc/**",
+    "**/*.snap",
+    hasStorybook ? "storybook-static/**" : null,
+    "public/**/*.png",
+    "public/**/*.jpg",
+    "public/**/*.jpeg",
+    "public/**/*.gif",
+    "public/**/*.webp",
+  ].filter(Boolean),
 
-  // Optional: lightweight “presets” you can call from Cmd+K
-  // e.g. “Run: repo-audit” or “Run: perf-scan”
+  // ────────────────────────────────────────────────────────────────────────────
+  // PRESETS — Fast, opinionated commands you can run from Cmd+K
+  // ────────────────────────────────────────────────────────────────────────────
   presets: {
-    "repo-audit": "Scan for rendering issues, bad practices, and a11y problems across src/**.tsx. Summarize top risks and give file-specific diffs.",
-    "perf-scan": "For highlighted files, find unnecessary re-renders, unstable props, missing memo/callbacks, and costly operations in render. Propose minimal fixes first.",
+    // Search-first workflow, like CC's LLM search (not RAG)
+    "code-search": `Search the repo like a developer would. Use ripgrep-style terms. 
+Show me a short table (path:line:preview) for candidates, then propose next reads.
+Examples:\n<good-example>\n- Find reducers handling \"CART_ADD\" under src/**.\n- Search for \"useAuth\(\)\" defs and call sites.\n</good-example>\n<bad-example>\n- Vague semantic search without concrete patterns.\n</bad-example>`,
+
+    // Minimal-diff refactor with explicit constraints
+    "refactor-minimal": `IMPORTANT: Make the smallest safe change.
+Return a unified diff. No extra commentary.
+Honor repo style (Tailwind? ${hasTailwind}, shadcn? ${hasShadcn}).
+If a migration is risky, add a TODO item instead of speculative changes.`,
+
+    // Repo audit à la CC
+    "repo-audit": `Scan src/**/*.tsx for rendering perf issues, a11y gaps, and correctness smells.
+Report per-file findings with path+line anchors, then propose a minimal-diff fix list.
+Group fixes by impact: high (perf correctness), medium (a11y), low (DX).
+Return a TODO checklist in .ai/todo.md.`,
+
+    // Perf scan for selected files
+    "perf-scan": `For the selected files, list causes of re-renders: unstable props, inline handlers in lists, expensive calculations in render.
+Suggest useCallback/useMemo or memo, with measured thresholds. Return unified diffs only.`,
+
+    // Agent-managed TODOs (Claude-style)
+    "todo-bootstrap": `Create or update .ai/todo.md with a crisp checklist for the current task.
+Each item: [ ] short verb phrase, file path if known. Keep it under 10 items.
+After creation, confirm the list and ask to execute top item.`,
+
+    "todo-execute": `Open .ai/todo.md. Execute the top unchecked item only.
+Return a unified diff for that item. Then mark it checked and stop.`,
+
+    // A11y quick pass
+    "a11y-pass": `Run an accessibility pass on src/**/*.tsx.
+Flag missing alt text, aria-labels, improper roles, focus-visible, label/input association.
+Propose minimal diffs with concrete code.`,
+
+    // Test hardening
+    "test-harden": `Identify fragile tests (sleep-based waits, snapshots-only, implicit timing).
+Refactor to use user-event and queries-by-role/name. Provide unified diffs.`,
   },
 
+  // ────────────────────────────────────────────────────────────────────────────
+  // RULES — Heuristics that steer the agent with examples and thresholds
+  // ────────────────────────────────────────────────────────────────────────────
   rules: [
-    // ─────────────────────────────────────────────────────────────────────────────
     // 1) Styling & UI components
-    // ─────────────────────────────────────────────────────────────────────────────
     {
       match: "*.tsx",
       rules: [
         "no-inline-styles",
-        ...(isTailwindRepo
-          ? ["prefer-tailwind-over-styled-components"]
-          : ["no-styled-components-overuse"]),
+        ...(hasTailwind ? ["prefer-tailwind-over-styled-components"] : ["no-styled-components-overuse"]),
         ...(hasShadcn ? ["prefer-shadcn-over-raw-html"] : []),
-        "no-css-module-bloat", // Suggest extracting shared utilities/tokens if > N classes repeat
+        "no-css-module-bloat",
       ],
       options: {
         "no-css-module-bloat": { repeatThreshold: 3 },
       },
+      examples: `
+<good-example>
+<div className=\"p-2 md:p-4\">…</div>
+</good-example>
+<bad-example>
+<div style={{ padding: 8 }}>…</div>
+</bad-example>
+      `,
     },
 
-    // ─────────────────────────────────────────────────────────────────────────────
     // 2) Rendering performance & React correctness
-    // ─────────────────────────────────────────────────────────────────────────────
     {
       match: "*.tsx",
       rules: [
@@ -70,18 +139,25 @@ export default {
         "no-context-provider-bloat",
       ],
       options: {
-        "no-new-object-or-array-in-props": { maxProps: 0 }, // always discourage
+        "no-new-object-or-array-in-props": { maxProps: 0 },
         "no-inline-arrow-handlers-in-big-lists": { listSizeThreshold: 8 },
         "prefer-useMemo-for-expensive-calcs": { msCostThreshold: 2 },
         "prefer-memo-for-heavy-components": { locThreshold: 120, jsxThreshold: 30 },
         "limit-prop-drilling-depth": { depth: 3, suggestContextOrHooks: true },
         "no-context-provider-bloat": { maxValues: 6, suggestSliceContext: true },
       },
+      examples: `
+<good-example>
+const handler = useCallback(() => onSelect(id), [onSelect, id]);
+return <Item onSelect={handler} />;
+</good-example>
+<bad-example>
+return <Item onSelect={() => onSelect(id)} />;
+</bad-example>
+      `,
     },
 
-    // ─────────────────────────────────────────────────────────────────────────────
     // 3) Code clarity & maintainability
-    // ─────────────────────────────────────────────────────────────────────────────
     {
       match: "*.tsx",
       rules: [
@@ -95,11 +171,17 @@ export default {
         "prefer-module-boundaries",
         "no-todo-leftovers",
       ],
+      examples: `
+<good-example>
+function getEligibleOrders(orders) { /* … */ }
+</good-example>
+<bad-example>
+function proc(ary) { /* … */ }
+</bad-example>
+      `,
     },
 
-    // ─────────────────────────────────────────────────────────────────────────────
     // 4) State management patterns (Zustand)
-    // ─────────────────────────────────────────────────────────────────────────────
     ...(hasZustand
       ? [
         {
@@ -111,13 +193,19 @@ export default {
             "use-shallow-for-zustand-selectors",
             "no-store-getState-in-render",
           ],
+          examples: `
+<good-example>
+const price = useStore(s => s.price, shallow);
+</good-example>
+<bad-example>
+const { price } = useStore();
+</bad-example>
+            `,
         },
       ]
       : []),
 
-    // ─────────────────────────────────────────────────────────────────────────────
     // 5) Data fetching patterns (React Query)
-    // ─────────────────────────────────────────────────────────────────────────────
     ...(hasRQ
       ? [
         {
@@ -132,13 +220,19 @@ export default {
           options: {
             "prefer-retry-and-staleTime": { minStaleTimeMs: 30000, defaultRetry: 2 },
           },
+          examples: `
+<good-example>
+useQuery({ queryKey: ['orders', userId], queryFn: fetchOrders, staleTime: 60_000 });
+</good-example>
+<bad-example>
+useQuery({ queryKey: ['orders'], queryFn: () => fetch('/api/orders?u=' + userId) });
+</bad-example>
+            `,
         },
       ]
       : []),
 
-    // ─────────────────────────────────────────────────────────────────────────────
     // 6) Accessibility (a11y)
-    // ─────────────────────────────────────────────────────────────────────────────
     {
       match: "*.tsx",
       rules: [
@@ -148,11 +242,17 @@ export default {
         "no-div-onclick-without-role",
         "focus-visible-required-for-key-interactive",
       ],
+      examples: `
+<good-example>
+<button aria-label="Close dialog">×</button>
+</good-example>
+<bad-example>
+<div onClick={close}>×</div>
+</bad-example>
+      `,
     },
 
-    // ─────────────────────────────────────────────────────────────────────────────
     // 7) Testing
-    // ─────────────────────────────────────────────────────────────────────────────
     {
       match: "*.{test.ts,test.tsx}",
       rules: [
@@ -163,9 +263,7 @@ export default {
       ],
     },
 
-    // ─────────────────────────────────────────────────────────────────────────────
     // 8) Safety & security footguns
-    // ─────────────────────────────────────────────────────────────────────────────
     {
       match: "*.tsx",
       rules: [
@@ -175,9 +273,7 @@ export default {
       ],
     },
 
-    // ─────────────────────────────────────────────────────────────────────────────
     // 9) File & naming hygiene
-    // ─────────────────────────────────────────────────────────────────────────────
     {
       match: "*",
       rules: [
@@ -187,5 +283,5 @@ export default {
         "index-files-should-be-simple-reexports",
       ],
     },
-  ],
+  ]
 };

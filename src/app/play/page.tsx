@@ -1,5 +1,6 @@
 "use client";
 
+import { ArchiveStatus } from "@/components/ArchiveStatus";
 import { GameFooter } from "@/components/GameFooter";
 import { GameHeader } from "@/components/GameHeader";
 import { GameNavigation, ShowResultsButton } from "@/components/GameNavigation";
@@ -9,8 +10,9 @@ import { useTodaysDish } from "@/hooks/useDishes";
 import { useGameStore } from "@/store/gameStore";
 import { AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
+import { useRouter, useSearchParams } from "next/navigation";
 import posthog from "posthog-js";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { getPhaseConfig } from "../../config/gamePhases";
 import { alreadyPlayedToday, getStreak } from "../../utils/streak";
 import { CountryPhase } from "./CountryPhase";
@@ -26,7 +28,11 @@ const ResultModal = dynamic(
   { ssr: false }
 );
 
-export default function GamePage() {
+function GamePageContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const archiveDate = searchParams?.get("date") || null;
+
   const {
     gamePhase,
     modalVisible,
@@ -35,12 +41,89 @@ export default function GamePage() {
     gameResults,
     markGameTracked,
     setCurrentDish,
+    isPlayingArchive,
+    isArchivesUnlockedNow,
+    startArchiveMode,
+    exitArchiveMode,
+    archiveDate: storeArchiveDate,
   } = useGameStore();
 
-  const { dish, isLoading, isError } = useTodaysDish();
+  // Use store state as source of truth for which data to fetch
+  const effectiveArchiveDate = isPlayingArchive ? storeArchiveDate : null;
+  const { dish, isLoading, isError, error } = useTodaysDish(
+    effectiveArchiveDate || undefined
+  );
+
+  // Handle errors specifically for archive access
+  useEffect(() => {
+    if (isError && error && effectiveArchiveDate) {
+      const errorWithStatus = error as { status?: number; message?: string };
+      if (errorWithStatus.status === 403) {
+        setArchiveAccessError(
+          errorWithStatus.message ||
+            "Archives are locked. Share today's results to unlock!"
+        );
+      } else if (errorWithStatus.status === 404) {
+        // Handle archive date not available
+        setArchiveAccessError(
+          errorWithStatus.message ||
+            `No archived game available for ${effectiveArchiveDate}. This date may be before our game archive began.`
+        );
+      }
+    }
+  }, [isError, error, effectiveArchiveDate]);
   const setStreak = useGameStore((s) => s.setStreak);
   const hasInitialized = useRef(false);
   const [isIntroModalOpen, setIntroModalOpen] = useState(false);
+  const [archiveAccessError, setArchiveAccessError] = useState<string | null>(
+    null
+  );
+
+  // Handle archive mode initialization
+  useEffect(() => {
+    if (archiveDate) {
+      // Validate date format
+      const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+      if (!dateRegex.test(archiveDate)) {
+        setArchiveAccessError("Invalid date format");
+        return;
+      }
+
+      // Check if date is not in the future
+      const today = new Date().toISOString().split("T")[0];
+      if (archiveDate > today) {
+        setArchiveAccessError("Cannot access future dates");
+        return;
+      }
+
+      // For archive access, let the server be the final authority
+      // The client-side check is just for UX, server will validate the HTTP-only cookie
+      const hasClientSideUnlock = isArchivesUnlockedNow();
+
+      if (!hasClientSideUnlock) {
+        console.log(
+          "⚠️ No client-side unlock found, but attempting archive access (server will validate)"
+        );
+      }
+
+      // Start archive mode - let server validation handle access control
+      if (
+        !isPlayingArchive ||
+        useGameStore.getState().archiveDate !== archiveDate
+      ) {
+        startArchiveMode(archiveDate);
+      }
+    } else if (isPlayingArchive) {
+      // Exit archive mode if no date parameter
+      exitArchiveMode();
+    }
+  }, [
+    archiveDate,
+    isArchivesUnlockedNow,
+    isPlayingArchive,
+    startArchiveMode,
+    exitArchiveMode,
+  ]);
 
   useEffect(() => {
     const hasSeenIntro = localStorage.getItem("hasSeenIntro");
@@ -99,7 +182,9 @@ export default function GamePage() {
   }, [dish, isLoading, setCurrentDish]);
 
   useEffect(() => {
-    if (dish && !useGameStore.getState().currentDish) {
+    // Always update currentDish when dish data changes
+    // This ensures proper synchronization when switching between archive and today modes
+    if (dish) {
       setCurrentDish(dish);
     }
   }, [dish, setCurrentDish]);
@@ -138,6 +223,28 @@ export default function GamePage() {
     markGameTracked,
   ]);
 
+  // Handle archive access errors
+  if (archiveAccessError) {
+    return (
+      <main className="p-4 sm:p-6 max-w-full sm:max-w-xl mx-auto flex flex-col min-h-screen">
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-xl font-semibold mb-2 text-amber-600">
+              Archive Access Restricted
+            </h2>
+            <p className="text-gray-600 mb-4">{archiveAccessError}</p>
+            <button
+              onClick={() => router.push("/play")}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              Back to Today&apos;s Game
+            </button>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   if (isError) {
     return (
       <main className="p-4 sm:p-6 max-w-full sm:max-w-xl mx-auto flex flex-col min-h-screen">
@@ -147,13 +254,19 @@ export default function GamePage() {
               Failed to load game
             </h2>
             <p className="text-gray-600 mb-4">
-              Please check your connection and try again.
+              {effectiveArchiveDate
+                ? `Could not load game for ${effectiveArchiveDate}. The game may not exist for this date.`
+                : "Please check your connection and try again."}
             </p>
             <button
-              onClick={() => window.location.reload()}
+              onClick={() =>
+                effectiveArchiveDate
+                  ? router.push("/play")
+                  : window.location.reload()
+              }
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
             >
-              Retry
+              {effectiveArchiveDate ? "Back to Today&apos;s Game" : "Retry"}
             </button>
           </div>
         </div>
@@ -252,10 +365,25 @@ export default function GamePage() {
           modalVisible={modalVisible}
           toggleModal={toggleModal}
         />
+
+        {/* Show archive status when game is complete and not in modal */}
+        {gamePhase === "complete" && !modalVisible && !isPlayingArchive && (
+          <div className="mt-4">
+            <ArchiveStatus isUnlocked={isArchivesUnlockedNow()} />
+          </div>
+        )}
       </PhaseContainer>
 
       <ResultModal />
       <GameFooter />
     </main>
+  );
+}
+
+export default function GamePage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <GamePageContent />
+    </Suspense>
   );
 }

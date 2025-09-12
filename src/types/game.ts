@@ -34,12 +34,95 @@ export interface ProteinGuessResult {
   isCorrect: boolean;
 }
 
-export interface GameState {
+export interface ArchivesUnlock {
+  grantedOnLocalISO: string;
+  expiresAt: number;
+}
+
+// Slice interfaces (for unused slice files - keeping for compilation)
+export interface CountrySlice {
+  countryGuesses: string[];
+  countryGuessResults: CountryGuessResult[];
+  makeCountryGuess: (guess: string) => boolean;
+  resetCountryGuesses: () => void;
+  revealCorrectCountry: () => void;
+  getSortedCountryCoords: () => Record<string, { lat: number; lng: number }>;
+  guessCountry: (guess: string) => boolean;
+}
+
+export interface DishSlice {
+  dishGuesses: string[];
+  revealedTiles: boolean[];
+  revealedIngredients: number;
+  makeDishGuess: (guess: string) => boolean;
+  revealRandomTile: () => void;
+  revealAllTiles: () => void;
+  revealNextIngredient: () => void;
+  revealCorrectDish: () => void;
+  guessDish: (guess: string) => boolean;
+}
+
+export interface ProteinSlice {
+  proteinGuesses: number[];
+  proteinGuessResults: ProteinGuessResult[];
+  makeProteinGuess: (guess: number) => boolean;
+  resetProteinGuesses: () => void;
+  revealCorrectProtein: () => void;
+  guessProtein: (guess: number) => boolean;
+}
+
+export interface GameSlice {
+  gamePhase: GamePhase;
+  activePhase: "dish" | "country" | "protein";
+  currentDish: Dish | null;
+  dishes: Dish[];
+  gameResults: GameResults;
+  loading: LoadingStates;
+  modalVisible: boolean;
+  streak: number;
+  setCurrentDish: (dish: Dish | null) => void;
+  startNewGame: () => void;
+  moveToDishPhase: () => void;
+  moveToCountryPhase: () => void;
+  moveToProteinPhase: () => void;
+  completeGame: () => void;
+  updateGameResults: (results: Partial<GameResults>) => void;
+  toggleModal: (visible?: boolean) => void;
+  setActivePhase: (phase: "dish" | "country" | "protein") => void;
+  setStreak: (value: number) => void;
+  setLoading: (key: keyof LoadingStates, value: boolean) => void;
+  markGameTracked: () => void;
+  isDishPhaseComplete: () => boolean;
+  isCountryPhaseComplete: () => boolean;
+  isProteinPhaseComplete: () => boolean;
+  isPhaseComplete: (phase: "dish" | "country" | "protein") => boolean;
+}
+
+export interface PersistenceSlice {
+  hasRestoredState: boolean;
+  saveState: (state: unknown) => void;
+  restoreState: () => unknown;
+  saveCurrentGameState: () => void;
   restoreGameStateFromStorage: () => boolean;
+}
+
+export interface GameState {
+  restoreGameStateFromStorage: (forceRestore?: boolean) => boolean;
   saveCurrentGameState: () => void;
   currentDish: Dish | null;
   dishes: Dish[];
   setCurrentDish: (dish: Dish | null) => void;
+
+  // Archive functionality
+  archivesUnlock?: ArchivesUnlock;
+  isPlayingArchive: boolean;
+  archiveDate?: string;
+  _exitingArchive?: boolean; // Internal flag to prevent double execution
+  isArchivesUnlockedNow: () => boolean;
+  unlockArchives: () => void;
+  startArchiveMode: (date: string) => void;
+  exitArchiveMode: () => void;
+
   gamePhase: GamePhase;
   revealedIngredients: number;
   dishGuesses: string[];

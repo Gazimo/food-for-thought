@@ -11,6 +11,10 @@ import { create } from "zustand";
 import { GameResults, GameState, LoadingStates } from "../types/game";
 import { emojiThemes, launchEmojiBurst } from "../utils/celebration";
 import { updateStreak } from "../utils/streak";
+
+// Consistent date calculation function
+const getTodaysDate = () => new Date().toISOString().split("T")[0];
+
 const countryCoords = getCountryCoordsMap();
 
 function getSortedCountryCoords() {
@@ -23,12 +27,145 @@ function getSortedCountryCoords() {
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
+  archivesUnlock: undefined,
+  isPlayingArchive: false,
+  archiveDate: undefined,
+  _exitingArchive: false, // Internal flag to prevent double execution
+
+  isArchivesUnlockedNow: () => {
+    const { archivesUnlock } = get();
+    if (!archivesUnlock) return false;
+
+    const now = Date.now();
+    const today = new Date().toISOString().split("T")[0];
+
+    return (
+      now < archivesUnlock.expiresAt &&
+      archivesUnlock.grantedOnLocalISO === today
+    );
+  },
+
+  unlockArchives: () => {
+    const today = new Date().toISOString().split("T")[0];
+    const expiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 hours from now
+
+    set({
+      archivesUnlock: {
+        grantedOnLocalISO: today,
+        expiresAt,
+      },
+    });
+
+    // Persist to localStorage
+    if (typeof window !== "undefined") {
+      localStorage.setItem(
+        "fft-archives-unlock",
+        JSON.stringify({
+          grantedOnLocalISO: today,
+          expiresAt,
+        })
+      );
+    }
+  },
+
+  startArchiveMode: (date: string) => {
+    // Only save today's state if the game is completed
+    // This prevents overwriting completed states with incomplete ones
+    const state = get();
+    if (state.gamePhase === "complete") {
+      get().saveCurrentGameState();
+    }
+
+    set({
+      isPlayingArchive: true,
+      archiveDate: date,
+      // Reset game state for archive
+      gamePhase: "dish",
+      activePhase: "dish",
+      revealedIngredients: 1,
+      dishGuesses: [],
+      countryGuesses: [],
+      proteinGuesses: [],
+      gameResults: {
+        dishGuesses: [],
+        dishGuessSuccess: false,
+        countryGuesses: [],
+        countryGuessSuccess: false,
+        proteinGuesses: [],
+        proteinGuessSuccess: false,
+        tracked: false,
+      },
+      revealedTiles: [false, false, false, false, false, false],
+      countryGuessResults: [],
+      proteinGuessResults: [],
+      modalVisible: true,
+      // Clear currentDish so it gets refreshed with archive dish data
+      currentDish: null,
+    });
+  },
+
+  exitArchiveMode: () => {
+    // Prevent double execution using a dedicated flag
+    const state = get();
+    if (!state.isPlayingArchive || state._exitingArchive) {
+      return;
+    }
+
+    // Set flag to prevent double execution and exit archive mode
+    set({
+      _exitingArchive: true,
+      isPlayingArchive: false,
+      archiveDate: undefined,
+      currentDish: null,
+    });
+
+    // Use setTimeout to ensure state updates are applied before restoration
+    setTimeout(() => {
+      // Restore state using the existing restoreGameStateFromStorage function
+      // Pass true to force restore even if still in archive transition
+      const restored = get().restoreGameStateFromStorage(true);
+
+      if (!restored) {
+        // Set fresh state but DON'T save it - this prevents overwriting completed states
+        set({
+          gamePhase: "dish",
+          activePhase: "dish",
+          revealedIngredients: 1,
+          dishGuesses: [],
+          countryGuesses: [],
+          proteinGuesses: [],
+          gameResults: {
+            dishGuesses: [],
+            dishGuessSuccess: false,
+            countryGuesses: [],
+            countryGuessSuccess: false,
+            proteinGuesses: [],
+            proteinGuessSuccess: false,
+            tracked: false,
+          },
+          revealedTiles: [false, false, false, false, false, false],
+          countryGuessResults: [],
+          proteinGuessResults: [],
+          modalVisible: false,
+        });
+      }
+
+      // Reset the exit flag
+      set({ _exitingArchive: false });
+    }, 50);
+  },
+
   saveCurrentGameState: () => {
     if (typeof window === "undefined") return;
 
     const state = get();
 
-    // Store only the essential game state WITHOUT sensitive dish data
+    // Don't save progress for archived games
+    if (state.isPlayingArchive) {
+      return;
+    }
+
+    const today = getTodaysDate();
     const gameStateToSave = {
       gamePhase: state.gamePhase,
       activePhase: state.activePhase,
@@ -40,32 +177,69 @@ export const useGameStore = create<GameState>((set, get) => ({
       countryGuessResults: state.countryGuessResults,
       proteinGuessResults: state.proteinGuessResults,
       gameResults: state.gameResults,
-      savedDate: new Date().toISOString().split("T")[0],
+      savedDate: today,
     };
 
+    // Always save today's game state with today's date as key
+    localStorage.setItem(
+      `fft-game-state-${today}`,
+      JSON.stringify(gameStateToSave)
+    );
+    // Keep legacy key for backward compatibility
     localStorage.setItem("fft-game-state", JSON.stringify(gameStateToSave));
   },
 
-  restoreGameStateFromStorage: () => {
-    if (typeof window === "undefined") return false;
+  restoreGameStateFromStorage: (forceRestore?: boolean) => {
+    if (typeof window === "undefined") {
+      return false;
+    }
+
+    const state = get();
+
+    // Don't restore state when in archive mode (unless forced by exitArchiveMode)
+    if (state.isPlayingArchive && !forceRestore) {
+      return false;
+    }
 
     try {
-      const saved = localStorage.getItem("fft-game-state");
-      if (!saved) return false;
+      const archiveUnlock = localStorage.getItem("fft-archives-unlock");
+      if (archiveUnlock) {
+        const parsed = JSON.parse(archiveUnlock);
+        set({ archivesUnlock: parsed });
+      }
+    } catch {
+      localStorage.removeItem("fft-archives-unlock");
+    }
+
+    try {
+      const today = getTodaysDate();
+      const todayKey = `fft-game-state-${today}`;
+
+      // Try to get today's specific game state first
+      let saved = localStorage.getItem(todayKey);
+
+      // Fall back to legacy key if today's specific state doesn't exist
+      if (!saved) {
+        saved = localStorage.getItem("fft-game-state");
+      }
+
+      if (!saved) {
+        return false;
+      }
 
       const parsedState = JSON.parse(saved);
 
       // Check if the saved game state is from today
-      const today = new Date().toISOString().split("T")[0];
       const savedDate = parsedState.savedDate;
 
-      // If no saved date or it's from a different day, clear the saved state and return
+      // If no saved date or it's from a different day, don't clear storage for today's key
       if (!savedDate || savedDate !== today) {
-        localStorage.removeItem("fft-game-state");
+        // Only clear legacy key if it's from a different day, preserve today's specific key
+        if (saved === localStorage.getItem("fft-game-state")) {
+          localStorage.removeItem("fft-game-state");
+        }
         return false;
       }
-
-      const isComplete = parsedState.gamePhase === "complete";
 
       if (parsedState.gameResults) {
         set({
@@ -95,13 +269,17 @@ export const useGameStore = create<GameState>((set, get) => ({
           dishGuesses: parsedState.dishGuesses || [],
           countryGuesses: parsedState.countryGuesses || [],
           proteinGuesses: parsedState.proteinGuesses || [],
-          modalVisible: isComplete,
+          // Don't show modal when restoring from archive mode return
+          modalVisible: false,
           hasRestoredState: true,
         });
         return true;
+      } else {
+        return false;
       }
-      return false;
-    } catch {
+    } catch (error) {
+      console.error("Error restoring game state:", error);
+      // Only clear legacy key, preserve today's specific data during archive operations
       localStorage.removeItem("fft-game-state");
       return false;
     }
@@ -169,10 +347,6 @@ export const useGameStore = create<GameState>((set, get) => ({
     const newTiles = [...revealedTiles];
     newTiles[index] = true;
 
-    if (process.env.NODE_ENV === "development") {
-      console.log("Revealing tile:", index, "New tiles state:", newTiles);
-    }
-
     set({ revealedTiles: newTiles });
 
     // Force a small delay to ensure state propagation
@@ -186,10 +360,20 @@ export const useGameStore = create<GameState>((set, get) => ({
     get().saveCurrentGameState();
   },
 
-  startNewGame: () => {
+  // Function to explicitly reset progress (only when user requests it)
+  resetTodaysProgress: () => {
     if (typeof window !== "undefined") {
+      const today = getTodaysDate();
+      console.log("🗑️ EXPLICITLY RESETTING TODAY'S PROGRESS");
       localStorage.removeItem("fft-game-state");
+      localStorage.removeItem(`fft-game-state-${today}`);
     }
+  },
+
+  startNewGame: () => {
+    // CRITICAL: Never clear today's localStorage!
+    // This was the root cause of the archive bug
+    // Today's completed progress must ALWAYS be preserved
 
     const dishes = get().dishes;
     const dish =
@@ -397,7 +581,10 @@ export const useGameStore = create<GameState>((set, get) => ({
       },
     });
 
-    get().saveCurrentGameState();
+    // Use setTimeout to ensure the state update is applied before saving
+    setTimeout(() => {
+      get().saveCurrentGameState();
+    }, 0);
   },
 
   resetCountryGuesses: () => set({ countryGuessResults: [] }),
