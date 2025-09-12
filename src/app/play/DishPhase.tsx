@@ -6,7 +6,6 @@ import posthog from "posthog-js";
 import { memo } from "react";
 import { TileGrid } from "../../components/dish-image/TileGrid";
 import { DishSkeleton } from "../../components/GameSkeleton";
-import { useTodaysDish } from "../../hooks/useDishes";
 
 export const DishPhase = memo(() => {
   const guessDish = useGameStore((state) => state.guessDish);
@@ -18,15 +17,14 @@ export const DishPhase = memo(() => {
     (state) => state.isDishPhaseComplete
   );
 
-  const { dish, isLoading: isDishLoading } = useTodaysDish();
-  // Use database ID instead of extracting from filename
+  const dish = currentDish;
   const dishId = dish?.id?.toString();
 
   const { data: blurredTiles, isLoading: isBlurredLoading } =
     useBlurredTiles(dishId);
   const { data: fullTiles, isLoading: isTilesLoading } = useDishTiles(dishId);
 
-  const isLoading = isDishLoading || isBlurredLoading || isTilesLoading;
+  const isLoading = isBlurredLoading || isTilesLoading;
 
   if (isLoading || !dish || !blurredTiles || !fullTiles) {
     return <DishSkeleton />;

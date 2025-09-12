@@ -20,9 +20,9 @@ export function obfuscateData<T>(data: T, salt: string): string {
 }
 
 // Generate a daily salt based on the date
-export function getDailySalt(): string {
-  const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
-  return `fft-${today}`;
+export function getDailySalt(date?: string): string {
+  const targetDate = date || new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+  return `fft-${targetDate}`;
 }
 
 // Simple Base64 decoding

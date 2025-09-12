@@ -13,12 +13,13 @@ export function CountryPhase() {
     countryGuessResults,
     countryGuesses,
     isCountryPhaseComplete,
+    archiveDate,
   } = useGameStore();
 
   const isComplete = isCountryPhaseComplete();
   const countryNames = getCountryNames();
   const countryCoords = getCountryCoordsMap();
-  const { isLoading } = useTodaysDish();
+  const { isLoading } = useTodaysDish(archiveDate);
 
   if (isLoading) {
     return <CountrySkeleton />;

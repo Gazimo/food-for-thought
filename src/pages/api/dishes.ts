@@ -2,6 +2,7 @@ import { Dish, enrichDishesWithCoords } from "@/types/dishes";
 import { createClient } from "@supabase/supabase-js";
 import { NextApiRequest, NextApiResponse } from "next";
 import PostHogClient from "../../lib/posthog";
+import { validateArchiveAccess } from "../../utils/archiveAuth";
 import { getCountryCoordsMap } from "../../utils/countries";
 import { getDailySalt, obfuscateData } from "../../utils/encryption";
 
@@ -9,6 +10,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const { date } = req.query;
+  const requestedDate = typeof date === "string" ? date : null;
+
   // Calculate expiry time for the cache. The data is for the whole day,
   // so we can cache it until the next day.
   const now = new Date();
@@ -43,13 +47,42 @@ export default async function handler(
   const supabase = createClient(supabaseUrl, supabaseKey);
 
   try {
-    // Get today's date and fetch today's dish from Supabase
-    const today = new Date().toISOString().split("T")[0];
+    // Determine which date to fetch - either requested date or today
+    const targetDate = requestedDate || new Date().toISOString().split("T")[0];
+
+    // If requesting archived content, validate date format and check access
+    if (requestedDate) {
+      // Validate date format (YYYY-MM-DD)
+      const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+      if (!dateRegex.test(requestedDate)) {
+        return res
+          .status(400)
+          .json({ error: "Invalid date format. Use YYYY-MM-DD" });
+      }
+
+      // Check if date is not in the future
+      const today = new Date().toISOString().split("T")[0];
+      if (requestedDate > today) {
+        return res.status(400).json({ error: "Cannot request future dates" });
+      }
+
+      // Validate archive access token
+      const validation = validateArchiveAccess(req, requestedDate);
+      if (!validation.isValid) {
+        console.log(`🚫 Archive validation failed: ${validation.error}`);
+        return res.status(403).json({
+          error: validation.error,
+          code: validation.code,
+        });
+      }
+    }
+
+    console.log(`🔍 Fetching dish for date: ${targetDate}`);
 
     const { data: dishes, error } = await supabase
       .from("dishes")
       .select("*")
-      .eq("release_date", today)
+      .eq("release_date", targetDate)
       .limit(1);
 
     if (error) {
@@ -58,31 +91,57 @@ export default async function handler(
     }
 
     if (!dishes || dishes.length === 0) {
+      console.log(`⚠️ No dish found for date: ${targetDate}`);
+
+      // For archive requests, provide a more specific error message
+      if (requestedDate) {
+        return res.status(404).json({
+          error: `No archived game available for ${requestedDate}. This date may be before our game archive began.`,
+          code: "ARCHIVE_DATE_NOT_AVAILABLE",
+        });
+      }
+
       return res.status(404).json({ error: "No dish available for today" });
     }
 
-    const todaysDish = dishes[0];
+    const targetDish = dishes[0];
+    console.log(
+      `✅ Found dish for ${targetDate}: ID ${targetDish.id}, Name: ${
+        targetDish.name || "[encrypted]"
+      }`
+    );
+
+    // Ensure we're not accidentally serving today's dish for archive dates
+    if (requestedDate && targetDish.release_date !== requestedDate) {
+      console.log(
+        `⚠️ Dish release_date (${targetDish.release_date}) doesn't match requested date (${requestedDate})`
+      );
+      return res.status(404).json({
+        error: `No archived game available for ${requestedDate}. This date may be before our game archive began.`,
+        code: "ARCHIVE_DATE_NOT_AVAILABLE",
+      });
+    }
 
     // Convert Supabase dish format to our Dish interface
     const dish: Dish = {
-      name: todaysDish.name,
-      acceptableGuesses: todaysDish.acceptable_guesses || [],
-      country: todaysDish.country,
-      imageUrl: todaysDish.image_url, // This now has the randomized filename!
-      ingredients: todaysDish.ingredients || [],
-      blurb: todaysDish.blurb || "",
-      proteinPerServing: todaysDish.protein_per_serving,
+      name: targetDish.name,
+      acceptableGuesses: targetDish.acceptable_guesses || [],
+      country: targetDish.country,
+      imageUrl: targetDish.image_url, // This now has the randomized filename!
+      ingredients: targetDish.ingredients || [],
+      blurb: targetDish.blurb || "",
+      proteinPerServing: targetDish.protein_per_serving,
       recipe: {
-        ingredients: todaysDish.recipe?.ingredients || [],
-        instructions: todaysDish.recipe?.instructions || [],
+        ingredients: targetDish.recipe?.ingredients || [],
+        instructions: targetDish.recipe?.instructions || [],
       },
-      tags: todaysDish.tags || [],
-      region: todaysDish.region,
-      releaseDate: todaysDish.release_date,
-      coordinates: todaysDish.coordinates
+      tags: targetDish.tags || [],
+      region: targetDish.region,
+      releaseDate: targetDish.release_date,
+      coordinates: targetDish.coordinates
         ? {
-            lat: todaysDish.coordinates.lat || todaysDish.latitude,
-            lng: todaysDish.coordinates.lng || todaysDish.longitude,
+            lat: targetDish.coordinates.lat || targetDish.latitude,
+            lng: targetDish.coordinates.lng || targetDish.longitude,
           }
         : undefined,
     };
@@ -92,10 +151,10 @@ export default async function handler(
     const enrichedDishes = enrichDishesWithCoords([dish], countryCoords);
     const enrichedDish = enrichedDishes[0];
 
-    // Get today's salt
-    const salt = getDailySalt();
+    // Get salt for the target date (today or archived date)
+    const salt = getDailySalt(targetDate);
 
-    // Process only today's dish
+    // Process the target dish (today or archived)
     const sensitiveData = {
       name: enrichedDish.name,
       country: enrichedDish.country,
@@ -115,10 +174,10 @@ export default async function handler(
     // Create obfuscated version of sensitive data
     const obfuscatedAnswers = obfuscateData(sensitiveData, salt);
 
-    // Return only today's dish with sensitive fields removed and obfuscated data added
+    // Return the target dish with sensitive fields removed and obfuscated data added
     const safeDish = {
       // Keep only non-sensitive visual data
-      id: todaysDish.id, // Add database ID for tile APIs
+      id: targetDish.id, // Add database ID for tile APIs
       tags: enrichedDish.tags,
       region: enrichedDish.region,
 

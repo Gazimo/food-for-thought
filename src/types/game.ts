@@ -119,6 +119,8 @@ export interface GameState {
   archiveDate?: string;
   isArchivesUnlockedNow: () => boolean;
   unlockArchives: () => void;
+  startArchiveMode: (date: string) => void;
+  exitArchiveMode: () => void;
 
   gamePhase: GamePhase;
   revealedIngredients: number;
