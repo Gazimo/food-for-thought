@@ -12,7 +12,7 @@ import { AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
 import posthog from "posthog-js";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { getPhaseConfig } from "../../config/gamePhases";
 import { alreadyPlayedToday, getStreak } from "../../utils/streak";
 import { CountryPhase } from "./CountryPhase";
@@ -28,7 +28,7 @@ const ResultModal = dynamic(
   { ssr: false }
 );
 
-export default function GamePage() {
+function GamePageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const archiveDate = searchParams?.get("date") || null;
@@ -57,7 +57,7 @@ export default function GamePage() {
   // Handle errors specifically for archive access
   useEffect(() => {
     if (isError && error && effectiveArchiveDate) {
-      const errorWithStatus = error as any;
+      const errorWithStatus = error as { status?: number; message?: string };
       if (errorWithStatus.status === 403) {
         setArchiveAccessError(
           errorWithStatus.message ||
@@ -237,7 +237,7 @@ export default function GamePage() {
               onClick={() => router.push("/play")}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
             >
-              Back to Today's Game
+              Back to Today&apos;s Game
             </button>
           </div>
         </div>
@@ -266,7 +266,7 @@ export default function GamePage() {
               }
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
             >
-              {effectiveArchiveDate ? "Back to Today's Game" : "Retry"}
+              {effectiveArchiveDate ? "Back to Today&apos;s Game" : "Retry"}
             </button>
           </div>
         </div>
@@ -377,5 +377,13 @@ export default function GamePage() {
       <ResultModal />
       <GameFooter />
     </main>
+  );
+}
+
+export default function GamePage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <GamePageContent />
+    </Suspense>
   );
 }
