@@ -11,6 +11,10 @@ import { create } from "zustand";
 import { GameResults, GameState, LoadingStates } from "../types/game";
 import { emojiThemes, launchEmojiBurst } from "../utils/celebration";
 import { updateStreak } from "../utils/streak";
+
+// Consistent date calculation function
+const getTodaysDate = () => new Date().toISOString().split("T")[0];
+
 const countryCoords = getCountryCoordsMap();
 
 function getSortedCountryCoords() {
@@ -65,8 +69,12 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   startArchiveMode: (date: string) => {
-    // Save today's current state before switching to archive mode
-    get().saveCurrentGameState();
+    // Only save today's state if the game is completed
+    // This prevents overwriting completed states with incomplete ones
+    const state = get();
+    if (state.gamePhase === "complete") {
+      get().saveCurrentGameState();
+    }
 
     set({
       isPlayingArchive: true,
@@ -100,13 +108,8 @@ export const useGameStore = create<GameState>((set, get) => ({
     // Prevent double execution using a dedicated flag
     const state = get();
     if (!state.isPlayingArchive || state._exitingArchive) {
-      console.log(
-        "🏠 exitArchiveMode: Already exited or in progress, preventing double execution"
-      );
       return;
     }
-
-    console.log("🏠 exitArchiveMode: Starting exit process");
 
     // Set flag to prevent double execution and exit archive mode
     set({
@@ -119,15 +122,9 @@ export const useGameStore = create<GameState>((set, get) => ({
     // Add a small delay to handle potential localStorage timing issues
     setTimeout(() => {
       // Then restore state using the existing restoreGameStateFromStorage function
-      // This prevents code duplication and uses the tested restoration logic
       const restored = get().restoreGameStateFromStorage();
 
-      if (restored) {
-        console.log("🏠 exitArchiveMode: Successfully restored today's state");
-      } else {
-        console.log(
-          "🏠 exitArchiveMode: No saved state found, using fresh state"
-        );
+      if (!restored) {
         // Set fresh state but DON'T save it - this prevents overwriting completed states
         set({
           gamePhase: "dish",
@@ -154,7 +151,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       
       // Reset the exit flag
       set({ _exitingArchive: false });
-    }, 50); // Small delay to handle localStorage timing
+    }, 50);
   },
 
   saveCurrentGameState: () => {
@@ -167,8 +164,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       return;
     }
 
-    const today = new Date().toISOString().split("T")[0];
-    console.log("💾 Saving with date key:", today);
+    const today = getTodaysDate();
     const gameStateToSave = {
       gamePhase: state.gamePhase,
       activePhase: state.activePhase,
@@ -182,13 +178,6 @@ export const useGameStore = create<GameState>((set, get) => ({
       gameResults: state.gameResults,
       savedDate: today,
     };
-
-    console.log("💾 Saving game state:", {
-      gamePhase: state.gamePhase,
-      dishSuccess: state.gameResults.dishGuessSuccess,
-      countrySuccess: state.gameResults.countryGuessSuccess,
-      proteinSuccess: state.gameResults.proteinGuessSuccess,
-    });
 
     // Always save today's game state with today's date as key
     localStorage.setItem(
@@ -220,21 +209,10 @@ export const useGameStore = create<GameState>((set, get) => ({
     }
 
     try {
-      const today = new Date().toISOString().split("T")[0];
-      console.log("🔄 Looking for saved state with date key:", today);
+      const today = getTodaysDate();
 
-        // Try to get today's specific game state first
-        let saved = localStorage.getItem(`fft-game-state-${today}`);
-        console.log("🔄 Checking localStorage key:", `fft-game-state-${today}`);
-        console.log("🔄 Found data:", saved ? "✅ Yes" : "❌ No");
-        
-        // Debug: Show all localStorage keys that start with fft-game-state
-        const allKeys = Object.keys(localStorage).filter(key => key.startsWith('fft-game-state'));
-        console.log("🔍 All fft-game-state keys in localStorage:", allKeys);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          console.log("🔍 Found saved state:", { gamePhase: parsed.gamePhase, savedDate: parsed.savedDate });
-        }
+      // Try to get today's specific game state first
+      let saved = localStorage.getItem(`fft-game-state-${today}`);
 
       // Fall back to legacy key if today's specific state doesn't exist
       if (!saved) {
@@ -360,9 +338,6 @@ export const useGameStore = create<GameState>((set, get) => ({
     const newTiles = [...revealedTiles];
     newTiles[index] = true;
 
-    if (process.env.NODE_ENV === "development") {
-      console.log("Revealing tile:", index, "New tiles state:", newTiles);
-    }
 
     set({ revealedTiles: newTiles });
 
@@ -569,7 +544,6 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   completeGame: () => {
-    console.log("🎯 completeGame() called");
     const newStreak = updateStreak();
     const state = get();
 
@@ -579,12 +553,6 @@ export const useGameStore = create<GameState>((set, get) => ({
       state.gameResults.proteinGuessSuccess;
 
     const finalStatus = hasAnySuccess ? "won" : "lost";
-
-    console.log("🎯 Setting game to complete state:", {
-      gamePhase: "complete",
-      hasAnySuccess,
-      finalStatus,
-    });
 
     set({
       gamePhase: "complete",
@@ -598,9 +566,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     });
 
     // Use setTimeout to ensure the state update is applied before saving
-    // This fixes the timing issue where saveCurrentGameState was called before set() was applied
     setTimeout(() => {
-      console.log("🎯 About to save completed game state");
       get().saveCurrentGameState();
     }, 0);
   },
