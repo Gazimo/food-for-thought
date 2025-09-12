@@ -119,10 +119,11 @@ export const useGameStore = create<GameState>((set, get) => ({
       currentDish: null,
     });
 
-    // Add a small delay to handle potential localStorage timing issues
+    // Use setTimeout to ensure state updates are applied before restoration
     setTimeout(() => {
-      // Then restore state using the existing restoreGameStateFromStorage function
-      const restored = get().restoreGameStateFromStorage();
+      // Restore state using the existing restoreGameStateFromStorage function
+      // Pass true to force restore even if still in archive transition
+      const restored = get().restoreGameStateFromStorage(true);
 
       if (!restored) {
         // Set fresh state but DON'T save it - this prevents overwriting completed states
@@ -148,7 +149,7 @@ export const useGameStore = create<GameState>((set, get) => ({
           modalVisible: false,
         });
       }
-      
+
       // Reset the exit flag
       set({ _exitingArchive: false });
     }, 50);
@@ -188,13 +189,15 @@ export const useGameStore = create<GameState>((set, get) => ({
     localStorage.setItem("fft-game-state", JSON.stringify(gameStateToSave));
   },
 
-  restoreGameStateFromStorage: () => {
-    if (typeof window === "undefined") return false;
+  restoreGameStateFromStorage: (forceRestore?: boolean) => {
+    if (typeof window === "undefined") {
+      return false;
+    }
 
     const state = get();
 
-    // Don't restore state when in archive mode
-    if (state.isPlayingArchive) {
+    // Don't restore state when in archive mode (unless forced by exitArchiveMode)
+    if (state.isPlayingArchive && !forceRestore) {
       return false;
     }
 
@@ -210,26 +213,31 @@ export const useGameStore = create<GameState>((set, get) => ({
 
     try {
       const today = getTodaysDate();
+      const todayKey = `fft-game-state-${today}`;
 
       // Try to get today's specific game state first
-      let saved = localStorage.getItem(`fft-game-state-${today}`);
+      let saved = localStorage.getItem(todayKey);
 
       // Fall back to legacy key if today's specific state doesn't exist
       if (!saved) {
         saved = localStorage.getItem("fft-game-state");
       }
 
-      if (!saved) return false;
+      if (!saved) {
+        return false;
+      }
 
       const parsedState = JSON.parse(saved);
 
       // Check if the saved game state is from today
       const savedDate = parsedState.savedDate;
 
-      // If no saved date or it's from a different day, clear the saved state and return
+      // If no saved date or it's from a different day, don't clear storage for today's key
       if (!savedDate || savedDate !== today) {
-        localStorage.removeItem("fft-game-state");
-        localStorage.removeItem(`fft-game-state-${today}`);
+        // Only clear legacy key if it's from a different day, preserve today's specific key
+        if (saved === localStorage.getItem("fft-game-state")) {
+          localStorage.removeItem("fft-game-state");
+        }
         return false;
       }
 
@@ -266,12 +274,13 @@ export const useGameStore = create<GameState>((set, get) => ({
           hasRestoredState: true,
         });
         return true;
+      } else {
+        return false;
       }
-      return false;
-    } catch {
-      const today = new Date().toISOString().split("T")[0];
+    } catch (error) {
+      console.error("Error restoring game state:", error);
+      // Only clear legacy key, preserve today's specific data during archive operations
       localStorage.removeItem("fft-game-state");
-      localStorage.removeItem(`fft-game-state-${today}`);
       return false;
     }
   },
@@ -338,7 +347,6 @@ export const useGameStore = create<GameState>((set, get) => ({
     const newTiles = [...revealedTiles];
     newTiles[index] = true;
 
-
     set({ revealedTiles: newTiles });
 
     // Force a small delay to ensure state propagation
@@ -352,12 +360,20 @@ export const useGameStore = create<GameState>((set, get) => ({
     get().saveCurrentGameState();
   },
 
-  startNewGame: () => {
+  // Function to explicitly reset progress (only when user requests it)
+  resetTodaysProgress: () => {
     if (typeof window !== "undefined") {
-      const today = new Date().toISOString().split("T")[0];
+      const today = getTodaysDate();
+      console.log("🗑️ EXPLICITLY RESETTING TODAY'S PROGRESS");
       localStorage.removeItem("fft-game-state");
       localStorage.removeItem(`fft-game-state-${today}`);
     }
+  },
+
+  startNewGame: () => {
+    // CRITICAL: Never clear today's localStorage!
+    // This was the root cause of the archive bug
+    // Today's completed progress must ALWAYS be preserved
 
     const dishes = get().dishes;
     const dish =

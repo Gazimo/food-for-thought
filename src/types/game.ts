@@ -107,7 +107,7 @@ export interface PersistenceSlice {
 }
 
 export interface GameState {
-  restoreGameStateFromStorage: () => boolean;
+  restoreGameStateFromStorage: (forceRestore?: boolean) => boolean;
   saveCurrentGameState: () => void;
   currentDish: Dish | null;
   dishes: Dish[];
