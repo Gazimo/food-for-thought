@@ -117,6 +117,7 @@ export interface GameState {
   archivesUnlock?: ArchivesUnlock;
   isPlayingArchive: boolean;
   archiveDate?: string;
+  _exitingArchive?: boolean; // Internal flag to prevent double execution
   isArchivesUnlockedNow: () => boolean;
   unlockArchives: () => void;
   startArchiveMode: (date: string) => void;
