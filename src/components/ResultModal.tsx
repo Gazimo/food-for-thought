@@ -23,6 +23,8 @@ export const ResultModal: React.FC = memo(function ResultModal() {
     countryGuessResults,
     unlockArchives,
     isArchivesUnlockedNow,
+    isPlayingArchive,
+    archiveDate,
   } = useGameStore();
   const [showRecipe, setShowRecipe] = useState(false);
   const [showSharePopover, setShowSharePopover] = useState(false);
@@ -44,6 +46,7 @@ export const ResultModal: React.FC = memo(function ResultModal() {
     country: currentDish.country,
     streak,
     acceptableGuesses: currentDish.acceptableGuesses || [],
+    archiveDate: isPlayingArchive ? archiveDate : undefined,
   });
   const handleCopyResults = async () => {
     posthog.capture("share_score_clicked", {

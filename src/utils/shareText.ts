@@ -6,6 +6,7 @@ export function generateShareText({
   country,
   streak,
   acceptableGuesses = [],
+  archiveDate,
 }: {
   dishGuesses: string[];
   countryGuesses: { name: string; distance: number; direction: string }[];
@@ -14,9 +15,12 @@ export function generateShareText({
   country: string;
   streak: number;
   acceptableGuesses?: string[];
+  archiveDate?: string;
 }) {
-  const dayNumber = getGameDayNumber();
-  const today = new Date().toLocaleDateString("en-GB");
+  const dayNumber = getGameDayNumber(archiveDate);
+  const displayDate = archiveDate
+    ? new Date(archiveDate).toLocaleDateString("en-GB")
+    : new Date().toLocaleDateString("en-GB");
 
   const lastDishGuess = dishGuesses.at(-1)?.toLowerCase();
   const lastCountryGuess = countryGuesses.at(-1)?.name.toLowerCase();
@@ -84,7 +88,10 @@ export function generateShareText({
         })()
       : "";
 
-  return `#FoodForThought ${dayNumber} (${today}) ${dishGuesses.length}/6
+  const archiveLabel = archiveDate ? " [Archive]" : "";
+  return `#FoodForThought ${dayNumber} (${displayDate})${archiveLabel} ${
+    dishGuesses.length
+  }/6
 🔥 Streak: ${streak} days
 
 🍽️ ${dishTiles}${dishCorrect ? "🎉" : ""}  ${dishGuesses.length}/6
@@ -95,11 +102,11 @@ export function generateShareText({
 https://f4t.xyz`;
 }
 
-function getGameDayNumber(): string {
+function getGameDayNumber(archiveDate?: string): string {
   const launchDate = new Date("2025-05-10"); // TODO: change this to the actual launch date
-  const today = new Date();
+  const targetDate = archiveDate ? new Date(archiveDate) : new Date();
   const diff = Math.floor(
-    (today.getTime() - launchDate.getTime()) / (1000 * 60 * 60 * 24)
+    (targetDate.getTime() - launchDate.getTime()) / (1000 * 60 * 60 * 24)
   );
   return `#${diff + 1}`;
 }
