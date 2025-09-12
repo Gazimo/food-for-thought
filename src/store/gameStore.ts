@@ -614,7 +614,11 @@ export const useGameStore = create<GameState>((set, get) => ({
       },
     });
 
-    get().saveCurrentGameState();
+    // Use setTimeout to ensure the state update is applied before saving
+    // This fixes the timing issue where saveCurrentGameState was called before set() was applied
+    setTimeout(() => {
+      get().saveCurrentGameState();
+    }, 0);
   },
 
   resetCountryGuesses: () => set({ countryGuessResults: [] }),
