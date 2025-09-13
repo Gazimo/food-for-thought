@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import React from "react";
 import { useCountUp } from "../hooks/useCountUp";
+import { useGameStore } from "../store/gameStore";
 import { CountryGuessResult } from "../types/game";
 
 interface CountryGuessFeedbackProps {
@@ -12,6 +13,8 @@ interface CountryGuessFeedbackProps {
 export const CountryGuessFeedback: React.FC<CountryGuessFeedbackProps> = ({
   guessResults,
 }) => {
+  const currentDish = useGameStore((state) => state.currentDish);
+
   const getColorForDistance = (distance: number): string => {
     if (distance === 0) return "bg-green-500";
     if (distance < 500) return "bg-green-400";
@@ -49,6 +52,8 @@ export const CountryGuessFeedback: React.FC<CountryGuessFeedbackProps> = ({
     if (isNaN(b.distance)) return -1;
     return a.distance - b.distance;
   });
+
+  const lastGuessIsCorrect = lastGuess && lastGuess.isCorrect;
 
   const renderGuess = (
     result: CountryGuessResult,
@@ -99,6 +104,19 @@ export const CountryGuessFeedback: React.FC<CountryGuessFeedbackProps> = ({
         {renderGuess(lastGuess, true, -1)}
         {previousGuesses.map((g, i) => renderGuess(g, false, i))}
       </div>
+
+      {lastGuessIsCorrect && currentDish?.funFact && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg"
+        >
+          <h4 className="font-bold text-blue-800 mb-1">Did you know?</h4>
+          <p className="text-blue-700">{currentDish.funFact}</p>
+        </motion.div>
+
+      )}
     </>
   );
 };

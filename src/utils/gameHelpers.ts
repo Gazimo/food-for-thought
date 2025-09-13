@@ -14,6 +14,7 @@ interface SensitiveData {
     instructions: string[];
   };
   blurb: string;
+  funFact?: string;
   imageUrl: string;
   releaseDate?: string;
   coordinates?: {
@@ -140,6 +141,7 @@ export async function loadDishes(date?: string): Promise<Dish[]> {
     ingredients: sensitiveData.ingredients,
     recipe: sensitiveData.recipe,
     blurb: sensitiveData.blurb,
+    funFact: sensitiveData.funFact,
     // Extract imageUrl and releaseDate from sensitive data
     imageUrl: sensitiveData.imageUrl,
     releaseDate: sensitiveData.releaseDate,

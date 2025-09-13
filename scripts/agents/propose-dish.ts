@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { getCountryNames } from "../../src/utils/countries";
 
 function createOpenAI() {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -12,11 +13,14 @@ export async function proposeDishCandidates(options: {
 }): Promise<Array<{ name: string; country: string }>> {
   const { existingNormalized, maxSuggestions = 3 } = options;
 
+  const validCountries = getCountryNames().join(", ");
+
   const instruction = `You propose dish candidates for a food guessing game.
 Constraints:
 - Only propose dishes that are NOT in the provided existing list (normalized tokens, no spaces/punctuation).
 - Return ${maxSuggestions} diverse, globally distributed dishes.
 - Each item must include a clean dish name (no country words in the name) and a Title Case country of origin.
+- The country MUST be one of the following: ${validCountries}
 - Output ONLY a compact JSON array of {"name":"...","country":"..."} objects. No extra text.`;
 
   const existingList = existingNormalized.slice(0, 400).join(",");

@@ -130,6 +130,7 @@ export default async function handler(
       imageUrl: targetDish.image_url, // This now has the randomized filename!
       ingredients: targetDish.ingredients || [],
       blurb: targetDish.blurb || "",
+      funFact: targetDish.fun_fact || undefined,
       proteinPerServing: targetDish.protein_per_serving,
       recipe: {
         ingredients: targetDish.recipe?.ingredients || [],
@@ -164,6 +165,7 @@ export default async function handler(
       ingredients: enrichedDish.ingredients,
       recipe: enrichedDish.recipe,
       blurb: enrichedDish.blurb,
+      funFact: enrichedDish.funFact,
       // Hide imageUrl and releaseDate as they can give away the answer
       imageUrl: enrichedDish.imageUrl,
       releaseDate: enrichedDish.releaseDate,

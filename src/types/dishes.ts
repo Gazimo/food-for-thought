@@ -5,6 +5,7 @@ export interface Dish {
   acceptableGuesses: string[];
   country: string;
   blurb: string;
+  funFact?: string;
   imageUrl: string;
   proteinPerServing?: number;
   recipe: {
