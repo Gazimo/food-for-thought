@@ -51,6 +51,7 @@ class RecipeDataFetcher {
         acceptableGuesses: aiDishData.acceptableGuesses,
         country: aiDishData.country,
         blurb: aiDishData.blurb,
+        funFact: aiDishData.funFact,
         imageUrl: imageResult.imageUrl, // Set the generated image URL
         proteinPerServing: aiDishData.proteinPerServing,
         recipe: aiDishData.recipe,

@@ -41,7 +41,9 @@ function titleCase(s: string) {
 async function loadExistingDishes(supabase: any) {
   const { data, error } = await supabase
     .from("dishes")
-    .select("id,name,acceptable_guesses,country,release_date,image_url")
+    .select(
+      "id,name,acceptable_guesses,country,release_date,image_url,fun_fact"
+    )
     .order("release_date", { ascending: false });
   if (error) throw error;
   return data || [];
@@ -77,7 +79,7 @@ async function buildCandidateQueue(existing: any[]): Promise<Candidate[]> {
   }
   const proposals = await proposeDishCandidates({
     existingNormalized: Array.from(normalizedExisting),
-    maxSuggestions: 3,
+    maxSuggestions: 10,
   });
   for (const p of proposals) {
     queue.push({ name: p.name, country: p.country, source: "ai" });
@@ -240,7 +242,11 @@ async function main() {
       continue;
     }
     if (cand.country && !countryValid(cand.country)) {
-      console.log(`⚠️ Unrecognized country hint: ${cand.country} (continuing)`);
+      console.log(
+        `❌ Invalid country for ${cand.name}: ${cand.country}. Skipping.`
+      );
+      if (cand.source === "backlog") removeFromBacklog(cand.name);
+      continue;
     }
 
     const textOnly = await ai.generateCompleteDish(cand.name);
@@ -392,6 +398,7 @@ async function main() {
     image_url: generated.imageUrl || null,
     ingredients: generated.ingredients,
     blurb: generated.blurb,
+    fun_fact: generated.funFact || null,
     protein_per_serving: generated.proteinPerServing || 0,
     recipe: generated.recipe,
     tags: generated.tags || [],

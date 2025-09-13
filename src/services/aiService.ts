@@ -6,6 +6,7 @@ interface CompleteDishData {
   country: string;
   ingredients: string[];
   blurb: string;
+  funFact: string; // Required field, no longer optional
   proteinPerServing: number;
   recipe: {
     ingredients: string[];
@@ -32,7 +33,17 @@ class AIService {
     try {
       console.log(`🤖 Generating complete dish data for: ${dishName}`);
 
-      const prompt = `You are a culinary expert creating a dish entry for a food guessing game. Create a complete dish profile for "${dishName}" in the exact same style and quality as these examples. Critical constraints: (1) The country field must be Title Case (e.g., "India", "Thailand"). (2) The blurb must NOT include the country name or nationality adjectives. Return JSON only.
+      const prompt = `You are a culinary expert creating a dish entry for a food guessing game.
+      Generate a complete dish profile for "${dishName}".
+      The dish profile must be in the exact same style and quality as these examples.
+      
+      CRITICAL REQUIREMENTS:
+      (1) The name field must be exactly "${dishName}".
+      (2) The country field must be Title Case (e.g., "India", "Thailand").
+      (3) The blurb must NOT include the country name or nationality adjectives.
+      (4) MANDATORY: Include a funFact - a fascinating, surprising, or little-known fact about the dish's history, etymology, cultural significance, or origin story. This is REQUIRED and must be interesting!
+      
+      Return JSON only.
 
 EXAMPLES (format and quality):
 
@@ -43,6 +54,7 @@ EXAMPLE 1:
   "country": "India",
   "ingredients": ["chicken", "butter", "cream", "tomato", "garam masala", "garlic", "ginger"],
   "blurb": "A rich and creamy curry made with tender chicken in a mildly spiced tomato sauce, enriched with butter and cream.",
+  "funFact": "This famous dish was invented by accident in the 1950s at Moti Mahal restaurant in Delhi, India, as a way to use leftover tandoori chicken.",
   "proteinPerServing": 38,
   "recipe": {
     "ingredients": [
@@ -79,6 +91,7 @@ EXAMPLE 2:
   "country": "Thailand",
   "ingredients": ["rice noodles", "shrimp", "tofu", "eggs", "tamarind", "fish sauce", "peanuts"],
   "blurb": "Stir-fried rice noodles with a perfect balance of sweet, sour, and savory flavors, typically combined with eggs, tofu, bean sprouts, and crushed peanuts.",
+  "funFact": "Despite its name and global association with Thai cuisine, the dish's noodle stir-frying technique was introduced to Thailand by Chinese immigrants.",
   "proteinPerServing": 28,
   "recipe": {
     "ingredients": [
@@ -111,16 +124,19 @@ EXAMPLE 2:
 }
 
 Requirements:
-1. name: Clean, proper dish name (no extra words like "Indian")
-2. acceptableGuesses: 2-4 smart variations/alternative names people might use
-3. country: Country of origin (lowercase)
+1. name: Must be exactly "${dishName}" (the dish name provided above)
+2. acceptableGuesses: 2-4 smart variations/alternative names people might use for "${dishName}"
+3. country: Country of origin (Title Case)
 4. ingredients: Exactly 6 key ingredients that give hints without being too obvious
 5. blurb: Appealing 1-2 sentence description that makes the dish sound delicious
-6. proteinPerServing: Realistic protein content in grams (15-50g range for most dishes)
-7. recipe: Complete recipe with measured ingredients and clear step-by-step instructions
-8. tags: 3-5 relevant tags describing the dish
+6. funFact: MANDATORY - A fascinating, surprising fact about the dish. Examples: etymology of the name, origin story, cultural significance, historical anecdotes, or surprising ingredients/preparation methods. Make it genuinely interesting!
+7. proteinPerServing: Realistic protein content in grams (15-50g range for most dishes)
+8. recipe: Complete recipe with measured ingredients and clear step-by-step instructions
+9. tags: 3-5 relevant tags describing the dish
 
-Return ONLY a valid JSON object with the complete dish data. No other text.`;
+IMPORTANT: The funFact field is REQUIRED. Do not omit it. Make it genuinely interesting and surprising.
+
+Return ONLY a valid JSON object with the complete dish data for "${dishName}". No other text.`;
 
       const response = await this.openai.chat.completions.create({
         model: "gpt-4o", // Use the more powerful model for better quality
@@ -150,6 +166,14 @@ Return ONLY a valid JSON object with the complete dish data. No other text.`;
       }
 
       const rawDishData = JSON.parse(cleanedContent) as CompleteDishData;
+
+      // Debug: Log the raw response to see what we got
+      console.log(`🔍 Raw AI response for ${dishName}:`, {
+        name: rawDishData.name,
+        funFact: rawDishData.funFact,
+        hasFunFact: !!rawDishData.funFact,
+        funFactLength: rawDishData.funFact?.length || 0,
+      });
 
       // Enforce name consistency: the generated dish name must match the requested dishName
       const norm = (s: string) =>
@@ -211,7 +235,19 @@ Return ONLY a valid JSON object with the complete dish data. No other text.`;
 
       console.log(`✅ AI generated complete dish data for: ${dishData.name}`);
 
-      // Validate the response
+      if (
+        !dishData.funFact ||
+        typeof dishData.funFact !== "string" ||
+        dishData.funFact.length <= 10
+      ) {
+        throw new Error(
+          `Missing or insufficient fun fact. Generated fun fact: "${
+            dishData.funFact || "NONE"
+          }"`
+        );
+      }
+
+      // Then validate the rest of the data structure
       if (!this.validateDishData(dishData)) {
         throw new Error("Invalid dish data structure");
       }
@@ -238,6 +274,8 @@ Return ONLY a valid JSON object with the complete dish data. No other text.`;
       Array.isArray(dishData.ingredients) &&
       dishData.ingredients.length === 6 &&
       typeof dishData.blurb === "string" &&
+      typeof dishData.funFact === "string" &&
+      dishData.funFact.length > 10 && // Ensure fun fact is not empty or too short
       typeof dishData.proteinPerServing === "number" &&
       dishData.proteinPerServing > 0 &&
       dishData.recipe &&

@@ -65,6 +65,9 @@ class SmartDishGenerator {
       console.log(`Tags: ${dishData.tags?.join(", ")}`);
       console.log(`Release Date: ${(dishData as any).releaseDate}`);
       console.log(`Blurb: ${dishData.blurb}`);
+      if ((dishData as any).funFact) {
+        console.log(`Fun Fact: ${(dishData as any).funFact}`);
+      }
 
       if (dishData.recipe) {
         console.log(
@@ -168,6 +171,7 @@ class SmartDishGenerator {
         image_url: dishData.imageUrl || null,
         ingredients: dishData.ingredients,
         blurb: dishData.blurb,
+        fun_fact: (dishData as any).funFact || null,
         protein_per_serving: dishData.proteinPerServing || 0,
         recipe: dishData.recipe,
         tags: dishData.tags || [],
