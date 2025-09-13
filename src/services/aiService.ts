@@ -6,7 +6,7 @@ interface CompleteDishData {
   country: string;
   ingredients: string[];
   blurb: string;
-  funFact?: string;
+  funFact: string; // Required field, no longer optional
   proteinPerServing: number;
   recipe: {
     ingredients: string[];
@@ -235,16 +235,20 @@ Return ONLY a valid JSON object with the complete dish data for "${dishName}". N
 
       console.log(`✅ AI generated complete dish data for: ${dishData.name}`);
 
-      // Validate the response
+      if (
+        !dishData.funFact ||
+        typeof dishData.funFact !== "string" ||
+        dishData.funFact.length <= 10
+      ) {
+        throw new Error(
+          `Missing or insufficient fun fact. Generated fun fact: "${
+            dishData.funFact || "NONE"
+          }"`
+        );
+      }
+
+      // Then validate the rest of the data structure
       if (!this.validateDishData(dishData)) {
-        // Provide specific error message for missing fun fact
-        if (!dishData.funFact || dishData.funFact.length <= 10) {
-          throw new Error(
-            `Missing or insufficient fun fact. Generated fun fact: "${
-              dishData.funFact || "NONE"
-            }"`
-          );
-        }
         throw new Error("Invalid dish data structure");
       }
 
