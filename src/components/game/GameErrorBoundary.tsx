@@ -14,11 +14,7 @@ export function GameErrorBoundary({ children }: GameErrorBoundaryProps) {
   const searchParams = useSearchParams();
   const archiveDate = searchParams?.get("date") || null;
 
-  const {
-    isPlayingArchive,
-    archiveDate: storeArchiveDate,
-    isArchivesUnlockedNow,
-  } = useGameStore();
+  const { isPlayingArchive, archiveDate: storeArchiveDate } = useGameStore();
   const effectiveArchiveDate = isPlayingArchive ? storeArchiveDate : null;
   const { isError, error } = useTodaysDish(effectiveArchiveDate || undefined);
 

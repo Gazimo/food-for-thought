@@ -7,12 +7,12 @@ import { GameLayout } from "./GameLayout";
 
 export function GameContainer() {
   return (
-    <GameErrorBoundary>
-      <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>Loading...</div>}>
+      <GameErrorBoundary>
         <GameInitializer>
           <GameLayout />
         </GameInitializer>
-      </Suspense>
-    </GameErrorBoundary>
+      </GameErrorBoundary>
+    </Suspense>
   );
 }
