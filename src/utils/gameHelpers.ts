@@ -138,7 +138,10 @@ export async function loadDishes(date?: string): Promise<Dish[]> {
     country: sensitiveData.country,
     acceptableGuesses: sensitiveData.acceptableGuesses,
     proteinPerServing: sensitiveData.proteinPerServing,
-    ingredients: sensitiveData.ingredients,
+    ingredients: reorderIngredientsForGameplay(
+      sensitiveData.ingredients,
+      sensitiveData.acceptableGuesses
+    ),
     recipe: sensitiveData.recipe,
     blurb: sensitiveData.blurb,
     funFact: sensitiveData.funFact,
@@ -208,6 +211,22 @@ export function getClosestGuess(
 
   const similarityRatio = normalizedInput.length / target.length;
 
+  // Enhanced logic: Block suggestions when input appears to be a partial guess rather than a typo
+  // Check if input is a meaningful substring of any acceptable guess
+  const isPartialGuess = options.some((option) => {
+    const normalizedOption = option.toLowerCase();
+    return (
+      normalizedOption.includes(normalizedInput) &&
+      normalizedInput.length >= 3 && // Must be at least 3 characters
+      normalizedInput.length / normalizedOption.length >= 0.2 // Must be significant portion
+    );
+  });
+
+  // Block partial guesses - only help with typos
+  if (isPartialGuess) {
+    return null;
+  }
+
   let acceptableScoreThreshold: number;
   if (similarityRatio >= 0.8) {
     acceptableScoreThreshold = 0.4;
@@ -219,9 +238,12 @@ export function getClosestGuess(
     acceptableScoreThreshold = 0.1;
   }
 
+  // Standard substring threshold
+  const substringThreshold = 0.3;
+
   const isMeaningfulSubstring =
     target.includes(normalizedInput) &&
-    normalizedInput.length / target.length > 0.3;
+    normalizedInput.length / target.length > substringThreshold;
 
   const isReverseSubstring =
     normalizedInput.includes(target) &&
@@ -237,4 +259,81 @@ export function getClosestGuess(
   }
 
   return null;
+}
+
+/**
+ * Intelligently reorders ingredients to avoid revealing dish name components early.
+ * Moves ingredients that appear in acceptable guesses to positions 4-5.
+ */
+export function reorderIngredientsForGameplay(
+  ingredients: string[],
+  acceptableGuesses: string[]
+): string[] {
+  if (ingredients.length <= 3) {
+    return ingredients; // Too few ingredients to reorder
+  }
+
+  const normalizedGuesses = acceptableGuesses.map((guess) =>
+    guess.toLowerCase()
+  );
+
+  // Find ingredients that appear in any acceptable guess
+  const problematicIngredients: string[] = [];
+  const safeIngredients: string[] = [];
+
+  ingredients.forEach((ingredient) => {
+    const normalizedIngredient = ingredient.toLowerCase();
+    const appearsInGuess = normalizedGuesses.some(
+      (guess) =>
+        guess.includes(normalizedIngredient) &&
+        normalizedIngredient.length >= 4 && // Only consider meaningful ingredients
+        normalizedIngredient.length / guess.length > 0.15 // Must be significant part of the guess
+    );
+
+    if (appearsInGuess) {
+      problematicIngredients.push(ingredient);
+    } else {
+      safeIngredients.push(ingredient);
+    }
+  });
+
+  // If no problematic ingredients, return original order
+  if (problematicIngredients.length === 0) {
+    return ingredients;
+  }
+
+  // Create new ordering: safe ingredients first, then problematic ones later
+  const reordered: string[] = [];
+
+  // Add first 3 safe ingredients (or all safe if fewer than 3)
+  const safesToAdd = Math.min(3, safeIngredients.length);
+  reordered.push(...safeIngredients.slice(0, safesToAdd));
+
+  // Add remaining safe ingredients
+  const remainingSafe = safeIngredients.slice(safesToAdd);
+
+  // Add problematic ingredients starting from position 4 (index 3)
+  // Interleave remaining safe and problematic ingredients
+  let safeIndex = 0;
+  let problematicIndex = 0;
+
+  while (reordered.length < ingredients.length) {
+    // Prioritize adding problematic ingredients at positions 4-5 (indices 3-4)
+    if (
+      reordered.length >= 3 &&
+      reordered.length <= 4 &&
+      problematicIndex < problematicIngredients.length
+    ) {
+      reordered.push(problematicIngredients[problematicIndex]);
+      problematicIndex++;
+    } else if (safeIndex < remainingSafe.length) {
+      reordered.push(remainingSafe[safeIndex]);
+      safeIndex++;
+    } else if (problematicIndex < problematicIngredients.length) {
+      reordered.push(problematicIngredients[problematicIndex]);
+      problematicIndex++;
+    }
+  }
+
+  return reordered;
 }

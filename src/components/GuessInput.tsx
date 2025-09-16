@@ -33,11 +33,17 @@ export const GuessInput: React.FC<GuessInputProps> = memo(
     const [shake, setShake] = useState(false);
     const revealAllTiles = useGameStore((state) => state.revealAllTiles);
     const completeGame = useGameStore((state) => state.completeGame);
-    const moveToCountryPhase = useGameStore((state) => state.moveToCountryPhase);
+    const moveToCountryPhase = useGameStore(
+      (state) => state.moveToCountryPhase
+    );
     const activePhase = useGameStore((state) => state.activePhase);
     const currentDish = useGameStore((state) => state.currentDish);
-    const revealCorrectCountry = useGameStore((state) => state.revealCorrectCountry);
-    const revealCorrectProtein = useGameStore((state) => state.revealCorrectProtein);
+    const revealCorrectCountry = useGameStore(
+      (state) => state.revealCorrectCountry
+    );
+    const revealCorrectProtein = useGameStore(
+      (state) => state.revealCorrectProtein
+    );
     const isPhaseComplete = useGameStore((state) => state.isPhaseComplete);
     const loading = useGameStore((state) => state.loading);
 
@@ -113,6 +119,7 @@ export const GuessInput: React.FC<GuessInputProps> = memo(
 
       if (!isCorrect) {
         const suggestion = getClosestGuess(trimmed, acceptableGuesses);
+
         if (suggestion) {
           toast((t) => (
             <span>
