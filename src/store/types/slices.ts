@@ -27,6 +27,7 @@ export interface GameSlice {
   moveToProteinPhase: () => void;
   completeGame: () => void;
   updateGameResults: (results: Partial<GameResults>) => void;
+  markGameTracked: () => void;
 
   isDishPhaseComplete: () => boolean;
   isCountryPhaseComplete: () => boolean;
@@ -86,7 +87,6 @@ export interface StreakSlice {
   streak: number;
 
   setStreak: (value: number) => void;
-  markGameTracked: () => void;
 }
 
 export interface GameStoreState

@@ -90,6 +90,12 @@ export const createGameSlice: GameSliceCreator<GameSlice> = (set, get) => ({
     }));
   },
 
+  markGameTracked: () => {
+    set((state) => ({
+      gameResults: { ...state.gameResults, tracked: true },
+    }));
+  },
+
   isDishPhaseComplete: () => {
     const { gamePhase } = get();
     return gamePhase === "complete" || gamePhase !== "dish";
