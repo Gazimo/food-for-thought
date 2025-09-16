@@ -1,7 +1,7 @@
 import { GuessFeedback } from "@/components/GuessFeedback";
 import { GuessInput } from "@/components/GuessInput";
 import { useBlurredTiles, useDishTiles } from "@/hooks/useDishTiles";
-import { useGameStore } from "@/store/gameStore";
+import { useGameStore } from "@/store";
 import posthog from "posthog-js";
 import { memo } from "react";
 import { TileGrid } from "../../components/dish-image/TileGrid";

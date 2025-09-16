@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import React from "react";
 import { useCountUp } from "../hooks/useCountUp";
-import { useGameStore } from "../store/gameStore";
+import { useGameStore } from "../store";
 import { CountryGuessResult } from "../types/game";
 
 interface CountryGuessFeedbackProps {
@@ -115,7 +115,6 @@ export const CountryGuessFeedback: React.FC<CountryGuessFeedbackProps> = ({
           <h4 className="font-bold text-blue-800 mb-1">Did you know?</h4>
           <p className="text-blue-700">{currentDish.funFact}</p>
         </motion.div>
-
       )}
     </>
   );

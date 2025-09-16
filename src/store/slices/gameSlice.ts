@@ -1,15 +1,10 @@
-import { StateCreator } from "zustand";
-import { GameSlice, GameState } from "../../types/game";
 import { updateStreak } from "../../utils/streak";
+import { GameSlice, GameSliceCreator } from "../types/slices";
 
-export const createGameSlice: StateCreator<GameState, [], [], GameSlice> = (
-  set,
-  get
-) => ({
-  gamePhase: "dish",
-  activePhase: "dish",
+export const createGameSlice: GameSliceCreator<GameSlice> = (set, get) => ({
   currentDish: null,
   dishes: [],
+  gamePhase: "dish",
   gameResults: {
     dishGuesses: [],
     dishGuessSuccess: false,
@@ -19,20 +14,12 @@ export const createGameSlice: StateCreator<GameState, [], [], GameSlice> = (
     proteinGuessSuccess: false,
     tracked: false,
   },
-  loading: {
-    dishGuess: false,
-    countryGuess: false,
-    proteinGuess: false,
-  },
-  modalVisible: true,
-  streak: 0,
+
   setCurrentDish: (dish) => {
     set({ currentDish: dish });
   },
+
   startNewGame: () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("fft-game-state");
-    }
     const dishes = get().dishes;
     const dish =
       dishes.length > 0
@@ -59,40 +46,26 @@ export const createGameSlice: StateCreator<GameState, [], [], GameSlice> = (
       proteinGuessResults: [],
     });
   },
-  moveToDishPhase: () => {
-    const state = get();
-    // If game is complete, only change activePhase, not gamePhase
-    if (state.gamePhase === "complete") {
-      set({ activePhase: "dish" });
-    } else {
-      set({ gamePhase: "dish", activePhase: "dish" });
-    }
-  },
+
   moveToCountryPhase: () => {
-    const state = get();
-    // If game is complete, only change activePhase, not gamePhase
-    if (state.gamePhase === "complete") {
-      set({ activePhase: "country" });
-    } else {
-      set({ gamePhase: "country", activePhase: "country" });
-    }
+    set({ gamePhase: "country" });
+    get().saveCurrentGameState();
   },
+
   moveToProteinPhase: () => {
-    const state = get();
-    // If game is complete, only change activePhase, not gamePhase
-    if (state.gamePhase === "complete") {
-      set({ activePhase: "protein" });
-    } else {
-      set({ gamePhase: "protein", activePhase: "protein" });
-    }
+    set({ gamePhase: "protein" });
+    get().saveCurrentGameState();
   },
+
   completeGame: () => {
     const newStreak = updateStreak();
     const state = get();
+
     const hasAnySuccess =
       state.gameResults.dishGuessSuccess ||
       state.gameResults.countryGuessSuccess ||
       state.gameResults.proteinGuessSuccess;
+
     const finalStatus = hasAnySuccess ? "won" : "lost";
 
     set({
@@ -102,71 +75,53 @@ export const createGameSlice: StateCreator<GameState, [], [], GameSlice> = (
       gameResults: {
         ...state.gameResults,
         status: finalStatus,
+        tracked: false,
       },
     });
 
-    // Save the completed game state to localStorage
-    // This ensures the completed state is preserved when returning from archive mode
-    const updatedState = get();
-    updatedState.saveCurrentGameState();
+    setTimeout(() => {
+      get().saveCurrentGameState();
+    }, 0);
   },
+
   updateGameResults: (results) => {
     set((state) => ({
       gameResults: { ...state.gameResults, ...results },
     }));
   },
-  toggleModal: (visible) => {
-    if (visible !== undefined) {
-      set({ modalVisible: visible });
-    } else {
-      set((state) => ({ modalVisible: !state.modalVisible }));
-    }
-  },
-  setActivePhase: (phase) => {
-    set({ activePhase: phase });
-  },
-  setStreak: (value) => {
-    set({ streak: value });
-  },
-  setLoading: (key, value) => {
-    set((state) => ({
-      loading: { ...state.loading, [key]: value },
-    }));
-  },
+
   markGameTracked: () => {
     set((state) => ({
       gameResults: { ...state.gameResults, tracked: true },
     }));
   },
+
   isDishPhaseComplete: () => {
-    const state = get();
-    if (!state.currentDish) return false;
-    return state.dishGuesses.some((guess) => {
-      const normalizedGuess = guess.toLowerCase();
-      return (
-        state.currentDish?.acceptableGuesses?.includes(normalizedGuess) ?? false
-      );
-    });
+    const { gamePhase } = get();
+    return gamePhase === "complete" || gamePhase !== "dish";
   },
+
   isCountryPhaseComplete: () => {
-    const state = get();
-    if (!state.currentDish) return false;
-    return state.countryGuessResults.some((result) => result.isCorrect);
+    const { gamePhase } = get();
+    return gamePhase === "complete" || gamePhase === "protein";
   },
+
   isProteinPhaseComplete: () => {
-    const state = get();
-    if (!state.currentDish) return false;
-    return state.proteinGuessResults.some((result) => result.isCorrect);
+    const { gamePhase } = get();
+    return gamePhase === "complete";
   },
-  isPhaseComplete: (phase: "dish" | "country" | "protein") => {
-    const state = get();
+
+  isPhaseComplete: (phase) => {
+    const { gamePhase } = get();
+    if (gamePhase === "complete") return true;
+
     switch (phase) {
       case "dish":
-        return state.isDishPhaseComplete();
+        return gamePhase !== "dish";
       case "country":
-        return state.isCountryPhaseComplete();
+        return gamePhase === "protein";
       case "protein":
-        return state.isProteinPhaseComplete();
+        return false;
       default:
         return false;
     }

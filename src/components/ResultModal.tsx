@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useGameStore } from "@/store/gameStore";
+import { useGameStore } from "@/store";
 import Image from "next/image";
 import posthog from "posthog-js";
 import React, { memo, useState } from "react";

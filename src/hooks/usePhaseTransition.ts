@@ -1,4 +1,4 @@
-import { useGameStore } from "@/store/gameStore";
+import { useGameStore } from "@/store";
 import posthog from "posthog-js";
 import { GamePhase } from "../types/game";
 
