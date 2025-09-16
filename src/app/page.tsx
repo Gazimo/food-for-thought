@@ -1,7 +1,5 @@
-"use client";
-
-import GamePage from "./play/page";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return <GamePage />;
+  redirect("/play");
 }

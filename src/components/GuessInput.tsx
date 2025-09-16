@@ -4,7 +4,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { getClosestGuess } from "@/utils/gameHelpers";
 import { memo, useState } from "react";
 import { toast } from "react-hot-toast";
-import { useGameStore } from "../store/gameStore";
+import { useGameStore } from "../store";
 import { GiveUpButton, NumberInput, TextInput } from "./inputs";
 
 interface GuessInputProps {

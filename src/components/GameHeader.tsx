@@ -1,6 +1,6 @@
 "use client";
 
-import { useGameStore } from "@/store/gameStore";
+import { useGameStore } from "@/store";
 import { Calendar, HelpCircle, Home } from "lucide-react";
 import { useRouter } from "next/navigation";
 

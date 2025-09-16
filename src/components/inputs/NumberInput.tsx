@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { ChangeEvent, KeyboardEvent } from "react";
-import { useGameStore } from "../../store/gameStore";
+import { useGameStore } from "../../store";
 
 interface NumberInputProps {
   value: string;

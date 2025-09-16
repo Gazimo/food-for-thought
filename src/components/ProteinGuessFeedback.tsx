@@ -1,6 +1,6 @@
 "use client";
 
-import { useGameStore } from "@/store/gameStore";
+import { useGameStore } from "@/store";
 import { ProteinGuessResult } from "@/types/game";
 import { AnimatePresence, motion } from "framer-motion";
 

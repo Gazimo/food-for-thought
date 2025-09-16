@@ -1,6 +1,6 @@
 import { GuessInput } from "@/components/GuessInput";
 import { IngredientProteinStrip } from "@/components/IngredientProteinStrip";
-import { useGameStore } from "@/store/gameStore";
+import { useGameStore } from "@/store";
 import { ProteinSkeleton } from "../../components/GameSkeleton";
 import { ProteinGuessFeedback } from "../../components/ProteinGuessFeedback";
 import { useTodaysDish } from "../../hooks/useDishes";

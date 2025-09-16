@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
-import { useGameStore } from "../../store/gameStore";
+import { useGameStore } from "../../store";
 
 interface TextInputProps {
   value: string;

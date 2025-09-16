@@ -2,7 +2,7 @@
 
 import { ArchiveDatePicker } from "@/components/ArchiveDatePicker";
 import { Button } from "@/components/ui/button";
-import { useGameStore } from "@/store/gameStore";
+import { useGameStore } from "@/store";
 import React, { useState } from "react";
 
 interface ArchiveStatusProps {

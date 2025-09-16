@@ -1,6 +1,6 @@
 import { CountryGuessFeedback } from "@/components/CountryGuessFeedback";
 import { GuessInput } from "@/components/GuessInput";
-import { useGameStore } from "@/store/gameStore";
+import { useGameStore } from "@/store";
 import posthog from "posthog-js";
 import { CountrySkeleton } from "../../components/GameSkeleton";
 import { MapGuessVisualizer } from "../../components/MapGuessVisualizer";
