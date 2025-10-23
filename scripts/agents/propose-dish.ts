@@ -20,6 +20,7 @@ Constraints:
 - Only propose dishes that are NOT in the provided existing list (normalized tokens, no spaces/punctuation).
 - Return ${maxSuggestions} diverse, globally distributed dishes.
 - Each item must include a clean dish name (no country words in the name) and a Title Case country of origin.
+- IMPORTANT: Dish names must have proper spacing between words (e.g., "Pasta Fagioli" not "PastaFagioli", "Beef Bulgogi" not "BeefBulgogi").
 - The country MUST be one of the following: ${validCountries}
 - Output ONLY a compact JSON array of {"name":"...","country":"..."} objects. No extra text.`;
 

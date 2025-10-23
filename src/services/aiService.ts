@@ -25,20 +25,39 @@ class AIService {
   }
 
   /**
+   * Format dish name to ensure proper spacing between words
+   */
+  private formatDishName(dishName: string): string {
+    if (!dishName) return dishName;
+
+    let formatted = dishName.replace(/([a-z0-9])([A-Z])/g, "$1 $2");
+
+    formatted = formatted.replace(/\s+/g, " ").trim();
+
+    formatted = formatted
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+
+    return formatted;
+  }
+
+  /**
    * Generate complete dish data using AI - similar to sample_dishes.json quality
    */
   async generateCompleteDish(
     dishName: string
   ): Promise<CompleteDishData | null> {
     try {
-      console.log(`🤖 Generating complete dish data for: ${dishName}`);
+      const formattedDishName = this.formatDishName(dishName);
+      console.log(`🤖 Generating complete dish data for: ${formattedDishName}`);
 
       const prompt = `You are a culinary expert creating a dish entry for a food guessing game.
-      Generate a complete dish profile for "${dishName}".
+      Generate a complete dish profile for "${formattedDishName}".
       The dish profile must be in the exact same style and quality as these examples.
       
       CRITICAL REQUIREMENTS:
-      (1) The name field must be exactly "${dishName}".
+      (1) The name field must be exactly "${formattedDishName}".
       (2) The country field must be Title Case (e.g., "India", "Thailand").
       (3) The blurb must NOT include the country name or nationality adjectives.
       (4) MANDATORY: Include a funFact - a fascinating, surprising, or little-known fact about the dish's history, etymology, cultural significance, or origin story. This is REQUIRED and must be interesting!
@@ -175,15 +194,15 @@ Return ONLY a valid JSON object with the complete dish data for "${dishName}". N
         funFactLength: rawDishData.funFact?.length || 0,
       });
 
-      // Enforce name consistency: the generated dish name must match the requested dishName
+      // Enforce name consistency: the generated dish name must match the formatted dishName
       const norm = (s: string) =>
         (s || "")
           .toLowerCase()
           .replace(/[^a-z0-9]+/g, "")
           .trim();
-      if (norm(rawDishData.name) !== norm(dishName)) {
+      if (norm(rawDishData.name) !== norm(formattedDishName)) {
         throw new Error(
-          `Generated dish name '${rawDishData.name}' does not match requested '${dishName}'`
+          `Generated dish name '${rawDishData.name}' does not match requested '${formattedDishName}'`
         );
       }
 
