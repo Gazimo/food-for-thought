@@ -1,7 +1,8 @@
 "use client";
 
 import { useGameStore } from "@/store";
-import { Calendar, HelpCircle, Home } from "lucide-react";
+import { Calendar, HelpCircle, Home, Trophy } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 interface GameHeaderProps {
@@ -9,13 +10,22 @@ interface GameHeaderProps {
 }
 
 export function GameHeader({ onShowRules }: GameHeaderProps) {
-  const { isPlayingArchive, archiveDate, exitArchiveMode } = useGameStore();
+  const {
+    isPlayingArchive,
+    archiveDate,
+    exitArchiveMode,
+    leaderboardStats,
+    gamePhase,
+  } = useGameStore();
   const router = useRouter();
 
   const handleBackToToday = () => {
     exitArchiveMode();
     router.push("/play");
   };
+
+  // Show Statistics button always (not just after completing game)
+  const showStatisticsButton = !isPlayingArchive;
 
   return (
     <header className="w-full flex justify-between items-center">
@@ -46,7 +56,22 @@ export function GameHeader({ onShowRules }: GameHeaderProps) {
           </div>
         )}
       </div>
-      <HelpCircle className="cursor-pointer" onClick={onShowRules} />
+      <div className="flex items-center gap-3">
+        {showStatisticsButton && (
+          <Link href="/statistics">
+            <button
+              className="flex items-center gap-1 px-3 py-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-md transition-colors"
+              title="View Statistics"
+            >
+              <Trophy className="h-4 w-4" />
+              <span className="hidden sm:inline text-sm font-medium">
+                Statistics
+              </span>
+            </button>
+          </Link>
+        )}
+        <HelpCircle className="cursor-pointer" onClick={onShowRules} />
+      </div>
     </header>
   );
 }

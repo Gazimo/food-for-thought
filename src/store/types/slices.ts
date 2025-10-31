@@ -8,6 +8,7 @@ import {
   LoadingStates,
   ProteinGuessResult,
 } from "../../types/game";
+import { LeaderboardStats, StatisticsData } from "../../types/leaderboard";
 
 export interface PersistenceSlice {
   saveCurrentGameState: () => void;
@@ -89,12 +90,38 @@ export interface StreakSlice {
   setStreak: (value: number) => void;
 }
 
+export interface LeaderboardSlice {
+  leaderboardStats: LeaderboardStats | null;
+  leaderboardLoading: boolean;
+  leaderboardError: string | null;
+  statisticsData: StatisticsData | null;
+  statisticsLoading: boolean;
+  statisticsError: string | null;
+  showStatsAnnouncement: boolean;
+
+  setLeaderboardStats: (stats: LeaderboardStats | null) => void;
+  setLeaderboardLoading: (loading: boolean) => void;
+  setLeaderboardError: (error: string | null) => void;
+  setStatisticsData: (data: StatisticsData | null) => void;
+  setStatisticsLoading: (loading: boolean) => void;
+  setStatisticsError: (error: string | null) => void;
+  setShowStatsAnnouncement: (show: boolean) => void;
+  checkStatsAnnouncement: () => void;
+  markStatsAnnouncementSeen: () => void;
+  submitScore: (gameResults: GameResults, currentDish: Dish) => Promise<void>;
+  fetchLeaderboardStats: (date?: string) => Promise<void>;
+  loadLeaderboardFromStorage: () => void;
+  fetchStatistics: (date?: string) => Promise<void>;
+  loadStatisticsFromStorage: () => void;
+}
+
 export interface GameStoreState
   extends PersistenceSlice,
     GameSlice,
     UiSlice,
     GuessSlice,
     ArchiveSlice,
-    StreakSlice {}
+    StreakSlice,
+    LeaderboardSlice {}
 
 export type GameSliceCreator<T> = StateCreator<GameStoreState, [], [], T>;

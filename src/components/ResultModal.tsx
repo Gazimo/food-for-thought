@@ -10,6 +10,7 @@ import { generateShareText } from "../utils/shareText";
 import { alreadyPlayedToday } from "../utils/streak";
 import { ArchiveStatus } from "./ArchiveStatus";
 import { GameSummary } from "./GameSummary";
+import { LeaderboardCard } from "./LeaderboardCard";
 import { SharePopover } from "./SharePopover";
 
 export const ResultModal: React.FC = memo(function ResultModal() {
@@ -25,9 +26,34 @@ export const ResultModal: React.FC = memo(function ResultModal() {
     isArchivesUnlockedNow,
     isPlayingArchive,
     archiveDate,
+    submitScore,
+    leaderboardStats,
   } = useGameStore();
   const [showRecipe, setShowRecipe] = useState(false);
   const [showSharePopover, setShowSharePopover] = useState(false);
+  const [scoreSubmitted, setScoreSubmitted] = React.useState(false);
+
+  // Submit score when modal opens (only once)
+  React.useEffect(() => {
+    if (
+      gamePhase === "complete" &&
+      currentDish &&
+      modalVisible &&
+      !scoreSubmitted &&
+      !leaderboardStats
+    ) {
+      submitScore(gameResults, currentDish);
+      setScoreSubmitted(true);
+    }
+  }, [
+    gamePhase,
+    currentDish,
+    modalVisible,
+    scoreSubmitted,
+    leaderboardStats,
+    submitScore,
+    gameResults,
+  ]);
 
   if (gamePhase !== "complete" || !currentDish || !modalVisible) return null;
 
@@ -158,6 +184,8 @@ export const ResultModal: React.FC = memo(function ResultModal() {
         </div>
 
         <GameSummary gameResults={gameResults} currentDish={currentDish} />
+
+        <LeaderboardCard />
 
         <ArchiveStatus isUnlocked={isArchivesUnlockedNow()} />
 

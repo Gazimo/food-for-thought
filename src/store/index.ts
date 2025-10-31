@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { createArchiveSlice } from "./slices/archiveSlice";
 import { createGameSlice } from "./slices/gameSlice";
 import { createGuessSlice } from "./slices/guessSlice";
+import { createLeaderboardSlice } from "./slices/leaderboardSlice";
 import { createPersistenceSlice } from "./slices/persistenceSlice";
 import { createStreakSlice } from "./slices/streakSlice";
 import { createUiSlice } from "./slices/uiSlice";
@@ -14,4 +15,5 @@ export const useGameStore = create<GameStoreState>()((...a) => ({
   ...createGuessSlice(...a),
   ...createArchiveSlice(...a),
   ...createStreakSlice(...a),
+  ...createLeaderboardSlice(...a),
 }));
