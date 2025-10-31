@@ -457,7 +457,7 @@ const ScoreDistributionChart: React.FC<ScoreDistributionChartProps> = ({
 
       {/* Chart */}
       <div className="space-y-3 mb-6">
-        {distribution.buckets.map((bucket, index) => {
+        {distribution.buckets.map((bucket) => {
           const heightPercent =
             maxCount > 0 ? (bucket.count / maxCount) * 100 : 0;
           const isUserBucket = bucket.hasUser;

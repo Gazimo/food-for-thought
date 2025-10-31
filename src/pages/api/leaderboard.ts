@@ -8,7 +8,8 @@ import PostHogClient from "../../lib/posthog";
 // Rate limiting: Track submissions by session
 const submissionCache = new Map<string, number>();
 const RATE_LIMIT_WINDOW = 60000; // 1 minute
-const MAX_SUBMISSIONS_PER_WINDOW = 5;
+// Rate limiting disabled for now
+// const MAX_SUBMISSIONS_PER_WINDOW = 5;
 
 function checkRateLimit(sessionId: string): boolean {
   const now = Date.now();
@@ -224,10 +225,10 @@ async function calculateLeaderboardStats(
     .eq("session_id", sessionId)
     .single();
 
-  const todayScoreValues = (todayScores?.map((s: any) =>
+  const todayScoreValues = (todayScores?.map((s: { total_score: number }) =>
     Number(s.total_score)
   ) || []) as number[];
-  const allScoreValues = (allScores?.map((s: any) => Number(s.total_score)) ||
+  const allScoreValues = (allScores?.map((s: { total_score: number }) => Number(s.total_score)) ||
     []) as number[];
 
   // Calculate percentiles from REAL scores only (no synthetic data)

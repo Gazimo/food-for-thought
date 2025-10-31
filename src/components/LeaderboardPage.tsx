@@ -2,7 +2,7 @@
 
 import { useCountUp } from "@/hooks/useCountUp";
 import { useGameStore } from "@/store";
-import { getPerformanceTier } from "@/types/leaderboard";
+import { getPerformanceTier, getDisplayTitle } from "@/types/leaderboard";
 import Link from "next/link";
 import posthog from "posthog-js";
 import React, { useEffect } from "react";
@@ -18,7 +18,16 @@ export const LeaderboardPage: React.FC = () => {
     isPlayingArchive,
   } = useGameStore();
 
-  // Don't show leaderboard page in archive mode
+  useEffect(() => {
+    if (isPlayingArchive) return;
+    
+    loadLeaderboardFromStorage();
+
+    fetchLeaderboardStats();
+
+    posthog.capture("leaderboard_viewed");
+  }, [fetchLeaderboardStats, loadLeaderboardFromStorage, isPlayingArchive]);
+
   if (isPlayingArchive) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-orange-50 via-yellow-50 to-red-50 p-4">
@@ -44,17 +53,6 @@ export const LeaderboardPage: React.FC = () => {
       </div>
     );
   }
-
-  useEffect(() => {
-    // Try to load from storage first
-    loadLeaderboardFromStorage();
-
-    // Then fetch fresh data
-    fetchLeaderboardStats();
-
-    // Track page view
-    posthog.capture("leaderboard_viewed");
-  }, [fetchLeaderboardStats, loadLeaderboardFromStorage]);
 
   if (leaderboardLoading && !leaderboardStats) {
     return (
@@ -236,14 +234,11 @@ const RankCard: React.FC<RankCardProps> = ({
   proteinScore,
   playerCount,
   rank,
-  isOverall = false,
 }) => {
-  const animatedPercentile = useCountUp(0, percentile, 1000);
   const animatedScore = useCountUp(0, score, 1000);
   const isTopPerformer = percentile >= 90;
 
-  // Import getDisplayTitle for smart title display
-  const { getDisplayTitle } = require("@/types/leaderboard");
+  // Use getDisplayTitle for smart title display
   const displayTitle = getDisplayTitle(playerCount, rank, percentile);
 
   return (

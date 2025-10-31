@@ -15,21 +15,15 @@ export const LeaderboardCard: React.FC = () => {
   } = useGameStore();
   const [showDetails, setShowDetails] = useState(false);
 
-  // Don't show leaderboard in archive mode
-  if (isPlayingArchive) {
-    return null;
-  }
-
-  const percentile = useCountUp(
-    0,
-    leaderboardStats?.todayRank.percentile || 0,
-    1000
-  );
   const totalScore = useCountUp(
     0,
     leaderboardStats?.todayRank.totalScore || 0,
     1000
   );
+
+  if (isPlayingArchive) {
+    return null;
+  }
 
   if (leaderboardLoading) {
     return (
@@ -59,7 +53,6 @@ export const LeaderboardCard: React.FC = () => {
   const tier = getPerformanceTier(leaderboardStats.todayRank.percentile);
   const isTopPerformer = leaderboardStats.todayRank.percentile >= 90;
 
-  // Get display title based on player count
   const displayTitle = getDisplayTitle(
     leaderboardStats.totalPlayersToday,
     leaderboardStats.todayRank.rank || 1,

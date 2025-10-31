@@ -2,9 +2,9 @@ import { Dish } from "@/types/dishes";
 import { GameResults } from "@/types/game";
 import { LeaderboardScore } from "@/types/leaderboard";
 
-const MAX_GUESSES_DISH = 5;
-const MAX_GUESSES_COUNTRY = 5;
-const MAX_GUESSES_PROTEIN = 5;
+const MAX_GUESSES_DISH = 6;
+// Country guesses are unlimited in the actual game
+const MAX_GUESSES_PROTEIN = 4;
 
 const WEIGHT_DISH = 0.35;
 const WEIGHT_COUNTRY = 0.35;
@@ -61,7 +61,9 @@ export function calculateProteinScore(
   baseScore = Math.max(0, Math.min(100, baseScore));
 
   // Apply guess penalty (fewer guesses = better)
-  const guessPenalty = (guesses.length - 1) * 5;
+  // Max 4 guesses for protein, so penalty is based on that
+  const guessPenalty =
+    Math.max(0, guesses.length - 1) * (100 / MAX_GUESSES_PROTEIN);
   const finalScore = Math.max(0, baseScore - guessPenalty);
 
   return Math.round(finalScore);
@@ -80,11 +82,11 @@ export function calculateTotalScore(
     gameResults.dishGuessSuccess
   );
 
-  const countryScore = calculatePhaseScore(
-    gameResults.countryGuesses.length,
-    MAX_GUESSES_COUNTRY,
-    gameResults.countryGuessSuccess
-  );
+  // Country scoring: Since guesses are unlimited, base score on success only
+  // with a small penalty for excessive guesses to encourage efficiency
+  const countryScore = gameResults.countryGuessSuccess
+    ? Math.max(60, 100 - Math.max(0, gameResults.countryGuesses.length - 3) * 5)
+    : 0;
 
   const proteinScore = calculateProteinScore(
     gameResults.proteinGuesses,

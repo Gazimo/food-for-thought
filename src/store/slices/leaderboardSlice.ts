@@ -1,5 +1,5 @@
 import { LeaderboardStats, StatisticsData } from "@/types/leaderboard";
-import { getStreak, getBestStreak } from "@/utils/streak";
+import { getBestStreak, getStreak } from "@/utils/streak";
 import { GameSliceCreator, LeaderboardSlice } from "../types/slices";
 
 const LEADERBOARD_STORAGE_KEY = "fft-leaderboard";
@@ -55,7 +55,7 @@ export const createLeaderboardSlice: GameSliceCreator<LeaderboardSlice> = (
 
   checkStatsAnnouncement: () => {
     if (typeof window === "undefined") return;
-    
+
     const seen = localStorage.getItem(STATS_ANNOUNCEMENT_KEY);
     if (!seen) {
       set({ showStatsAnnouncement: true });
@@ -64,7 +64,7 @@ export const createLeaderboardSlice: GameSliceCreator<LeaderboardSlice> = (
 
   markStatsAnnouncementSeen: () => {
     if (typeof window === "undefined") return;
-    
+
     localStorage.setItem(STATS_ANNOUNCEMENT_KEY, "true");
     set({ showStatsAnnouncement: false });
   },
@@ -195,11 +195,11 @@ export const createLeaderboardSlice: GameSliceCreator<LeaderboardSlice> = (
       }
 
       const data: StatisticsData = await response.json();
-      
+
       // Update with current streak from localStorage
       const currentStreak = getStreak();
       const bestStreak = Math.max(getBestStreak(), data.userStats.bestStreak);
-      
+
       const updatedData = {
         ...data,
         userStats: {

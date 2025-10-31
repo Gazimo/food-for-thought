@@ -10,13 +10,7 @@ interface GameHeaderProps {
 }
 
 export function GameHeader({ onShowRules }: GameHeaderProps) {
-  const {
-    isPlayingArchive,
-    archiveDate,
-    exitArchiveMode,
-    leaderboardStats,
-    gamePhase,
-  } = useGameStore();
+  const { isPlayingArchive, archiveDate, exitArchiveMode } = useGameStore();
   const router = useRouter();
 
   const handleBackToToday = () => {
