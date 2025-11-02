@@ -2,7 +2,7 @@
 
 import { useCountUp } from "@/hooks/useCountUp";
 import { useGameStore } from "@/store";
-import { getPerformanceTier, getDisplayTitle } from "@/types/leaderboard";
+import { getDisplayTitle, getPerformanceTier } from "@/types/leaderboard";
 import Link from "next/link";
 import posthog from "posthog-js";
 import React, { useEffect } from "react";
@@ -20,7 +20,7 @@ export const LeaderboardPage: React.FC = () => {
 
   useEffect(() => {
     if (isPlayingArchive) return;
-    
+
     loadLeaderboardFromStorage();
 
     fetchLeaderboardStats();
@@ -154,7 +154,6 @@ export const LeaderboardPage: React.FC = () => {
             dishScore={leaderboardStats.todayRank.dishScore}
             countryScore={leaderboardStats.todayRank.countryScore}
             proteinScore={leaderboardStats.todayRank.proteinScore}
-            playerCount={leaderboardStats.totalPlayersToday}
             rank={leaderboardStats.todayRank.rank || 1}
           />
         </div>
@@ -172,7 +171,6 @@ export const LeaderboardPage: React.FC = () => {
               dishScore={leaderboardStats.overallRank.dishScore}
               countryScore={leaderboardStats.overallRank.countryScore}
               proteinScore={leaderboardStats.overallRank.proteinScore}
-              playerCount={leaderboardStats.totalPlayersToday}
               rank={leaderboardStats.overallRank.rank || 1}
               isOverall
             />
@@ -220,7 +218,6 @@ interface RankCardProps {
   dishScore: number;
   countryScore: number;
   proteinScore: number;
-  playerCount: number;
   rank: number;
   isOverall?: boolean;
 }
@@ -232,14 +229,13 @@ const RankCard: React.FC<RankCardProps> = ({
   dishScore,
   countryScore,
   proteinScore,
-  playerCount,
   rank,
 }) => {
   const animatedScore = useCountUp(0, score, 1000);
   const isTopPerformer = percentile >= 90;
 
   // Use getDisplayTitle for smart title display
-  const displayTitle = getDisplayTitle(playerCount, rank, percentile);
+  const displayTitle = getDisplayTitle(rank, percentile);
 
   return (
     <div

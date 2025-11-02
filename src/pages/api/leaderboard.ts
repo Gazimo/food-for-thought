@@ -228,8 +228,9 @@ async function calculateLeaderboardStats(
   const todayScoreValues = (todayScores?.map((s: { total_score: number }) =>
     Number(s.total_score)
   ) || []) as number[];
-  const allScoreValues = (allScores?.map((s: { total_score: number }) => Number(s.total_score)) ||
-    []) as number[];
+  const allScoreValues = (allScores?.map((s: { total_score: number }) =>
+    Number(s.total_score)
+  ) || []) as number[];
 
   // Calculate percentiles from REAL scores only (no synthetic data)
   const todayPercentile = calculatePercentile(userScore, todayScoreValues);
@@ -254,6 +255,5 @@ async function calculateLeaderboardStats(
       totalScore: userScore,
       percentile: overallPercentile,
     },
-    totalPlayersToday: todayScoreValues.length,
   };
 }

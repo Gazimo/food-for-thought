@@ -165,7 +165,6 @@ export const StatisticsPage: React.FC = () => {
           {hasTodayPerformance && statisticsData.todayPerformance && (
             <TodayPerformanceCard
               performance={statisticsData.todayPerformance}
-              playerCount={statisticsData.totalPlayersToday}
             />
           )}
 
@@ -324,16 +323,13 @@ interface TodayPerformanceCardProps {
     percentile: number;
     rank?: number;
   };
-  playerCount: number;
 }
 
 const TodayPerformanceCard: React.FC<TodayPerformanceCardProps> = ({
   performance,
-  playerCount,
 }) => {
   const tier = getPerformanceTier(performance.percentile);
   const displayTitle = getDisplayTitle(
-    playerCount,
     performance.rank || 1,
     performance.percentile
   );

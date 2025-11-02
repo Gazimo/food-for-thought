@@ -54,7 +54,6 @@ export const LeaderboardCard: React.FC = () => {
   const isTopPerformer = leaderboardStats.todayRank.percentile >= 90;
 
   const displayTitle = getDisplayTitle(
-    leaderboardStats.totalPlayersToday,
     leaderboardStats.todayRank.rank || 1,
     leaderboardStats.todayRank.percentile
   );

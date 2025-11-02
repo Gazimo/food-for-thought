@@ -10,7 +10,6 @@ export interface LeaderboardScore {
 export interface LeaderboardStats {
   todayRank: LeaderboardScore;
   overallRank?: LeaderboardScore;
-  totalPlayersToday: number; // Used internally for display logic, not shown to user
 }
 
 export interface UserStatistics {
@@ -97,27 +96,20 @@ export function getPerformanceTier(percentile: number): PerformanceTier {
 }
 
 /**
- * Get display title based on player count and rank
- * For small player counts (1-5), use relative titles instead of percentiles
+ * Get display title based on rank and percentile
+ * Uses rank to determine if user is in top position, otherwise shows percentile
  */
-export function getDisplayTitle(
-  playerCount: number,
-  rank: number,
-  percentile: number
-): string {
-  if (playerCount === 1) {
-    return "Top Player";
+export function getDisplayTitle(rank: number, percentile: number): string {
+  // If user is ranked #1, show "Top Player" or "Leading Player"
+  if (rank === 1) {
+    // If percentile is 100, they're the only player or scored perfectly
+    if (percentile === 100) {
+      return "Top Player";
+    }
+    return "Leading Player";
   }
 
-  if (playerCount >= 2 && playerCount <= 5) {
-    // Relative titles for small player counts
-    if (rank === 1) return "Leading Player";
-    if (rank === 2) return "Strong Performance";
-    if (rank <= 4) return "Great Score";
-    return "Good Effort";
-  }
-
-  // For 6+ players, show percentile
+  // For all other ranks, show percentile-based title
   const topPercent = Math.round(100 - percentile);
   return `Top ${topPercent}%`;
 }
