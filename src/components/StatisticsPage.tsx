@@ -430,7 +430,6 @@ interface ScoreDistributionChartProps {
     }[];
     userScore: number;
     userRank: number;
-    totalPlayers: number;
   };
 }
 

@@ -34,14 +34,12 @@ export interface ScoreDistribution {
   }[];
   userScore: number;
   userRank: number;
-  totalPlayers: number;
 }
 
 export interface StatisticsData {
   userStats: UserStatistics;
   todayPerformance?: LeaderboardScore; // Only if played today
   scoreDistribution?: ScoreDistribution; // Only if played today
-  totalPlayersToday: number;
 }
 
 export interface ScoreSubmission {

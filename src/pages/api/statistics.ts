@@ -32,7 +32,9 @@ export default async function handler(
     // Get user's all-time statistics
     const { data: userScores } = await supabase
       .from("game_scores")
-      .select("total_score, dish_date, dish_score, country_score, protein_score")
+      .select(
+        "total_score, dish_date, dish_score, country_score, protein_score"
+      )
       .eq("session_id", sessionId);
 
     const totalGames = userScores?.length || 0;
@@ -64,7 +66,6 @@ export default async function handler(
 
     let todayPerformance = undefined;
     let scoreDistribution = undefined;
-    let totalPlayersToday = 0;
 
     if (todayScore) {
       // Get all scores for today to calculate percentile and distribution
@@ -75,7 +76,6 @@ export default async function handler(
 
       const todayScoreValues =
         allTodayScores?.map((s) => Number(s.total_score)) || [];
-      totalPlayersToday = todayScoreValues.length;
 
       // Calculate percentile
       const scoresAbove = todayScoreValues.filter(
@@ -103,28 +103,28 @@ export default async function handler(
       // These represent typical player performance patterns
       const generateBaselineScores = (userScore: number): number[] => {
         const baseline: number[] = [];
-        
+
         // Add scores in a bell curve distribution centered around 50-60
         // Low scores (0-30): Few players
         baseline.push(15, 22, 28);
-        
+
         // Mid-low scores (30-50): Some players
         baseline.push(35, 38, 42, 45, 48);
-        
+
         // Mid scores (50-70): Most players (bell curve peak)
         baseline.push(52, 55, 58, 61, 63, 65, 67, 69);
-        
+
         // Mid-high scores (70-85): Decent players
         baseline.push(72, 75, 78, 81, 84);
-        
+
         // High scores (85-100): Few skilled players
         baseline.push(87, 91, 95);
-        
+
         // Add some variation around user's score for context
         // But not too close to avoid looking fake
         const userBucket = Math.floor(userScore / 10);
         const nearbyScores: number[] = [];
-        
+
         // Add 2-3 scores in adjacent buckets
         if (userBucket > 0) {
           nearbyScores.push((userBucket - 1) * 10 + 5);
@@ -132,12 +132,12 @@ export default async function handler(
         if (userBucket < 9) {
           nearbyScores.push((userBucket + 1) * 10 + 5);
         }
-        
+
         return [...baseline, ...nearbyScores];
       };
 
       const userScore = Number(todayScore.total_score);
-      
+
       // Combine real scores with baseline scores
       const allScoresForDistribution = [
         ...todayScoreValues,
@@ -163,7 +163,7 @@ export default async function handler(
         const bucketIndex = Math.min(Math.floor(score / 10), 9);
         buckets[bucketIndex].count++;
       });
-      
+
       // Mark user's bucket (only based on real user score)
       const userBucketIndex = Math.min(Math.floor(userScore / 10), 9);
       buckets[userBucketIndex].hasUser = true;
@@ -176,7 +176,6 @@ export default async function handler(
         })),
         userScore,
         userRank: rank, // Still based on real players only
-        totalPlayers: totalPlayersToday, // Still real count
       };
     }
 
@@ -190,7 +189,6 @@ export default async function handler(
       },
       todayPerformance,
       scoreDistribution,
-      totalPlayersToday,
     };
 
     return res.status(200).json(statistics);
@@ -199,4 +197,3 @@ export default async function handler(
     return res.status(500).json({ error: "Internal server error" });
   }
 }
-
