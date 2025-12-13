@@ -1,5 +1,4 @@
 import OpenAI from "openai";
-import { getCountryNames } from "../../src/utils/countries";
 
 function createOpenAI() {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -7,42 +6,69 @@ function createOpenAI() {
   return new OpenAI({ apiKey });
 }
 
-export async function proposeDishCandidates(options: {
-  existingNormalized: string[]; // normalized names/guesses
-  maxSuggestions?: number;
-}): Promise<Array<{ name: string; country: string }>> {
-  const { existingNormalized, maxSuggestions = 3 } = options;
+export interface ProposeDishOptions {
+  /** List of countries to choose dishes from (human-readable, e.g., "Italy", "Japan") */
+  countries: string[];
+  /** List of dish names to avoid (human-readable, e.g., "Beef Bulgogi", "Pad Thai") */
+  blockedDishes: string[];
+  /** Number of dishes to suggest */
+  maxSuggestions: number;
+}
 
-  const validCountries = getCountryNames().join(", ");
+/**
+ * Propose dish candidates using AI.
+ * Uses human-readable country names and dish names (not normalized).
+ */
+export async function proposeDishCandidates(
+  options: ProposeDishOptions
+): Promise<Array<{ name: string; country: string }>> {
+  const { countries, blockedDishes, maxSuggestions } = options;
 
-  const instruction = `You propose dish candidates for a food guessing game.
-Constraints:
-- Only propose dishes that are NOT in the provided existing list (normalized tokens, no spaces/punctuation).
-- Return ${maxSuggestions} diverse, globally distributed dishes.
-- Each item must include a clean dish name (no country words in the name) and a Title Case country of origin.
-- IMPORTANT: Dish names must have proper spacing between words (e.g., "Pasta Fagioli" not "PastaFagioli", "Beef Bulgogi" not "BeefBulgogi").
-- The country MUST be one of the following: ${validCountries}
-- Output ONLY a compact JSON array of {"name":"...","country":"..."} objects. No extra text.`;
+  const countriesList = countries.join(", ");
+  const blockedList = blockedDishes.join(", ");
 
-  const existingList = existingNormalized.slice(0, 400).join(",");
+  const instruction = `You are proposing dish candidates for a food guessing game.
+
+TASK: Suggest ${maxSuggestions} traditional dishes from the following countries.
+
+ALLOWED COUNTRIES (choose dishes ONLY from these):
+${countriesList}
+
+BLOCKED DISHES (do NOT suggest any of these):
+${blockedList}
+
+REQUIREMENTS:
+- Each dish must be a real, traditional dish from one of the allowed countries
+- Dish names must have proper spacing (e.g., "Pad Thai" not "PadThai")
+- Do NOT include country names or nationality words in the dish name
+- Return diverse dishes across different countries when possible
+- Output ONLY a JSON array: [{"name": "Dish Name", "country": "Country"}]
+- No markdown, no explanation, just the JSON array`;
 
   const messages = [
     {
       role: "user" as const,
-      content: `${instruction}\n\nEXISTING_NORMALIZED_LIST=${existingList}`,
+      content: instruction,
     },
   ];
 
   const openai = createOpenAI();
+
+  console.log(
+    `🤖 Proposing ${maxSuggestions} dishes from ${countries.length} countries (blocking ${blockedDishes.length} dishes)`
+  );
+
   const resp = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    temperature: 0.4,
-    max_tokens: 400,
+    model: "gpt-4.1-nano",
+    temperature: 0.6,
+    max_tokens: 800,
     messages,
   });
 
   const content = resp.choices[0]?.message?.content?.trim() || "[]";
   let json = content;
+
+  // Strip markdown code blocks if present
   if (json.startsWith("```")) {
     json = json.replace(/^```[a-zA-Z]*\n?/, "").replace(/```\s*$/, "");
   }
@@ -50,11 +76,26 @@ Constraints:
   try {
     const parsed = JSON.parse(json);
     if (Array.isArray(parsed)) {
-      return parsed
-        .filter((x) => x && x.name && x.country)
-        .slice(0, maxSuggestions);
+      const valid = parsed
+        .filter(
+          (x) =>
+            x &&
+            typeof x.name === "string" &&
+            typeof x.country === "string" &&
+            x.name.trim() &&
+            x.country.trim()
+        )
+        .map((x) => ({
+          name: x.name.trim(),
+          country: x.country.trim(),
+        }));
+
+      console.log(`✅ AI proposed ${valid.length} dishes`);
+      return valid;
     }
-  } catch {}
+  } catch (e) {
+    console.error("❌ Failed to parse AI response:", e);
+  }
 
   return [];
 }
