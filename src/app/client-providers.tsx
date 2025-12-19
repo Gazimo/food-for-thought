@@ -15,8 +15,9 @@ export default function ClientProviders({
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!posthog.__loaded) {
-      posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
+    // Only initialize PostHog if key is configured
+    if (process.env.NEXT_PUBLIC_POSTHOG_KEY && !posthog.__loaded) {
+      posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
         api_host: "/ingest",
         ui_host: "https://eu.posthog.com",
         capture_pageview: false,
@@ -29,7 +30,10 @@ export default function ClientProviders({
   }, []);
 
   useEffect(() => {
-    posthog.capture("$pageview");
+    // Only capture pageviews if PostHog is loaded
+    if (posthog.__loaded) {
+      posthog.capture("$pageview");
+    }
   }, [pathname]);
 
   return (
