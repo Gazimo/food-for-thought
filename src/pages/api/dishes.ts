@@ -192,18 +192,20 @@ export default async function handler(
     };
 
     const posthog = PostHogClient();
-    try {
-      await posthog.capture({
-        distinctId: req.headers.cookie || "anonymous",
-        event: "api_dishes_retrieved",
-        properties: {
-          method: req.method,
-          endpoint: req.url,
-          count: 1, // Always 1 dish now
-        },
-      });
-    } catch (error) {
-      console.error("PostHog capture error:", error);
+    if (posthog) {
+      try {
+        await posthog.capture({
+          distinctId: req.headers.cookie || "anonymous",
+          event: "api_dishes_retrieved",
+          properties: {
+            method: req.method,
+            endpoint: req.url,
+            count: 1, // Always 1 dish now
+          },
+        });
+      } catch (error) {
+        console.error("PostHog capture error:", error);
+      }
     }
 
     // Add additional security headers to prevent inspection
