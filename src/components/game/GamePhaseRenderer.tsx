@@ -3,10 +3,17 @@
 import { CountryPhase } from "@/app/play/CountryPhase";
 import { DishPhase } from "@/app/play/DishPhase";
 import { ProteinPhase } from "@/app/play/ProteinPhase";
+// V2 Components - Refactored with specialized inputs
+import { DishPhaseV2 } from "@/app/play/DishPhaseV2";
+import { CountryPhaseV2 } from "@/app/play/CountryPhaseV2";
+import { ProteinPhaseV2 } from "@/app/play/ProteinPhaseV2";
 import { PhaseRenderer } from "@/components/PhaseRenderer";
 import { getPhaseConfig } from "@/config/gamePhases";
 import { useTodaysDish } from "@/hooks/useDishes";
 import { useGameStore } from "@/store";
+
+// Feature flag to toggle between original and V2 components
+const USE_V2_COMPONENTS = true;
 
 export function GamePhaseRenderer() {
   const { activePhase, isPlayingArchive, archiveDate } = useGameStore();
@@ -52,9 +59,9 @@ export function GamePhaseRenderer() {
 
     return (
       <PhaseRenderer {...correctCommonProps}>
-        {correctPhase === "dish" && <DishPhase />}
-        {correctPhase === "country" && <CountryPhase />}
-        {correctPhase === "protein" && <ProteinPhase />}
+        {correctPhase === "dish" && (USE_V2_COMPONENTS ? <DishPhaseV2 /> : <DishPhase />)}
+        {correctPhase === "country" && (USE_V2_COMPONENTS ? <CountryPhaseV2 /> : <CountryPhase />)}
+        {correctPhase === "protein" && (USE_V2_COMPONENTS ? <ProteinPhaseV2 /> : <ProteinPhase />)}
       </PhaseRenderer>
     );
   }
@@ -64,19 +71,19 @@ export function GamePhaseRenderer() {
     case "dish":
       return (
         <PhaseRenderer {...commonProps}>
-          <DishPhase />
+          {USE_V2_COMPONENTS ? <DishPhaseV2 /> : <DishPhase />}
         </PhaseRenderer>
       );
     case "country":
       return (
         <PhaseRenderer {...commonProps}>
-          <CountryPhase />
+          {USE_V2_COMPONENTS ? <CountryPhaseV2 /> : <CountryPhase />}
         </PhaseRenderer>
       );
     case "protein":
       return (
         <PhaseRenderer {...commonProps}>
-          <ProteinPhase />
+          {USE_V2_COMPONENTS ? <ProteinPhaseV2 /> : <ProteinPhase />}
         </PhaseRenderer>
       );
     default:

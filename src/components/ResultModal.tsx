@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useGameStore } from "@/store";
 import Image from "next/image";
 import posthog from "posthog-js";
-import React, { memo, useState } from "react";
+import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { generateShareText } from "../utils/shareText";
 import { alreadyPlayedToday } from "../utils/streak";
@@ -13,7 +13,7 @@ import { GameSummary } from "./GameSummary";
 import { LeaderboardCard } from "./LeaderboardCard";
 import { SharePopover } from "./SharePopover";
 
-export const ResultModal: React.FC = memo(function ResultModal() {
+export const ResultModal: React.FC = function ResultModal() {
   const {
     currentDish,
     gamePhase,
@@ -257,4 +257,4 @@ export const ResultModal: React.FC = memo(function ResultModal() {
       </div>
     </div>
   );
-});
+};

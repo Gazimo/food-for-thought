@@ -29,8 +29,8 @@ CREATE TABLE IF NOT EXISTS game_scores (
   country_score INTEGER DEFAULT 0 CHECK (country_score >= 0 AND country_score <= 100),
   protein_score INTEGER DEFAULT 0 CHECK (protein_score >= 0 AND protein_score <= 100),
 
-  -- Total Score (0-300)
-  total_score INTEGER DEFAULT 0 CHECK (total_score >= 0 AND total_score <= 300),
+  -- Total Score (0-100, weighted average)
+  total_score NUMERIC(5,2) DEFAULT 0 CHECK (total_score >= 0 AND total_score <= 100),
 
   -- Attempt Counts
   dish_guesses INTEGER DEFAULT 0 CHECK (dish_guesses >= 0 AND dish_guesses <= 6),
@@ -41,11 +41,6 @@ CREATE TABLE IF NOT EXISTS game_scores (
   completed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
 
-  -- Constraints
-  CONSTRAINT game_scores_unique_session_date UNIQUE (dish_date, session_id),
-  CONSTRAINT game_scores_valid_total CHECK (
-    total_score = dish_score + country_score + protein_score
-  )
 );
 
 -- Indexes for leaderboard queries
@@ -59,8 +54,7 @@ CREATE INDEX IF NOT EXISTS idx_game_scores_session_date ON game_scores(session_i
 COMMENT ON TABLE game_scores IS 'Player scores and statistics for Food for Thought game';
 COMMENT ON COLUMN game_scores.dish_date IS 'Date identifier for the daily dish challenge';
 COMMENT ON COLUMN game_scores.session_id IS 'Anonymous session identifier for tracking player performance';
-COMMENT ON COLUMN game_scores.total_score IS 'Sum of all phase scores (max 300)';
-COMMENT ON CONSTRAINT game_scores_valid_total ON game_scores IS 'Ensures total_score equals sum of individual phase scores';
+COMMENT ON COLUMN game_scores.total_score IS 'Weighted average of phase scores (max 100)';
 
 -- ============================================================================
 -- ROW LEVEL SECURITY (RLS) POLICIES

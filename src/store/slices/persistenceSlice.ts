@@ -84,6 +84,9 @@ export const createPersistenceSlice: GameSliceCreator<PersistenceSlice> = (
       }
 
       if (parsedState.gameResults) {
+        // Show modal if game is complete (so user can see results/share)
+        const shouldShowModal = parsedState.gamePhase === "complete";
+
         set({
           gamePhase: parsedState.gamePhase || "dish",
           activePhase: parsedState.activePhase || "dish",
@@ -110,7 +113,7 @@ export const createPersistenceSlice: GameSliceCreator<PersistenceSlice> = (
           dishGuesses: parsedState.dishGuesses || [],
           countryGuesses: parsedState.countryGuesses || [],
           proteinGuesses: parsedState.proteinGuesses || [],
-          modalVisible: false,
+          modalVisible: shouldShowModal,
           hasRestoredState: true,
         });
         return true;

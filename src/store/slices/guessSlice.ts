@@ -225,6 +225,29 @@ export const createGuessSlice: GameSliceCreator<GuessSlice> = (set, get) => ({
 
   resetProteinGuesses: () => set({ proteinGuessResults: [] }),
 
+  revealCorrectDish: () => {
+    const { currentDish } = get();
+    if (!currentDish) return;
+
+    // Add correct dish name to guesses
+    const newGuesses = [
+      ...get().dishGuesses,
+      currentDish.name.toLowerCase(),
+    ];
+
+    set((state) => ({
+      dishGuesses: newGuesses,
+      gameResults: {
+        ...state.gameResults,
+        dishGuessSuccess: false, // No celebration for giving up
+      },
+    }));
+
+    // Reveal all tiles and move to next phase
+    get().revealAllTiles();
+    get().moveToCountryPhase();
+  },
+
   revealCorrectCountry: () => {
     const { currentDish } = get();
     if (!currentDish || !currentDish.coordinates) return;

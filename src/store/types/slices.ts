@@ -67,6 +67,7 @@ export interface GuessSlice {
   guessProtein: (guess: number) => boolean;
   resetCountryGuesses: () => void;
   resetProteinGuesses: () => void;
+  revealCorrectDish: () => void;
   revealCorrectCountry: () => void;
   revealCorrectProtein: () => void;
   getSortedCountryCoords: () => Record<string, { lat: number; lng: number }>;

@@ -6,9 +6,13 @@ import { createLeaderboardSlice } from "./slices/leaderboardSlice";
 import { createPersistenceSlice } from "./slices/persistenceSlice";
 import { createStreakSlice } from "./slices/streakSlice";
 import { createUiSlice } from "./slices/uiSlice";
+import { createUnifiedGameSlice, UnifiedGameState } from "./slices/unifiedGameSlice";
 import { GameStoreState } from "./types/slices";
 
-export const useGameStore = create<GameStoreState>()((...a) => ({
+// Extended store state that includes the unified game slice
+export interface ExtendedGameStoreState extends GameStoreState, UnifiedGameState {}
+
+export const useGameStore = create<ExtendedGameStoreState>()((...a) => ({
   ...createPersistenceSlice(...a),
   ...createGameSlice(...a),
   ...createUiSlice(...a),
@@ -16,4 +20,5 @@ export const useGameStore = create<GameStoreState>()((...a) => ({
   ...createArchiveSlice(...a),
   ...createStreakSlice(...a),
   ...createLeaderboardSlice(...a),
+  ...createUnifiedGameSlice(...a),
 }));

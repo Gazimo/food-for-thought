@@ -95,9 +95,9 @@ export const createLeaderboardSlice: GameSliceCreator<LeaderboardSlice> = (
           countryScore: scores.countryScore,
           proteinScore: scores.proteinScore,
           totalScore: scores.totalScore,
-          dishGuesses: gameResults.dishGuesses.length,
-          countryGuesses: gameResults.countryGuesses.length,
-          proteinGuesses: gameResults.proteinGuesses.length,
+          dishGuesses: gameResults.dishGuesses?.length || 0,
+          countryGuesses: gameResults.countryGuesses?.length || 0,
+          proteinGuesses: gameResults.proteinGuesses?.length || 0,
         }),
       });
 
