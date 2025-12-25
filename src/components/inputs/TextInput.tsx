@@ -2,6 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { normalizeForComparison } from "@/utils/stringNormalization";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { useGameStore } from "../../store";
@@ -15,6 +16,7 @@ interface TextInputProps {
   previousGuesses?: string[];
   shake?: boolean;
   disabled?: boolean;
+  entityType?: string;
 }
 
 export const TextInput: React.FC<TextInputProps> = ({
@@ -26,20 +28,28 @@ export const TextInput: React.FC<TextInputProps> = ({
   previousGuesses = [],
   shake = false,
   disabled = false,
+  entityType = "country name",
 }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const { activePhase, isPhaseComplete } = useGameStore();
   const isComplete = isPhaseComplete(activePhase);
 
+  // Helper function to pluralize entity type for error messages
+  const pluralize = (entityType: string): string => {
+    if (entityType.endsWith(' name')) return entityType.replace(' name', ' names');
+    if (entityType.endsWith(' type')) return entityType.replace(' type', ' types');
+    return `${entityType}s`;
+  };
+
   const filteredSuggestions = suggestions
     .filter((suggestion) =>
-      suggestion.toLowerCase().includes(value.toLowerCase())
+      normalizeForComparison(suggestion).includes(normalizeForComparison(value))
     )
     .filter(
       (suggestion) =>
         !previousGuesses.some(
-          (guess) => guess.toLowerCase() === suggestion.toLowerCase()
+          (guess) => normalizeForComparison(guess) === normalizeForComparison(suggestion)
         )
     )
     .slice(0, 10);
@@ -48,22 +58,22 @@ export const TextInput: React.FC<TextInputProps> = ({
     if (!submitValue.trim()) return;
 
     if (suggestions.length > 0) {
-      const normalizedValue = submitValue.toLowerCase().trim();
+      const normalizedValue = normalizeForComparison(submitValue);
       const isValidSuggestion = suggestions.some(
-        (suggestion) => suggestion.toLowerCase() === normalizedValue
+        (suggestion) => normalizeForComparison(suggestion) === normalizedValue
       );
 
       if (!isValidSuggestion) {
         toast.error(
-          `"${submitValue}" is not a valid country name. Please select from the suggestions.`
+          `"${submitValue}" is not a valid ${entityType}. Please select from the suggestions.`
         );
         return;
       }
 
       if (
-        previousGuesses.some((guess) => guess.toLowerCase() === normalizedValue)
+        previousGuesses.some((guess) => normalizeForComparison(guess) === normalizedValue)
       ) {
-        toast.error("You already guessed that country!");
+        toast.error(`You already guessed that ${entityType}!`);
         return;
       }
     }
@@ -168,7 +178,7 @@ export const TextInput: React.FC<TextInputProps> = ({
         filteredSuggestions.length === 0 &&
         suggestions.length > 0 && (
           <div className="absolute top-full left-0 right-0 z-10 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg p-3 text-sm text-gray-500">
-            No countries match your search. Try typing a different country name.
+            No {pluralize(entityType)} match your search. Try typing a different {entityType}.
           </div>
         )}
     </div>

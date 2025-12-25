@@ -264,6 +264,37 @@ export const emojiThemes = {
     "🧀",
     "🥛",
   ],
+  // Pasta game emojis
+  pasta: [
+    "🍝",
+    "🍜",
+    "🥘",
+    "🧀",
+    "🍅",
+    "🌾",
+    "🥚",
+    "🇮🇹",
+  ],
+  sauce: [
+    "🍅",
+    "🧈",
+    "🧄",
+    "🌿",
+    "🫒",
+    "🥘",
+    "🍶",
+    "🔥",
+  ],
+  region: [
+    "🇮🇹",
+    "🗺️",
+    "📍",
+    "🏛️",
+    "⛰️",
+    "🌊",
+    "🏰",
+    "🍇",
+  ],
 };
 
 export function launchEmojiBurst(emojis: string[]) {

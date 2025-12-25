@@ -1,10 +1,9 @@
-import { Dish, enrichDishesWithCoords } from "@/types/dishes";
+import { Pasta, PastaRow, pastaRowToPasta } from "@/types/pasta";
 import { createClient } from "@supabase/supabase-js";
 import { NextApiRequest, NextApiResponse } from "next";
-import PostHogClient from "../../lib/posthog";
-import { validateArchiveAccess } from "../../utils/archiveAuth";
-import { getCountryCoordsMap } from "../../utils/countries";
-import { getDailySalt, obfuscateData } from "../../utils/encryption";
+import PostHogClient from "../../../lib/posthog";
+import { validateArchiveAccess } from "../../../utils/archiveAuth";
+import { getDailySalt, obfuscateData } from "../../../utils/encryption";
 
 export default async function handler(
   req: NextApiRequest,
@@ -77,21 +76,21 @@ export default async function handler(
       }
     }
 
-    console.log(`🔍 Fetching dish for date: ${targetDate}`);
+    console.log(`🔍 Fetching pasta for date: ${targetDate}`);
 
-    const { data: dishes, error } = await supabase
-      .from("dishes")
+    const { data: pastaData, error } = await supabase
+      .from("pasta")
       .select("*")
       .eq("release_date", targetDate)
       .limit(1);
 
     if (error) {
       console.error("❌ Supabase error:", error);
-      return res.status(500).json({ error: "Failed to fetch dish data" });
+      return res.status(500).json({ error: "Failed to fetch pasta data" });
     }
 
-    if (!dishes || dishes.length === 0) {
-      console.log(`⚠️ No dish found for date: ${targetDate}`);
+    if (!pastaData || pastaData.length === 0) {
+      console.log(`⚠️ No pasta found for date: ${targetDate}`);
 
       // For archive requests, provide a more specific error message
       if (requestedDate) {
@@ -101,20 +100,20 @@ export default async function handler(
         });
       }
 
-      return res.status(404).json({ error: "No dish available for today" });
+      return res.status(404).json({ error: "No pasta available for today" });
     }
 
-    const targetDish = dishes[0];
+    const targetPastaRow = pastaData[0] as PastaRow;
     console.log(
-      `✅ Found dish for ${targetDate}: ID ${targetDish.id}, Name: ${
-        targetDish.name || "[encrypted]"
+      `✅ Found pasta for ${targetDate}: ID ${targetPastaRow.id}, Name: ${
+        targetPastaRow.name || "[encrypted]"
       }`
     );
 
-    // Ensure we're not accidentally serving today's dish for archive dates
-    if (requestedDate && targetDish.release_date !== requestedDate) {
+    // Ensure we're not accidentally serving today's pasta for archive dates
+    if (requestedDate && targetPastaRow.release_date !== requestedDate) {
       console.log(
-        `⚠️ Dish release_date (${targetDish.release_date}) doesn't match requested date (${requestedDate})`
+        `⚠️ Pasta release_date (${targetPastaRow.release_date}) doesn't match requested date (${requestedDate})`
       );
       return res.status(404).json({
         error: `No archived game available for ${requestedDate}. This date may be before our game archive began.`,
@@ -122,74 +121,39 @@ export default async function handler(
       });
     }
 
-    // Ensure dish name is always in acceptable guesses (lowercase, defensive fix for AI generation bugs)
-    const ensureNameInGuesses = (name: string, guesses: string[] | null): string[] => {
-      const guessesList = guesses || [];
-      const normalizedName = name.toLowerCase().trim();
-      const hasName = guessesList.some(guess => guess.toLowerCase().trim() === normalizedName);
-      return hasName ? guessesList : [normalizedName, ...guessesList];
-    };
-
-    // Convert Supabase dish format to our Dish interface
-    const dish: Dish = {
-      name: targetDish.name,
-      acceptableGuesses: ensureNameInGuesses(targetDish.name, targetDish.acceptable_guesses),
-      country: targetDish.country,
-      imageUrl: targetDish.image_url, // This now has the randomized filename!
-      ingredients: targetDish.ingredients || [],
-      blurb: targetDish.blurb || "",
-      funFact: targetDish.fun_fact || undefined,
-      proteinPerServing: targetDish.protein_per_serving,
-      recipe: {
-        ingredients: targetDish.recipe?.ingredients || [],
-        instructions: targetDish.recipe?.instructions || [],
-      },
-      tags: targetDish.tags || [],
-      region: targetDish.region,
-      releaseDate: targetDish.release_date,
-      coordinates: targetDish.coordinates
-        ? {
-            lat: targetDish.coordinates.lat || targetDish.latitude,
-            lng: targetDish.coordinates.lng || targetDish.longitude,
-          }
-        : undefined,
-    };
-
-    // Enrich the dish with coordinates if not already present
-    const countryCoords = getCountryCoordsMap();
-    const enrichedDishes = enrichDishesWithCoords([dish], countryCoords);
-    const enrichedDish = enrichedDishes[0];
+    // Convert database row to application type
+    const pasta: Pasta = pastaRowToPasta(targetPastaRow);
 
     // Get salt for the target date (today or archived date)
     const salt = getDailySalt(targetDate);
 
-    // Process the target dish (today or archived)
+    // Process the target pasta (today or archived)
     const sensitiveData = {
-      name: enrichedDish.name,
-      country: enrichedDish.country,
-      acceptableGuesses: enrichedDish.acceptableGuesses,
-      proteinPerServing: enrichedDish.proteinPerServing,
-      // Also hide ingredients and recipe as they can give hints
-      ingredients: enrichedDish.ingredients,
-      recipe: enrichedDish.recipe,
-      blurb: enrichedDish.blurb,
-      funFact: enrichedDish.funFact,
-      // Hide imageUrl and releaseDate as they can give away the answer
-      imageUrl: enrichedDish.imageUrl,
-      releaseDate: enrichedDish.releaseDate,
-      // Hide coordinates as they're a dead giveaway for the country
-      coordinates: enrichedDish.coordinates,
+      name: pasta.name,
+      acceptableGuesses: pasta.acceptableGuesses,
+      pastaAbout: pasta.pastaAbout,
+      pastaImageUrl: pasta.pastaImageUrl,
+      sauceName: pasta.sauceName,
+      sauceAcceptableGuesses: pasta.sauceAcceptableGuesses,
+      sauceIngredients: pasta.sauceIngredients,
+      sauceInstructions: pasta.sauceInstructions,
+      sauceImageUrl: pasta.sauceImageUrl,
+      region: pasta.region,
+      regionCoordinates: pasta.regionCoordinates,
+      proteinPerServing: pasta.proteinPerServing,
+      originStory: pasta.originStory,
+      funFact: pasta.funFact,
+      releaseDate: pasta.releaseDate,
     };
 
     // Create obfuscated version of sensitive data
     const obfuscatedAnswers = obfuscateData(sensitiveData, salt);
 
-    // Return the target dish with sensitive fields removed and obfuscated data added
-    const safeDish = {
+    // Return the target pasta with sensitive fields removed and obfuscated data added
+    const safePasta = {
       // Keep only non-sensitive visual data
-      id: targetDish.id, // Add database ID for tile APIs
-      tags: enrichedDish.tags,
-      region: enrichedDish.region,
+      id: targetPastaRow.id, // Add database ID for tile APIs
+      tags: pasta.tags,
 
       // Add obfuscated sensitive data
       _encrypted: obfuscatedAnswers,
@@ -204,11 +168,12 @@ export default async function handler(
       try {
         await posthog.capture({
           distinctId: req.headers.cookie || "anonymous",
-          event: "api_dishes_retrieved",
+          event: "api_pasta_daily_retrieved",
           properties: {
             method: req.method,
             endpoint: req.url,
-            count: 1, // Always 1 dish now
+            date: targetDate,
+            isArchive: !!requestedDate,
           },
         });
       } catch (error) {
@@ -220,8 +185,8 @@ export default async function handler(
     res.setHeader("X-Robots-Tag", "noindex, nofollow, nosnippet, noarchive");
     res.setHeader("Referrer-Policy", "no-referrer");
 
-    // Return as an array with a single dish for consistency
-    res.status(200).json([safeDish]);
+    // Return as an object (not array like dishes endpoint)
+    res.status(200).json(safePasta);
   } catch (error) {
     console.error("❌ API error:", error);
     return res.status(500).json({ error: "Internal server error" });

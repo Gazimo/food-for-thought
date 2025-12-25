@@ -1,0 +1,122 @@
+{
+  "Abruzzo": {
+    "lat": 42.25,
+    "lng": 13.75,
+    "capital": "L'Aquila",
+    "cities": ["Pescara", "Teramo", "Montesilvano Marina", "Chieti", "Vasto"]
+  },
+  "Valle d'Aosta": {
+    "lat": 45.75,
+    "lng": 7.25,
+    "capital": "Aosta",
+    "cities": ["Aosta", "Châtillon", "Saint-Vincent", "Pont-Saint-Martin", "Quart"]
+  },
+  "Puglia": {
+    "lat": 41.00164,
+    "lng": 16.73378,
+    "capital": "Bari",
+    "cities": ["Bari", "Taranto", "Foggia", "Andria", "Barletta"]
+  },
+  "Basilicata": {
+    "lat": 40.5041,
+    "lng": 16.11396,
+    "capital": "Potenza",
+    "cities": ["Matera", "Potenza", "Lavello", "Melfi", "Rionero in Vulture"]
+  },
+  "Calabria": {
+    "lat": 39,
+    "lng": 16.5,
+    "capital": "Catanzaro",
+    "cities": ["Reggio Calabria", "Catanzaro", "Lamezia Terme", "Crotone", "Cosenza"]
+  },
+  "Campania": {
+    "lat": 40.91056,
+    "lng": 14.92053,
+    "capital": "Naples",
+    "cities": ["Naples", "Salerno", "Torre del Greco", "Pozzuoli", "Giugliano in Campania"]
+  },
+  "Emilia-Romagna": {
+    "lat": 44.5444,
+    "lng": 10.98361,
+    "capital": "Bologna",
+    "cities": ["Bologna", "Parma", "Modena", "Reggio Emilia", "Rimini"]
+  },
+  "Friuli Venezia Giulia": {
+    "lat": 46,
+    "lng": 13,
+    "capital": "Trieste",
+    "cities": ["Trieste", "Udine", "Pordenone", "Gorizia", "Monfalcone"]
+  },
+  "Lazio": {
+    "lat": 42.07762,
+    "lng": 12.77878,
+    "capital": "Latina",
+    "cities": ["Rome", "Acilia-Castel Fusano-Ostia Antica", "Lido di Ostia", "Latina", "Aprilia"]
+  },
+  "Liguria": {
+    "lat": 44.5,
+    "lng": 8.83333,
+    "capital": "Genoa",
+    "cities": ["Genoa", "La Spezia", "Savona", "Sanremo", "Imperia"]
+  },
+  "Lombardia": {
+    "lat": 45.66667,
+    "lng": 9.5,
+    "capital": "Milan",
+    "cities": ["Milan", "Brescia", "Quarto Oggiaro", "Monza", "Bergamo"]
+  },
+  "Molise": {
+    "lat": 41.66667,
+    "lng": 14.5,
+    "capital": "Campobasso",
+    "cities": ["Campobasso", "Termoli", "Isernia", "Venafro", "Bojano"]
+  },
+  "Piemonte": {
+    "lat": 45,
+    "lng": 8,
+    "capital": "Turin",
+    "cities": ["Turin", "Novara", "Alessandria", "Asti", "Moncalieri"]
+  },
+  "Sardegna": {
+    "lat": 40,
+    "lng": 9,
+    "capital": "Cagliari",
+    "cities": ["Cagliari", "Sassari", "Quartu Sant'Elena", "Olbia", "Monte Rosello"]
+  },
+  "Sicilia": {
+    "lat": 37.75,
+    "lng": 14.25,
+    "capital": "Palermo",
+    "cities": ["Palermo", "Catania", "Messina", "Syracuse", "Marsala"]
+  },
+  "Marche": {
+    "lat": 43.5,
+    "lng": 13.25,
+    "capital": "Ancona",
+    "cities": ["Ancona", "Pesaro", "Fano", "San Benedetto del Tronto", "Civitanova Marche"]
+  },
+  "Trentino-Alto Adige": {
+    "lat": 46.5,
+    "lng": 11.33333,
+    "capital": "Trento",
+    "cities": ["Trento", "Bolzano", "Merano", "Rovereto", "Riva del Garda"]
+  },
+  "Toscana": {
+    "lat": 43.41667,
+    "lng": 11,
+    "capital": "Florence",
+    "cities": ["Florence", "Prato", "Livorno", "Pisa", "Arezzo"]
+  },
+  "Umbria": {
+    "lat": 43,
+    "lng": 12.5,
+    "capital": "Perugia",
+    "cities": ["Perugia", "Terni", "Foligno", "Città di Castello", "Spoleto"]
+  },
+  "Veneto": {
+    "lat": 45.5,
+    "lng": 11.75,
+    "capital": "Venice",
+    "cities": ["Verona", "Padua", "Mestre", "Vicenza", "Treviso"]
+  }
+}

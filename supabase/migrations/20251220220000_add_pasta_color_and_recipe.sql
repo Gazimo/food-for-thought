@@ -25,7 +25,7 @@ ALTER TABLE pasta
 ADD COLUMN IF NOT EXISTS sauce_recipe JSONB;
 
 -- Add comment for documentation
-COMMENT ON COLUMN pasta.sauce_recipe IS 'Complete traditional sauce recipe as JSONB with ingredients (4-8 items with quantities) and instructions (4-6 steps). Displayed after Phase 2 completion.';
+COMMENT ON COLUMN pasta.sauce_recipe IS 'Complete traditional sauce recipe as JSONB with ingredients (4-8 items with quantities), instructions (4-6 steps), and visualDescription (color, texture, visibleIngredients, consistency, optional garnish). Displayed after Phase 2 completion.';
 
 -- Add validation constraint for sauce_recipe structure
 ALTER TABLE pasta
@@ -34,8 +34,14 @@ CHECK (
   sauce_recipe IS NULL OR (
     sauce_recipe ? 'ingredients' AND
     sauce_recipe ? 'instructions' AND
+    sauce_recipe ? 'visualDescription' AND
     jsonb_typeof(sauce_recipe->'ingredients') = 'array' AND
-    jsonb_typeof(sauce_recipe->'instructions') = 'array'
+    jsonb_typeof(sauce_recipe->'instructions') = 'array' AND
+    jsonb_typeof(sauce_recipe->'visualDescription') = 'object' AND
+    sauce_recipe->'visualDescription' ? 'color' AND
+    sauce_recipe->'visualDescription' ? 'texture' AND
+    sauce_recipe->'visualDescription' ? 'visibleIngredients' AND
+    sauce_recipe->'visualDescription' ? 'consistency'
   )
 );
 

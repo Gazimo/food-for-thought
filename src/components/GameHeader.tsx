@@ -1,5 +1,6 @@
 "use client";
 
+import { useOptionalGameContext } from "@/contexts";
 import { useGameStore } from "@/store";
 import { Calendar, HelpCircle, Home, Trophy } from "lucide-react";
 import Link from "next/link";
@@ -11,11 +12,16 @@ interface GameHeaderProps {
 
 export function GameHeader({ onShowRules }: GameHeaderProps) {
   const { isPlayingArchive, archiveDate, exitArchiveMode } = useGameStore();
+  const gameContext = useOptionalGameContext();
   const router = useRouter();
+
+  // Get game-specific info from context, with fallbacks for default game
+  const gameName = gameContext?.gameConfig.name ?? "Food for Thought";
+  const gameUrlPath = gameContext?.gameConfig.urlPath ?? "/play";
 
   const handleBackToToday = () => {
     exitArchiveMode();
-    router.push("/play");
+    router.push(gameUrlPath);
   };
 
   // Show Statistics button always (not just after completing game)
@@ -24,7 +30,7 @@ export function GameHeader({ onShowRules }: GameHeaderProps) {
   return (
     <header className="w-full flex justify-between items-center">
       <div className="flex flex-col">
-        <h1 className="text-xl font-bold text-orange-600">Food for Thought</h1>
+        <h1 className="text-xl font-bold text-orange-600">{gameName}</h1>
         {isPlayingArchive && archiveDate && (
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <div className="flex items-center gap-1">

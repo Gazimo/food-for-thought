@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { getClosestGuess } from "@/utils/gameHelpers";
+import { normalizeForComparison } from "@/utils/stringNormalization";
 import { memo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useGameStore } from "../store";
@@ -16,6 +17,9 @@ interface GuessInputProps {
   onProteinGuess?: (guess: number) => boolean;
   previousProteinGuesses?: number[];
   actualProtein?: number;
+  disableDidYouMean?: boolean;
+  entityType?: string;
+  onGiveUp?: () => void;
 }
 
 export const GuessInput: React.FC<GuessInputProps> = memo(
@@ -28,6 +32,9 @@ export const GuessInput: React.FC<GuessInputProps> = memo(
     onProteinGuess,
     previousProteinGuesses = [],
     actualProtein,
+    disableDidYouMean = false,
+    entityType = "country name",
+    onGiveUp,
   }) => {
     const [input, setInput] = useState("");
     const [shake, setShake] = useState(false);
@@ -92,16 +99,17 @@ export const GuessInput: React.FC<GuessInputProps> = memo(
 
     const handleTextGuess = (guess: string) => {
       const trimmed = guess.trim().toLowerCase();
+      const normalized = normalizeForComparison(guess);
       if (!trimmed) return;
 
       if (suggestions.length > 0) {
         const isValidSuggestion = suggestions.some(
-          (suggestion) => suggestion.toLowerCase() === trimmed
+          (suggestion) => normalizeForComparison(suggestion) === normalized
         );
 
         if (!isValidSuggestion) {
           toast.error(
-            `"${guess.trim()}" is not a valid country name. Please select from the suggestions.`
+            `"${guess.trim()}" is not a valid ${entityType}. Please select from the suggestions.`
           );
           return;
         }
@@ -113,11 +121,11 @@ export const GuessInput: React.FC<GuessInputProps> = memo(
         return;
       }
 
-      const isCorrect = acceptableGuesses
-        .map((s) => s.toLowerCase())
-        .includes(trimmed);
+      const isCorrect = acceptableGuesses.some(
+        (acceptable) => normalizeForComparison(acceptable) === normalized
+      );
 
-      if (!isCorrect) {
+      if (!isCorrect && !disableDidYouMean) {
         const suggestion = getClosestGuess(trimmed, acceptableGuesses);
 
         if (suggestion) {
@@ -145,6 +153,13 @@ export const GuessInput: React.FC<GuessInputProps> = memo(
     };
 
     const handleGiveUp = () => {
+      // If a custom onGiveUp handler is provided (pasta game), use it
+      if (onGiveUp) {
+        onGiveUp();
+        return;
+      }
+
+      // Fall back to old game logic (for backward compatibility)
       revealAllTiles();
 
       if (activePhase === "dish") {
@@ -191,6 +206,7 @@ export const GuessInput: React.FC<GuessInputProps> = memo(
             previousGuesses={previousGuesses}
             shake={shake}
             disabled={isSubmitting}
+            entityType={entityType}
           />
         )}
 
