@@ -4,6 +4,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import PostHogClient from "../../../lib/posthog";
 import { validateArchiveAccess } from "../../../utils/archiveAuth";
 import { getDailySalt, obfuscateData } from "../../../utils/encryption";
+import { getArchiveConfigById } from "../../../utils/archiveConfig";
 
 export default async function handler(
   req: NextApiRequest,
@@ -65,8 +66,9 @@ export default async function handler(
         return res.status(400).json({ error: "Cannot request future dates" });
       }
 
-      // Validate archive access token
-      const validation = validateArchiveAccess(req, requestedDate);
+      // Validate archive access token (using pasta-specific cookie)
+      const archiveConfig = getArchiveConfigById("italian-pasta");
+      const validation = validateArchiveAccess(req, requestedDate, archiveConfig.cookieName);
       if (!validation.isValid) {
         console.log(`🚫 Archive validation failed: ${validation.error}`);
         return res.status(403).json({

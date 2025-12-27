@@ -59,7 +59,7 @@ export function PastaGameNavigation() {
               className="px-4 py-2 rounded-lg flex-1"
               variant="phase"
             >
-              {allPhasesComplete ? "Review the region guess" : "Guess the region"}
+              {allPhasesComplete ? "Review the region guess" : "Guess where it's from"}
             </Button>
           )}
         </div>

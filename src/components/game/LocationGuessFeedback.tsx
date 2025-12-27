@@ -2,46 +2,29 @@
 
 import { motion } from "framer-motion";
 import React from "react";
-import { useCountUp } from "../hooks/useCountUp";
-import { useGameStore } from "../store";
-import { CountryGuessResult } from "../types/game";
+import { useCountUp } from "@/hooks/useCountUp";
 
-interface CountryGuessFeedbackProps {
-  guessResults: CountryGuessResult[];
+export interface LocationGuessResult {
+  location: string;
+  distance: number;
+  direction: string;
+  isCorrect: boolean;
 }
 
-export const CountryGuessFeedback: React.FC<CountryGuessFeedbackProps> = ({
+interface LocationGuessFeedbackProps {
+  guessResults: LocationGuessResult[];
+  getColorForDistance: (distance: number) => string;
+  getDirectionArrow: (direction: string) => string;
+  locationType?: "country" | "region";
+  funFact?: string;
+}
+
+export const LocationGuessFeedback: React.FC<LocationGuessFeedbackProps> = ({
   guessResults,
+  getColorForDistance,
+  getDirectionArrow,
+  funFact,
 }) => {
-  const currentDish = useGameStore((state) => state.currentDish);
-
-  const getColorForDistance = (distance: number): string => {
-    if (distance === 0) return "bg-green-500";
-    if (distance < 500) return "bg-green-400";
-    if (distance < 1000) return "bg-green-300";
-    if (distance < 2000) return "bg-yellow-300";
-    if (distance < 3500) return "bg-orange-300";
-    if (distance < 6000) return "bg-red-300";
-    return "bg-red-500";
-  };
-
-  const getDirectionArrow = (direction: string): string => {
-    const directionMap: { [key: string]: string } = {
-      N: "⬆️",
-      NE: "↗️",
-      E: "➡️",
-      SE: "↘️",
-      S: "⬇️",
-      SW: "↙️",
-      W: "⬅️",
-      NW: "↖️",
-      "": "",
-      "N/A": "",
-      Invalid: "❌",
-    };
-    return directionMap[direction] || direction;
-  };
-
   const lastGuess = guessResults[guessResults.length - 1] ?? { distance: 0 };
   const animatedDistance = useCountUp(0, Math.round(lastGuess.distance), 1000);
 
@@ -56,7 +39,7 @@ export const CountryGuessFeedback: React.FC<CountryGuessFeedbackProps> = ({
   const lastGuessIsCorrect = lastGuess && lastGuess.isCorrect;
 
   const renderGuess = (
-    result: CountryGuessResult,
+    result: LocationGuessResult,
     animated = false,
     index: number
   ) => {
@@ -67,7 +50,7 @@ export const CountryGuessFeedback: React.FC<CountryGuessFeedbackProps> = ({
 
     return (
       <motion.div
-        key={result.country + result.distance + index}
+        key={result.location + result.distance + index}
         initial={animated ? { opacity: 0, y: 10 } : false}
         animate={animated ? { opacity: 1, y: 0 } : undefined}
         transition={animated ? { duration: 0.3 } : undefined}
@@ -76,7 +59,7 @@ export const CountryGuessFeedback: React.FC<CountryGuessFeedbackProps> = ({
         }`}
       >
         <div className="flex justify-between items-center">
-          <span className="font-medium">{result.country}</span>
+          <span className="font-medium">{result.location}</span>
           {!result.isCorrect && (
             <div className="flex items-center gap-2">
               <span className="text-sm">
@@ -105,7 +88,7 @@ export const CountryGuessFeedback: React.FC<CountryGuessFeedbackProps> = ({
         {previousGuesses.map((g, i) => renderGuess(g, false, i))}
       </div>
 
-      {lastGuessIsCorrect && currentDish?.funFact && (
+      {lastGuessIsCorrect && funFact && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -113,7 +96,7 @@ export const CountryGuessFeedback: React.FC<CountryGuessFeedbackProps> = ({
           className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg"
         >
           <h4 className="font-bold text-blue-800 mb-1">Did you know?</h4>
-          <p className="text-blue-700">{currentDish.funFact}</p>
+          <p className="text-blue-700">{funFact}</p>
         </motion.div>
       )}
     </>

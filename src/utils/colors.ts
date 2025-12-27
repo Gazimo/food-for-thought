@@ -8,3 +8,20 @@ export const getColorForDistance = (distance: number): string => {
   if (distance < 6000) return "#fca5a5"; // red-300
   return "#ef4444"; // red-500
 };
+
+export const getDirectionArrow = (direction: string): string => {
+  const directionMap: Record<string, string> = {
+    N: "⬆️",
+    NE: "↗️",
+    E: "➡️",
+    SE: "↘️",
+    S: "⬇️",
+    SW: "↙️",
+    W: "⬅️",
+    NW: "↖️",
+    "": "",
+    "N/A": "",
+    Invalid: "❌",
+  };
+  return directionMap[direction] || direction;
+};

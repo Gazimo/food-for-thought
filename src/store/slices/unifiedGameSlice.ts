@@ -16,6 +16,7 @@ import { StateCreator } from "zustand";
 import { GameConfig, GameTypeId, PhaseId, PhaseResult } from "@/config/games/types";
 import { launchEmojiBurst, emojiThemes } from "@/utils/celebration";
 import { updateStreak } from "@/utils/streak";
+import debugLogger from "@/utils/debugLogger";
 
 /**
  * State for a single phase
@@ -79,6 +80,8 @@ export interface UnifiedGameState {
   puzzleDate: string | null;
   /** Whether in archive mode */
   isArchiveMode: boolean;
+  /** Game error state (for archive access restrictions, etc.) */
+  gameError: { message: string; code: string; status: number } | null;
 
   // Actions
   /** Initialize a new game session */
@@ -109,6 +112,22 @@ export interface UnifiedGameState {
   giveUpPhase: () => void;
   /** Mark game as tracked */
   markGameTracked: () => void;
+
+  // Archive mode support for unified games
+  /** Start archive mode for a specific date */
+  startUnifiedArchiveMode: (date: string) => void;
+  /** Exit archive mode and return to today's game */
+  exitUnifiedArchiveMode: () => void;
+  /** Unlock archives after sharing */
+  unlockUnifiedArchives: () => void;
+  /** Check if archives are currently unlocked */
+  isUnifiedArchivesUnlockedNow: () => boolean;
+
+  // Error handling
+  /** Set game error state */
+  setGameError: (error: { message: string; code: string; status: number }) => void;
+  /** Clear game error state */
+  clearGameError: () => void;
 }
 
 /**
@@ -139,6 +158,7 @@ export const createUnifiedGameSlice: StateCreator<UnifiedGameState> = (set, get)
   gameResults: null,
   puzzleDate: null,
   isArchiveMode: false,
+  gameError: null,
 
   initializeGame: (gameTypeId, gameConfig, item, puzzleDate) => {
     // Create initial state for all phases
@@ -188,34 +208,54 @@ export const createUnifiedGameSlice: StateCreator<UnifiedGameState> = (set, get)
     const { currentPhaseId, gameConfig, currentItem, phases } = state;
 
     if (!gameConfig || !currentItem) {
-      console.error("No game config or item loaded");
+      debugLogger.error("No game config or item loaded");
       return false;
     }
 
     const phaseConfig = gameConfig.phases.find((p) => p.id === currentPhaseId);
     if (!phaseConfig) {
-      console.error("Invalid phase ID:", currentPhaseId);
+      debugLogger.error("Invalid phase ID:", currentPhaseId);
       return false;
     }
 
     const phaseState = phases[currentPhaseId];
     if (!phaseState) {
-      console.error("No phase state for:", currentPhaseId);
+      debugLogger.error("No phase state for:", currentPhaseId);
       return false;
     }
 
     // Check if phase is already complete
     if (phaseState.isComplete) {
-      console.warn("Phase is already complete");
+      debugLogger.error("Phase is already complete");
       return false;
     }
 
-    // Validate the guess
-    const isCorrect = validationFn(guess, currentItem);
+    debugLogger.group('STATE', `Making guess: ${guess}`);
+    debugLogger.state('Current phase state before guess', {
+      phaseId: currentPhaseId,
+      guessCount: phaseState.guesses.length,
+      isComplete: phaseState.isComplete,
+      currentScore: phaseState.score,
+    });
+
+    // Validate the guess - support both boolean and result object return values
+    const validationResult = validationFn(guess, currentItem);
+    const isCorrect = typeof validationResult === 'boolean'
+      ? validationResult
+      : (validationResult as any).isCorrect;
+    const resultData = typeof validationResult === 'object' && validationResult !== null
+      ? (validationResult as any).resultData
+      : undefined;
+
     const newGuesses = [...phaseState.guesses, guess];
 
+    // Store guess results if validator provides additional data
+    const newGuessResults = resultData
+      ? [...phaseState.guessResults, resultData]
+      : phaseState.guessResults;
+
     // Check if max guesses reached
-    const maxGuessesReached = newGuesses.length >= phaseConfig.maxGuesses;
+    const maxGuessesReached = phaseConfig.maxGuesses !== null && newGuesses.length >= phaseConfig.maxGuesses;
     const phaseComplete = isCorrect || maxGuessesReached;
 
     // Update tiles if configured
@@ -256,6 +296,7 @@ export const createUnifiedGameSlice: StateCreator<UnifiedGameState> = (set, get)
       success: isCorrect,
       hintsRevealed: newHintsRevealed,
       revealedTiles: newRevealedTiles,
+      guessResults: newGuessResults,
       score,
       isComplete: phaseComplete,
     };
@@ -273,16 +314,35 @@ export const createUnifiedGameSlice: StateCreator<UnifiedGameState> = (set, get)
         : pr
     );
 
+    // Calculate total score using game config's scoreAggregator
+    const phaseScoresMap = updatedPhaseResults.reduce((acc, pr) => {
+      acc[pr.phaseId] = pr.score;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const totalScore = gameConfig.scoreAggregator(phaseScoresMap);
+
     const updatedGameResults: UnifiedGameResults = {
       ...state.gameResults!,
       phaseResults: updatedPhaseResults,
-      totalScore: updatedPhaseResults.reduce((sum, pr) => sum + pr.score, 0),
+      totalScore,
     };
 
     set({
       phases: updatedPhases,
       gameResults: updatedGameResults,
     });
+
+    debugLogger.state('Phase state after guess', {
+      phaseId: currentPhaseId,
+      guessCount: newGuesses.length,
+      isCorrect,
+      isComplete: phaseComplete,
+      newScore: score,
+      tilesRevealed: newRevealedTiles.filter(t => t).length,
+      hintsRevealed: newHintsRevealed,
+    });
+    debugLogger.groupEnd();
 
     // Trigger celebration on correct guess
     if (isCorrect && typeof window !== "undefined") {
@@ -293,6 +353,20 @@ export const createUnifiedGameSlice: StateCreator<UnifiedGameState> = (set, get)
 
     // Save state
     get().saveGameState();
+
+    // Auto-advance to completion if this is the last phase and it just completed
+    if (phaseComplete) {
+      const currentIndex = gameConfig.phases.findIndex((p) => p.id === currentPhaseId);
+      const isLastPhase = currentIndex === gameConfig.phases.length - 1;
+
+      if (isLastPhase) {
+        // Automatically complete the game (like F4T does)
+        debugLogger.phase('Last phase complete, auto-completing game', { currentPhaseId });
+        setTimeout(() => {
+          get().completeGame();
+        }, 500); // Small delay for UX (let celebration play)
+      }
+    }
 
     return isCorrect;
   },
@@ -306,11 +380,16 @@ export const createUnifiedGameSlice: StateCreator<UnifiedGameState> = (set, get)
     const currentIndex = gameConfig.phases.findIndex((p) => p.id === currentPhaseId);
     if (currentIndex === -1 || currentIndex >= gameConfig.phases.length - 1) {
       // No more phases, complete the game
+      debugLogger.phase('No more phases, completing game', { currentPhaseId });
       get().completeGame();
       return;
     }
 
     const nextPhase = gameConfig.phases[currentIndex + 1];
+    debugLogger.phase('Moving to next phase', {
+      from: currentPhaseId,
+      to: nextPhase.id,
+    });
     set({ currentPhaseId: nextPhase.id });
     get().saveGameState();
   },
@@ -366,6 +445,16 @@ export const createUnifiedGameSlice: StateCreator<UnifiedGameState> = (set, get)
       completedAt: new Date().toISOString(),
     };
 
+    debugLogger.phase('Game complete', {
+      status: finalStatus,
+      totalScore: completedGameResults.totalScore,
+      phaseResults: completedGameResults.phaseResults.map(pr => ({
+        phaseId: pr.phaseId,
+        success: pr.success,
+        score: pr.score,
+      })),
+    });
+
     set({
       currentPhaseId: "complete" as PhaseId,
       gameResults: completedGameResults,
@@ -409,6 +498,14 @@ export const createUnifiedGameSlice: StateCreator<UnifiedGameState> = (set, get)
 
     const storageKey = `${gameConfig.storageKeyPrefix}-${puzzleDate}`;
 
+    debugLogger.persistence('Saving game state to localStorage', {
+      storageKey,
+      gameTypeId: currentGameTypeId,
+      puzzleDate,
+      currentPhaseId,
+      phaseStates: Object.keys(phases),
+    });
+
     try {
       const stateToSave = {
         currentPhaseId,
@@ -416,8 +513,9 @@ export const createUnifiedGameSlice: StateCreator<UnifiedGameState> = (set, get)
         gameResults,
       };
       localStorage.setItem(storageKey, JSON.stringify(stateToSave));
+      debugLogger.persistence('✅ State saved successfully', { storageKey });
     } catch (error) {
-      console.error("Error saving game state:", error);
+      debugLogger.error('❌ Failed to save state', { storageKey, error });
     }
   },
 
@@ -429,19 +527,32 @@ export const createUnifiedGameSlice: StateCreator<UnifiedGameState> = (set, get)
 
     const storageKey = `${gameConfig.storageKeyPrefix}-${puzzleDate}`;
 
+    debugLogger.persistence('Loading game state from localStorage', {
+      storageKey,
+      gameTypeId,
+      puzzleDate,
+    });
+
     try {
       const savedState = localStorage.getItem(storageKey);
       if (savedState) {
         const parsed = JSON.parse(savedState);
+        debugLogger.persistence('✅ Found saved state', {
+          storageKey,
+          savedPhaseId: parsed.currentPhaseId,
+          savedPhases: Object.keys(parsed.phases || {}),
+        });
         set({
           currentPhaseId: parsed.currentPhaseId,
           phases: parsed.phases,
           gameResults: parsed.gameResults,
         });
         return true;
+      } else {
+        debugLogger.persistence('ℹ️ No saved state found', { storageKey });
       }
     } catch (error) {
-      console.error("Error loading game state:", error);
+      debugLogger.error("Error loading game state", { storageKey, error });
     }
 
     return false;
@@ -459,14 +570,32 @@ export const createUnifiedGameSlice: StateCreator<UnifiedGameState> = (set, get)
 
   giveUpPhase: () => {
     const state = get();
-    const { currentPhaseId, phases } = state;
+    const { currentPhaseId, phases, gameConfig, currentItem } = state;
 
     const phaseState = phases[currentPhaseId];
-    if (!phaseState || phaseState.isComplete) return;
+    if (!phaseState || phaseState.isComplete || !currentItem) return;
+
+    // Get the correct answer for this phase using phase config
+    const phaseConfig = gameConfig?.phases.find((p) => p.id === currentPhaseId);
+    const correctAnswerData = phaseConfig?.getCorrectAnswer?.(currentItem) || null;
+
+    const correctAnswer = correctAnswerData?.answer || null;
+    const correctResult = correctAnswerData?.result || null;
+
+    // Add correct answer to guesses and results if available
+    const updatedGuesses = correctAnswer !== null
+      ? [...phaseState.guesses, correctAnswer]
+      : phaseState.guesses;
+
+    const updatedGuessResults = correctResult !== null
+      ? [...phaseState.guessResults, correctResult]
+      : phaseState.guessResults;
 
     // Reveal all tiles and hints, mark as complete with 0 score
     const updatedPhaseState: PhaseState = {
       ...phaseState,
+      guesses: updatedGuesses,
+      guessResults: updatedGuessResults,
       revealedTiles: phaseState.revealedTiles.map(() => true),
       hintsRevealed: state.gameConfig?.hints.maxHints || 6,
       score: 0,
@@ -486,10 +615,18 @@ export const createUnifiedGameSlice: StateCreator<UnifiedGameState> = (set, get)
         : pr
     );
 
+    // Calculate total score using game config's scoreAggregator
+    const phaseScoresMap = updatedPhaseResults.reduce((acc, pr) => {
+      acc[pr.phaseId] = pr.score;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const totalScore = gameConfig.scoreAggregator(phaseScoresMap);
+
     const updatedGameResults: UnifiedGameResults = {
       ...state.gameResults!,
       phaseResults: updatedPhaseResults,
-      totalScore: updatedPhaseResults.reduce((sum, pr) => sum + pr.score, 0),
+      totalScore,
     };
 
     set({
@@ -498,6 +635,19 @@ export const createUnifiedGameSlice: StateCreator<UnifiedGameState> = (set, get)
     });
 
     get().saveGameState();
+
+    // Auto-advance to completion if this is the last phase (mirrors makeGuess logic)
+    if (gameConfig) {
+      const currentIndex = gameConfig.phases.findIndex((p) => p.id === currentPhaseId);
+      const isLastPhase = currentIndex === gameConfig.phases.length - 1;
+
+      if (isLastPhase) {
+        debugLogger.phase('Last phase given up, auto-completing game', { currentPhaseId });
+        setTimeout(() => {
+          get().completeGame();
+        }, 500); // Small delay for UX consistency with makeGuess
+      }
+    }
   },
 
   markGameTracked: () => {
@@ -512,5 +662,81 @@ export const createUnifiedGameSlice: StateCreator<UnifiedGameState> = (set, get)
     });
 
     get().saveGameState();
+  },
+
+  // Archive mode methods for unified games (use game state instead of parameters)
+  unlockUnifiedArchives: () => {
+    const state = get();
+    const gameTypeId = state.currentGameTypeId;
+    if (!gameTypeId) return;
+
+    const today = new Date().toISOString().split("T")[0];
+    const expiresAt = Date.now() + 24 * 60 * 60 * 1000;
+    const storageKey = `${gameTypeId}-archives-unlock`;
+
+    if (typeof window !== "undefined") {
+      localStorage.setItem(storageKey, JSON.stringify({
+        grantedOnLocalISO: today,
+        expiresAt,
+      }));
+    }
+  },
+
+  isUnifiedArchivesUnlockedNow: () => {
+    if (typeof window === "undefined") return false;
+
+    const state = get();
+    const gameTypeId = state.currentGameTypeId;
+    if (!gameTypeId) return false;
+
+    const storageKey = `${gameTypeId}-archives-unlock`;
+    const stored = localStorage.getItem(storageKey);
+    if (!stored) return false;
+
+    try {
+      const { grantedOnLocalISO, expiresAt } = JSON.parse(stored);
+      const now = Date.now();
+      const today = new Date().toISOString().split("T")[0];
+
+      return now < expiresAt && grantedOnLocalISO === today;
+    } catch {
+      return false;
+    }
+  },
+
+  startUnifiedArchiveMode: (date) => {
+    const state = get();
+
+    // Save current game state if complete
+    if (state.currentPhaseId === "complete") {
+      state.saveGameState();
+    }
+
+    set({
+      isArchiveMode: true,
+      puzzleDate: date,
+    });
+  },
+
+  exitUnifiedArchiveMode: () => {
+    const state = get();
+    if (!state.isArchiveMode) return;
+
+    const gameConfig = state.gameConfig;
+    if (!gameConfig) return;
+
+    // Navigate back to today's game
+    if (typeof window !== "undefined") {
+      window.location.href = gameConfig.urlPath;
+    }
+  },
+
+  // Error handling methods
+  setGameError: (error) => {
+    set({ gameError: error });
+  },
+
+  clearGameError: () => {
+    set({ gameError: null });
   },
 });

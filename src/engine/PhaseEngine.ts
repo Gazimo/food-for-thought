@@ -12,6 +12,7 @@
 
 import { GameConfig, PhaseConfig, PhaseId } from "@/config/games/types";
 import { normalizeForComparison } from "@/utils/stringNormalization";
+import debugLogger from "@/utils/debugLogger";
 
 /**
  * Result of a guess validation
@@ -61,18 +62,35 @@ export class PhaseEngine {
   ): GuessValidationResult {
     const phaseConfig = this.getPhaseConfig(phaseId);
     if (!phaseConfig) {
-      console.error(`Phase config not found for: ${phaseId}`);
+      debugLogger.error(`Phase config not found for: ${phaseId}`);
       return { isCorrect: false };
     }
 
+    debugLogger.validation('Validating guess', {
+      phaseId,
+      guess,
+      guessType: typeof guess,
+      hasCustomValidator: !!this.validators.get(phaseId),
+      inputType: phaseConfig.inputType,
+    });
+
     // Use custom validator if registered
     const customValidator = this.validators.get(phaseId);
-    if (customValidator) {
-      return customValidator(guess, item, phaseConfig);
-    }
+    const result = customValidator
+      ? customValidator(guess, item, phaseConfig)
+      : this.defaultValidation(guess, item, phaseConfig);
 
-    // Otherwise use default validation based on input type
-    return this.defaultValidation(guess, item, phaseConfig);
+    debugLogger.validation(
+      result.isCorrect ? '✅ Guess correct' : '❌ Guess incorrect',
+      {
+        phaseId,
+        guess,
+        isCorrect: result.isCorrect,
+        resultData: result.resultData,
+      }
+    );
+
+    return result;
   }
 
   /**
@@ -106,24 +124,8 @@ export class PhaseEngine {
     item: any,
     phaseConfig: PhaseConfig
   ): GuessValidationResult {
-    // Determine which field to check based on phase
-    let acceptableGuesses: string[] = [];
-
-    // Map phase IDs to the correct acceptable guesses field
-    switch (phaseConfig.id) {
-      case "dish":
-        acceptableGuesses = item.acceptableGuesses || [];
-        break;
-      case "pasta":
-        acceptableGuesses = item.acceptableGuesses || [];
-        break;
-      case "sauce":
-        acceptableGuesses = item.sauceAcceptableGuesses || [];
-        break;
-      default:
-        console.warn(`No acceptable guesses mapping for phase: ${phaseConfig.id}`);
-        acceptableGuesses = item.acceptableGuesses || [];
-    }
+    const fieldName = phaseConfig.acceptableGuessesField || "acceptableGuesses";
+    const acceptableGuesses = item[fieldName] || [];
 
     const isCorrect = this.isGuessInAcceptableList(guess, acceptableGuesses);
     return { isCorrect };
@@ -161,7 +163,8 @@ export class PhaseEngine {
     item: any,
     phaseConfig: PhaseConfig
   ): GuessValidationResult {
-    const actualValue = item.proteinPerServing || item.protein || 0;
+    const fieldName = phaseConfig.correctAnswerField || "proteinPerServing";
+    const actualValue = item[fieldName] || item.protein || 0;
     const tolerance = 2; // ±2g tolerance (could be configurable)
 
     const isCorrect = Math.abs(guess - actualValue) <= tolerance;
@@ -209,6 +212,16 @@ export class PhaseEngine {
       0,
       phaseConfig.baseScore - wrongGuesses * phaseConfig.penaltyPerGuess
     );
+
+    debugLogger.scoring('Calculating phase score', {
+      phaseId,
+      guessCount,
+      isSuccess,
+      baseScore: phaseConfig.baseScore,
+      penaltyPerGuess: phaseConfig.penaltyPerGuess,
+      wrongGuesses,
+      calculatedScore: score,
+    });
 
     return score;
   }

@@ -4,6 +4,7 @@
  */
 
 import { normalizeForComparison } from '@/utils/stringNormalization';
+import { ProteinGuessResult } from './game';
 
 // ============================================================================
 // DATABASE ROW TYPES
@@ -257,15 +258,6 @@ export interface RegionGuessResult {
   distance: number;  // km from correct region
   direction: string; // N, NE, E, SE, S, SW, W, NW
   isCorrect: boolean;
-}
-
-/**
- * Protein guess result
- */
-export interface ProteinGuessResult {
-  guess: number;
-  hint: 'higher' | 'lower' | 'correct';
-  difference?: number;
 }
 
 /**

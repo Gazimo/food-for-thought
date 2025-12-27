@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { handleArchiveUnlock } from "@/utils/api/archiveHandlers";
+import { handleAvailableDates } from "@/utils/api/archiveHandlers";
 import { getArchiveConfigById } from "@/utils/archiveConfig";
 
 export default async function handler(
@@ -7,5 +7,5 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const archiveConfig = getArchiveConfigById("food-for-thought");
-  return handleArchiveUnlock(req, res, archiveConfig.cookieName);
+  return handleAvailableDates(req, res, archiveConfig.tableName);
 }

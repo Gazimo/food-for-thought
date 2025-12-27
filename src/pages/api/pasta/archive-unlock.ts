@@ -6,6 +6,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const archiveConfig = getArchiveConfigById("food-for-thought");
+  const archiveConfig = getArchiveConfigById("italian-pasta");
   return handleArchiveUnlock(req, res, archiveConfig.cookieName);
 }

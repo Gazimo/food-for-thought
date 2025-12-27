@@ -1,13 +1,12 @@
 import { emojiThemes, launchEmojiBurst } from "../../utils/celebration";
 import { getCountryCoordsMap } from "../../utils/countries";
 import {
-  calculateDirection,
-  calculateDistance,
   capitalizeFirst,
   isDishGuessCorrect,
   normalizeString,
 } from "../../utils/gameHelpers";
 import { GameSliceCreator, GuessSlice } from "../types/slices";
+import { processLocationGuess } from "../utils/locationGuessLogic";
 
 const countryCoords = getCountryCoordsMap();
 
@@ -62,60 +61,58 @@ export const createGuessSlice: GameSliceCreator<GuessSlice> = (set, get) => ({
       get().setLoading("countryGuess", true);
       const normalizedGuess = normalizeString(guess);
       if (gamePhase === "country") {
-        const isCorrect =
-          normalizedGuess === normalizeString(currentDish.country);
-
+        const coords = countryCoords[normalizedGuess];
         const newGuesses = [...get().countryGuesses, normalizedGuess];
         const results = get().countryGuessResults;
         const updatedResults = [...results];
-        if (isCorrect) {
+
+        if (!coords) {
           updatedResults.push({
             country: capitalizeFirst(normalizedGuess),
-            isCorrect: true,
-            distance: 0,
-            direction: "N/A",
+            isCorrect: false,
+            distance: NaN,
+            direction: "Invalid",
           });
-        } else {
-          const coords = countryCoords[normalizedGuess];
-          if (!coords) {
-            updatedResults.push({
-              country: capitalizeFirst(normalizedGuess),
-              isCorrect: false,
-              distance: NaN,
-              direction: "Invalid",
-            });
-          } else {
-            const distance = calculateDistance(
-              coords.lat,
-              coords.lng,
-              currentDish.coordinates?.lat || 0,
-              currentDish.coordinates?.lng || 0
-            );
-            const direction = calculateDirection(
-              coords.lat,
-              coords.lng,
-              currentDish.coordinates?.lat || 0,
-              currentDish.coordinates?.lng || 0
-            );
-            updatedResults.push({
-              country: capitalizeFirst(normalizedGuess),
-              isCorrect: false,
-              distance,
-              direction,
-            });
-          }
+          set((state) => ({
+            countryGuesses: newGuesses,
+            countryGuessResults: updatedResults,
+            gameResults: {
+              ...state.gameResults,
+              countryGuesses: newGuesses,
+              countryGuessSuccess: false,
+            },
+          }));
+          get().saveCurrentGameState();
+          return false;
         }
+
+        const result = processLocationGuess({
+          guess: normalizedGuess,
+          correctLocation: currentDish.country,
+          guessCoords: coords,
+          correctCoords: currentDish.coordinates || { lat: 0, lng: 0 },
+          currentGuesses: get().countryGuesses,
+          maxGuesses: null,
+        });
+
+        updatedResults.push({
+          country: capitalizeFirst(normalizedGuess),
+          isCorrect: result.isCorrect,
+          distance: result.guessResult.distance,
+          direction: result.guessResult.direction,
+        });
+
         set((state) => ({
           countryGuesses: newGuesses,
           countryGuessResults: updatedResults,
           gameResults: {
             ...state.gameResults,
             countryGuesses: newGuesses,
-            countryGuessSuccess: isCorrect,
+            countryGuessSuccess: result.isCorrect,
           },
         }));
         get().saveCurrentGameState();
-        return isCorrect;
+        return result.isCorrect;
       }
       return false;
     } finally {

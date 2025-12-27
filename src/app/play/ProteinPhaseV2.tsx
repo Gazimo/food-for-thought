@@ -1,20 +1,10 @@
 "use client";
 
-import { ProteinInput } from "@/components/inputs/ProteinInput";
-import { IngredientProteinStrip } from "@/components/IngredientProteinStrip";
-import { ProteinGuessFeedback } from "@/components/ProteinGuessFeedback";
+import { ProteinPhase } from "@/components/game/phases/ProteinPhase";
 import { ProteinSkeleton } from "@/components/GameSkeleton";
 import { useGameStore } from "@/store";
 import { useTodaysDish } from "@/hooks/useDishes";
 
-/**
- * ProteinPhaseV2 - Refactored version using specialized ProteinInput component
- *
- * Changes from original ProteinPhase:
- * - Uses ProteinInput instead of GuessInput
- * - Cleaner separation of concerns
- * - Same functionality, better architecture
- */
 export function ProteinPhaseV2() {
   const {
     guessProtein,
@@ -46,36 +36,17 @@ export function ProteinPhaseV2() {
   }
 
   return (
-    <div className="flex flex-col gap-4 w-full">
-      {/* Protein Strip */}
-      <div className="w-full">
-        <IngredientProteinStrip
-          imageUrl={currentDish.imageUrl}
-          dishName={currentDish.name}
-          keyIngredients={currentDish.ingredients}
-        />
-      </div>
-
-      {/* Input Section */}
-      {!isComplete && (
-        <div className="flex flex-col gap-4">
-          <ProteinInput
-            previousGuesses={proteinGuesses}
-            actualProtein={currentDish.proteinPerServing}
-            onGuess={guessProtein}
-            onGiveUp={revealCorrectProtein}
-            isSubmitting={isSubmitting}
-            isComplete={isComplete}
-            placeholder="Enter grams of protein..."
-          />
-        </div>
-      )}
-
-      {/* Feedback */}
-      <ProteinGuessFeedback
-        guessResults={proteinGuessResults}
-        actualProtein={currentDish.proteinPerServing}
-      />
-    </div>
+    <ProteinPhase
+      imageUrl={currentDish.imageUrl}
+      imageName={currentDish.name}
+      proteinSources={currentDish.ingredients}
+      actualProtein={currentDish.proteinPerServing}
+      guesses={proteinGuesses}
+      guessResults={proteinGuessResults}
+      isComplete={isComplete}
+      isSubmitting={isSubmitting}
+      onGuess={guessProtein}
+      onGiveUp={revealCorrectProtein}
+    />
   );
 }

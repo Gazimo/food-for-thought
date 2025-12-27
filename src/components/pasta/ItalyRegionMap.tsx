@@ -31,7 +31,7 @@ export const ItalyRegionMap = ({
   selectedRegion,
 }: ItalyRegionMapProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
-  const [dimensions, setDimensions] = useState({ width: 700, height: 500 });
+  const [dimensions, setDimensions] = useState({ width: 400, height: 320 });
   const [isMobile, setIsMobile] = useState(false);
 
   // Mobile detection
@@ -57,8 +57,8 @@ export const ItalyRegionMap = ({
   // D3 projection for Italy
   // Center on Italy's approximate geographic center
   const projection = geoMercator()
-    .center([12.5, 42.5])  // Italy's center (lon, lat)
-    .scale(isMobile ? 2000 : 2300)
+    .center([12.5, 42.1])  // Italy's center (lon, lat)
+    .scale(isMobile ? 1600 : 1600)
     .translate([dimensions.width / 2, dimensions.height / 2]);
 
   const pathGenerator = geoPath().projection(projection);
@@ -78,7 +78,7 @@ export const ItalyRegionMap = ({
     const resize = () => {
       if (svgRef.current) {
         const width = svgRef.current.clientWidth;
-        const height = isMobile ? width * 1.5 : width * 0.9;
+        const height = isMobile ? Math.min(width * 1.5, 500) : width * 0.9;
         setDimensions({ width, height });
       }
     };

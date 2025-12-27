@@ -16,6 +16,8 @@ export const foodForThoughtConfig: GameConfig = {
     "A daily global game about food and geography. Uncover the dish. Track it to its origin. Become a Chef.",
   urlPath: "/play",
   icon: "🍽️",
+  architecture: "legacy",
+  scoreAggregator: (scores) => Object.values(scores).reduce((sum, s) => sum + s, 0),
   phases: [
     {
       id: "dish",
@@ -30,6 +32,7 @@ export const foodForThoughtConfig: GameConfig = {
       tileGrid: [3, 2],
       baseScore: 100,
       penaltyPerGuess: 15,
+      navigationLabel: "Guess where it's from",
     },
     {
       id: "country",
@@ -37,11 +40,24 @@ export const foodForThoughtConfig: GameConfig = {
       icon: "🌍",
       description: "Identify which country this dish originates from",
       inputType: "country-map",
-      maxGuesses: 6,
+      maxGuesses: null,
       revealsTiles: false,
       revealsHints: false,
       baseScore: 100,
       penaltyPerGuess: 15,
+      navigationLabel: "Guess the protein",
+      getCorrectAnswer: (item) =>
+        item.country
+          ? {
+              answer: item.country,
+              result: {
+                country: item.country,
+                isCorrect: true,
+                distance: 0,
+                direction: "",
+              },
+            }
+          : null,
     },
     {
       id: "protein",
@@ -54,6 +70,17 @@ export const foodForThoughtConfig: GameConfig = {
       revealsHints: false,
       baseScore: 100,
       penaltyPerGuess: 20,
+      getCorrectAnswer: (item) =>
+        item.proteinPerServing
+          ? {
+              answer: item.proteinPerServing,
+              result: {
+                guess: item.proteinPerServing,
+                isCorrect: true,
+                difference: 0,
+              },
+            }
+          : null,
     },
   ],
   hints: {

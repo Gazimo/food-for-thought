@@ -3,16 +3,15 @@ import {
   PastaGamePhase,
   PastaGameResults,
   PASTA_SCORING,
-  ProteinGuessResult,
   RegionGuessResult,
-  calculateDirection,
-  calculateDistance,
   calculatePhaseScore,
   isGuessCorrect,
   ITALIAN_REGIONS,
 } from "@/types/pasta";
+import { ProteinGuessResult } from "@/types/game";
 import { launchEmojiBurst, emojiThemes } from "@/utils/celebration";
 import { StateCreator } from "zustand";
+import { processLocationGuess } from "../utils/locationGuessLogic";
 
 export interface PastaGameState {
   // Current pasta
@@ -313,9 +312,6 @@ export const createPastaGameSlice: StateCreator<PastaGameState> = (
 
     if (!currentPasta || state.currentPhase !== "region") return;
 
-    const newGuesses = [...regionGuesses, guess];
-
-    // Calculate distance and direction
     const guessCoords = ITALIAN_REGIONS[guess as keyof typeof ITALIAN_REGIONS];
     const correctCoords = currentPasta.regionCoordinates;
 
@@ -324,39 +320,30 @@ export const createPastaGameSlice: StateCreator<PastaGameState> = (
       return;
     }
 
-    const distance = calculateDistance(
-      guessCoords.lat,
-      guessCoords.lng,
-      correctCoords.lat,
-      correctCoords.lng
-    );
-    const direction = calculateDirection(
-      guessCoords.lat,
-      guessCoords.lng,
-      correctCoords.lat,
-      correctCoords.lng
-    );
+    const result = processLocationGuess({
+      guess,
+      correctLocation: currentPasta.region,
+      guessCoords,
+      correctCoords,
+      currentGuesses: regionGuesses,
+      maxGuesses: null,
+    });
 
-    const isCorrect = guess.toLowerCase() === currentPasta.region.toLowerCase();
-
+    const newGuesses = [...regionGuesses, guess];
     const newGuessResult: RegionGuessResult = {
       region: guess,
-      distance,
-      direction,
-      isCorrect,
+      distance: result.guessResult.distance,
+      direction: result.guessResult.direction,
+      isCorrect: result.isCorrect,
     };
-
     const newGuessResults = [...regionGuessResults, newGuessResult];
-    const maxGuessesReached = newGuesses.length >= PASTA_SCORING.REGION.MAX_GUESSES;
-    const phaseComplete = isCorrect || maxGuessesReached;
 
-    // Calculate score
-    const wrongGuesses = newGuesses.length - (isCorrect ? 1 : 0);
+    const wrongGuesses = newGuesses.length - (result.isCorrect ? 1 : 0);
     const regionScore = calculatePhaseScore(
       PASTA_SCORING.REGION.BASE_SCORE,
       PASTA_SCORING.REGION.PENALTY_PER_GUESS,
       wrongGuesses,
-      isCorrect
+      result.isCorrect
     );
 
     set({
@@ -364,14 +351,13 @@ export const createPastaGameSlice: StateCreator<PastaGameState> = (
       regionGuessResults: newGuessResults,
       gameResults: {
         ...state.gameResults,
-        regionSuccess: isCorrect,
+        regionSuccess: result.isCorrect,
         regionGuesses: newGuesses.length,
         regionScore,
       },
     });
 
-    // Celebration on correct guess (no auto-advance)
-    if (isCorrect) {
+    if (result.isCorrect) {
       if (typeof window !== "undefined") {
         launchEmojiBurst(emojiThemes.region);
       }
@@ -393,16 +379,11 @@ export const createPastaGameSlice: StateCreator<PastaGameState> = (
     const isCorrect =
       Math.abs(guess - actualProtein) <= tolerance;
 
-    const hint: "higher" | "lower" | "correct" = isCorrect
-      ? "correct"
-      : guess < actualProtein
-      ? "higher"
-      : "lower";
-
     const newGuessResult: ProteinGuessResult = {
       guess,
-      hint,
+      actualProtein,
       difference: Math.abs(guess - actualProtein),
+      isCorrect,
     };
 
     const newGuessResults = [...proteinGuessResults, newGuessResult];
@@ -510,8 +491,8 @@ export const createPastaGameSlice: StateCreator<PastaGameState> = (
   },
 
   isRegionPhaseComplete: () => {
-    const { gameResults, regionGuesses } = get();
-    return gameResults.regionSuccess || regionGuesses.length >= PASTA_SCORING.REGION.MAX_GUESSES;
+    const { gameResults } = get();
+    return gameResults.regionSuccess;
   },
 
   isProteinPhaseComplete: () => {

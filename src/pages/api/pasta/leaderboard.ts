@@ -77,7 +77,7 @@ export default async function handler(
         return res.status(400).json({ error: "Missing required fields" });
       }
 
-      // Validate score ranges (0-100 per phase, 0-400 total)
+      // Validate score ranges (0-100 per phase, 0-100 total weighted)
       if (
         pastaScore < 0 ||
         pastaScore > 100 ||
@@ -88,7 +88,7 @@ export default async function handler(
         proteinScore < 0 ||
         proteinScore > 100 ||
         totalScore < 0 ||
-        totalScore > 400
+        totalScore > 100
       ) {
         return res.status(400).json({ error: "Invalid score values" });
       }
@@ -150,22 +150,24 @@ export default async function handler(
 
       // Track analytics
       const posthog = PostHogClient();
-      try {
-        await posthog.capture({
-          distinctId: sessionId,
-          event: "pasta_leaderboard_score_submitted",
-          properties: {
-            pastaDate,
-            totalScore,
-            percentile: stats.todayRank.percentile,
-            pastaScore,
-            sauceScore,
-            regionScore,
-            proteinScore,
-          },
-        });
-      } catch (error) {
-        console.error("PostHog capture error:", error);
+      if (posthog) {
+        try {
+          await posthog.capture({
+            distinctId: sessionId,
+            event: "pasta_leaderboard_score_submitted",
+            properties: {
+              pastaDate,
+              totalScore,
+              percentile: stats.todayRank.percentile,
+              pastaScore,
+              sauceScore,
+              regionScore,
+              proteinScore,
+            },
+          });
+        } catch (error) {
+          console.error("PostHog capture error:", error);
+        }
       }
 
       return res.status(200).json(stats);

@@ -48,8 +48,8 @@ export interface PhaseConfig {
   description: string;
   /** Type of input for guessing */
   inputType: GuessInputType;
-  /** Maximum number of guesses allowed */
-  maxGuesses: number;
+  /** Maximum number of guesses allowed (null = infinite) */
+  maxGuesses: number | null;
   /** Whether wrong guesses reveal tiles */
   revealsTiles?: boolean;
   /** Whether wrong guesses reveal ingredients/hints */
@@ -62,6 +62,14 @@ export interface PhaseConfig {
   baseScore: number;
   /** Points deducted per wrong guess */
   penaltyPerGuess: number;
+  /** Label for navigation button to next phase */
+  navigationLabel?: string;
+  /** Field name for acceptable guesses (for text input types) */
+  acceptableGuessesField?: string;
+  /** Field name for the correct answer (for validation) */
+  correctAnswerField?: string;
+  /** Function to get correct answer and result for give-up functionality */
+  getCorrectAnswer?: (item: any) => { answer: string | number; result: any } | null;
 }
 
 /**
@@ -87,6 +95,32 @@ export interface PostGameContent {
 }
 
 /**
+ * Score aggregator function type
+ * Takes individual phase scores and returns total score
+ */
+export type ScoreAggregator = (phaseScores: Record<string, number>) => number;
+
+/**
+ * Leaderboard statistics returned after score submission
+ */
+export interface LeaderboardStats {
+  rank?: number;
+  percentile?: number;
+  totalPlayers?: number;
+}
+
+/**
+ * Score submitter interface for game-specific leaderboard submission
+ */
+export interface ScoreSubmitter {
+  submit(
+    phaseResults: PhaseResult[],
+    item: any,
+    updateStreak: () => number
+  ): Promise<LeaderboardStats>;
+}
+
+/**
  * Complete configuration for a game type
  */
 export interface GameConfig {
@@ -100,8 +134,14 @@ export interface GameConfig {
   urlPath: string;
   /** Emoji icon for the game */
   icon: string;
+  /** Architecture version this game uses */
+  architecture: "legacy" | "unified";
   /** Ordered array of phases for this game */
   phases: PhaseConfig[];
+  /** Function to aggregate phase scores into total score */
+  scoreAggregator: ScoreAggregator;
+  /** Score submitter for leaderboard submission */
+  scoreSubmitter?: ScoreSubmitter;
   /** Hint configuration */
   hints: HintConfig;
   /** Post-game content configuration */

@@ -141,7 +141,7 @@ async function copyData() {
   const prodClient = createClient(prodUrl!, prodKey!);
   const localClient = createClient(localUrl, localKey);
 
-  // Tables to copy (Food for Thought game only - pasta tables are WIP)
+  // Tables to copy
   const tables = ["dishes", "game_scores"];
   const results: Record<string, number> = {};
 

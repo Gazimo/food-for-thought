@@ -129,21 +129,23 @@ export default async function handler(
 
       // Track analytics
       const posthog = PostHogClient();
-      try {
-        await posthog.capture({
-          distinctId: sessionId,
-          event: "leaderboard_score_submitted",
-          properties: {
-            dishDate,
-            totalScore,
-            percentile: stats.todayRank.percentile,
-            dishScore,
-            countryScore,
-            proteinScore,
-          },
-        });
-      } catch (error) {
-        console.error("PostHog capture error:", error);
+      if (posthog) {
+        try {
+          await posthog.capture({
+            distinctId: sessionId,
+            event: "leaderboard_score_submitted",
+            properties: {
+              dishDate,
+              totalScore,
+              percentile: stats.todayRank.percentile,
+              dishScore,
+              countryScore,
+              proteinScore,
+            },
+          });
+        } catch (error) {
+          console.error("PostHog capture error:", error);
+        }
       }
 
       return res.status(200).json(stats);

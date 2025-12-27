@@ -50,7 +50,7 @@ export function GameProvider({ gameTypeId, children }: GameProviderProps) {
 
     return {
       gameConfig,
-      gameTypeId: gameConfig.id,
+      gameTypeId: gameTypeId, // Use the parameter, not gameConfig.id
       getPhaseConfig: (phaseId: PhaseId) =>
         getPhaseConfigFromRegistry(gameConfig.id, phaseId),
       isDefaultGame: gameConfig.id === "food-for-thought",

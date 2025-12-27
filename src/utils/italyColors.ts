@@ -3,6 +3,8 @@
  * Distance thresholds are scaled for Italy's geography (~1,400km max distance)
  */
 
+export { getDirectionArrow } from "./colors";
+
 /**
  * Get color for distance based on Italy-specific thresholds
  * Scaled approximately 4x smaller than world thresholds since Italy is much smaller
@@ -28,25 +30,6 @@ export const getColorClassForItalyDistance = (distance: number): string => {
   if (distance < 350) return "bg-orange-400";
   if (distance < 600) return "bg-red-300";
   return "bg-red-500";
-};
-
-/**
- * Map compass directions to arrow emojis
- */
-export const getDirectionArrow = (direction: string): string => {
-  const directionMap: Record<string, string> = {
-    N: "⬆️",
-    NE: "↗️",
-    E: "➡️",
-    SE: "↘️",
-    S: "⬇️",
-    SW: "↙️",
-    W: "⬅️",
-    NW: "↖️",
-    "": "",
-    "N/A": "",
-  };
-  return directionMap[direction] || direction;
 };
 
 /**
