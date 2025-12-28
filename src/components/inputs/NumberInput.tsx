@@ -2,7 +2,6 @@
 
 import { cn } from "@/lib/utils";
 import { ChangeEvent, KeyboardEvent } from "react";
-import { useGameStore } from "../../store";
 
 interface NumberInputProps {
   value: string;
@@ -25,8 +24,6 @@ export const NumberInput: React.FC<NumberInputProps> = ({
   max = 1000,
   disabled = false,
 }) => {
-  const { activePhase, isPhaseComplete } = useGameStore();
-  const isComplete = isPhaseComplete(activePhase);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -59,7 +56,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
           "border-gray-200 focus:border-blue-500 focus:outline-none",
           shake && "animate-shake"
         )}
-        disabled={isComplete || disabled}
+        disabled={disabled}
       />
     </div>
   );

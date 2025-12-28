@@ -9,6 +9,8 @@ import { PastaTextGuessPhase } from "@/components/game/phases/PastaTextGuessPhas
 import { ItalianRegionPhase } from "@/components/game/phases/ItalianRegionPhase";
 import { NumericGuessPhase } from "@/components/game/phases/NumericGuessPhase";
 import { ProteinPhase } from "@/components/game/phases/ProteinPhase";
+import { DishPhase } from "@/components/game/phases/DishPhase";
+import { MapGuessPhase } from "@/components/game/phases/MapGuessPhase";
 import { PhaseRenderer } from "@/components/PhaseRenderer";
 import { getPhaseConfig } from "@/config/gamePhases";
 import { useTodaysDish } from "@/hooks/useDishes";
@@ -21,6 +23,11 @@ import {
   validateRegionGuess,
   validateProteinGuess as validatePastaProteinGuess,
 } from "@/engine/validators/pastaValidators";
+import {
+  validateDishGuess,
+  validateCountryGuess,
+  validateProteinGuess as validateFFTProteinGuess,
+} from "@/engine/validators/fftValidators";
 import debugLogger from "@/utils/debugLogger";
 
 // Feature flag to toggle between original and V2 components (F4T only)
@@ -193,6 +200,96 @@ function renderUnifiedPhase(
                 </div>
               ) : null
             }
+          />
+        );
+    }
+  }
+
+  // F4T game phases
+  if (gameTypeId === "food-for-thought") {
+    switch (phaseId) {
+      case "dish":
+        return (
+          <DishPhase
+            {...commonPhaseProps}
+            dish={item}
+            onGuess={(guess: string) => makeGuess(guess, validateDishGuess)}
+          />
+        );
+
+      case "country": {
+        const { MapGuessVisualizer } = require("@/components/MapGuessVisualizer");
+        const { getCountryNames, getCountryCoordsMap } = require("@/utils/countries");
+        const { getColorForDistance, getDirectionArrow } = require("@/utils/colors");
+
+        const countryNames = getCountryNames();
+        const countryCoords = getCountryCoordsMap();
+
+        // Build enriched guesses for map visualization
+        const enrichedGuesses = (phaseState.guessResults || []).map((result: any, index: number) => ({
+          country: phaseState.guesses[index],
+          isCorrect: result.isCorrect,
+          lat: countryCoords[result.country?.toLowerCase()]?.lat || 0,
+          lng: countryCoords[result.country?.toLowerCase()]?.lng || 0,
+          distance: result.distance || 0,
+        }));
+
+        // Convert to LocationGuessResult format for feedback component
+        const locationResults = (phaseState.guessResults || []).map((r: any) => ({
+          location: r.country,
+          distance: r.distance,
+          direction: r.direction,
+          isCorrect: r.isCorrect,
+        }));
+
+        // Color class mapper (matching legacy implementation)
+        const getColorClass = (distance: number): string => {
+          const hex = getColorForDistance(distance);
+          const colorMap: Record<string, string> = {
+            "#22c55e": "bg-green-500",
+            "#4ade80": "bg-green-400",
+            "#86efac": "bg-green-300",
+            "#facc15": "bg-yellow-400",
+            "#fb923c": "bg-orange-400",
+            "#fca5a5": "bg-red-300",
+            "#ef4444": "bg-red-500",
+          };
+          return colorMap[hex] || "bg-gray-400";
+        };
+
+        return (
+          <MapGuessPhase
+            mapVisualizer={<MapGuessVisualizer guesses={enrichedGuesses} />}
+            suggestions={countryNames}
+            previousGuesses={phaseState.guesses as string[]}
+            onGuess={(guess: string) => makeGuess(guess, validateCountryGuess)}
+            onGiveUp={giveUpPhase}
+            placeholder="Enter a country name..."
+            locationType="country"
+            guessResults={locationResults}
+            getColorForDistance={getColorClass}
+            getDirectionArrow={getDirectionArrow}
+            funFact={item.funFact}
+            isComplete={phaseState.isComplete}
+            isSubmitting={false}
+          />
+        );
+      }
+
+      case "protein":
+        return (
+          <ProteinPhase
+            imageUrl={item.imageUrl || ''}
+            imageName={item.name}
+            proteinSources={item.ingredients || []}
+            actualProtein={item.proteinPerServing || 0}
+            guesses={phaseState.guesses as number[]}
+            guessResults={phaseState.guessResults || []}
+            isComplete={phaseState.isComplete}
+            isSubmitting={false}
+            onGuess={(guess: number) => makeGuess(guess, validateFFTProteinGuess)}
+            onGiveUp={giveUpPhase}
+            phaseConfig={phaseConfig}
           />
         );
     }

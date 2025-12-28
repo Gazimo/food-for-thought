@@ -29,6 +29,8 @@ import { useCountUp } from "@/hooks/useCountUp";
 import { getDisplayTitle, getPerformanceTier } from "@/types/leaderboard";
 import { generatePastaShareText } from "@/utils/pastaShareText";
 import { getPastaStreak, updatePastaStreak, alreadyPlayedPastaToday } from "@/utils/pastaStreak";
+import { generateShareText } from "@/utils/shareText";
+import { getStreak, updateStreak } from "@/utils/streak";
 import { SharePopover } from "@/components/SharePopover";
 import { ArchiveStatus } from "@/components/ArchiveStatus";
 import { getArchiveConfig } from "@/utils/archiveConfig";
@@ -47,6 +49,7 @@ export const UnifiedResultModal: React.FC<UnifiedResultModalProps> = ({
   const currentItem = useGameStore((state) => state.currentItem);
   const currentPhaseId = useGameStore((state) => state.currentPhaseId);
   const gameResults = useGameStore((state) => state.gameResults);
+  const phases = useGameStore((state) => state.phases);
   const markGameTracked = useGameStore((state) => state.markGameTracked);
 
   // Derive archive config from game config
@@ -64,6 +67,8 @@ export const UnifiedResultModal: React.FC<UnifiedResultModalProps> = ({
   useEffect(() => {
     if (currentGameTypeId === "italian-pasta") {
       setStreak(getPastaStreak());
+    } else if (currentGameTypeId === "food-for-thought") {
+      setStreak(getStreak());
     }
 
     // Check archive unlock status using unified slice method
@@ -96,17 +101,23 @@ export const UnifiedResultModal: React.FC<UnifiedResultModalProps> = ({
     try {
       // Extract phase scores
       const phaseScores: Record<string, number> = {};
-      gameResults.phaseResults.forEach((pr) => {
+      const unifiedResults = gameResults as any;
+      (unifiedResults.phaseResults || []).forEach((pr: any) => {
         phaseScores[pr.phaseId as string] = pr.score;
       });
 
       // Use game-specific scoreSubmitter if provided
       if (gameConfig.scoreSubmitter) {
         const stats = await gameConfig.scoreSubmitter.submit(
-          gameResults.phaseResults,
+          unifiedResults.phaseResults || [],
           currentItem,
           () => {
-            const newStreak = currentGameTypeId === "italian-pasta" ? updatePastaStreak() : 0;
+            const newStreak =
+              currentGameTypeId === "italian-pasta"
+                ? updatePastaStreak()
+                : currentGameTypeId === "food-for-thought"
+                  ? updateStreak()
+                  : 0;
             setStreak(newStreak);
             return newStreak;
           }
@@ -129,28 +140,49 @@ export const UnifiedResultModal: React.FC<UnifiedResultModalProps> = ({
     return null;
   }
 
-  const hasAnySuccess = gameResults.phaseResults.some((pr) => pr.success);
+  // Type guard for UnifiedGameResults
+  const unifiedResults = gameResults as any;
+  const hasAnySuccess = unifiedResults.phaseResults?.some((pr: any) => pr.success) || false;
 
-  // Generate share text for pasta game
-  const shareText = currentGameTypeId === "italian-pasta" ? generatePastaShareText({
-    pastaGuesses: gameResults.phaseResults.find(p => p.phaseId === "pasta")?.guesses.map(g => g.guess).filter(Boolean) || [],
-    sauceGuesses: gameResults.phaseResults.find(p => p.phaseId === "sauce")?.guesses.map(g => g.guess).filter(Boolean) || [],
-    regionGuesses: gameResults.phaseResults.find(p => p.phaseId === "region")?.guesses.map(g => ({
-      region: g.guess,
-      distance: g.result?.distance || 0,
-      direction: g.result?.direction || "N",
-    })) || [],
-    proteinGuesses: gameResults.phaseResults.find(p => p.phaseId === "protein")?.guesses.map(g => ({
-      guess: parseInt(g.guess),
-      actualProtein: currentItem.proteinPerServing || 0,
-    })) || [],
-    pasta: currentItem.name,
-    sauce: currentItem.sauceName || "",
-    region: currentItem.region || "",
-    streak,
-    pastaAcceptableGuesses: currentItem.acceptableGuesses || [],
-    sauceAcceptableGuesses: currentItem.sauceAcceptableGuesses || [],
-  }) : `I played ${gameConfig.name}!\n\nTotal Score: ${gameResults.totalScore.toFixed(1)}/100\n\nPlay at ${typeof window !== "undefined" ? window.location.origin : ""}${gameConfig.urlPath}`;
+  // Generate share text based on game type
+  const shareText = currentGameTypeId === "italian-pasta"
+    ? generatePastaShareText({
+        pastaGuesses: (unifiedResults?.phaseResults?.find((p: any) => p.phaseId === "pasta")?.guesses || []) as string[],
+        sauceGuesses: (unifiedResults?.phaseResults?.find((p: any) => p.phaseId === "sauce")?.guesses || []) as string[],
+        regionGuesses: (phases["region"]?.guessResults || []).map((result: any, idx: number) => ({
+          region: (unifiedResults?.phaseResults?.find((p: any) => p.phaseId === "region")?.guesses[idx] || "") as string,
+          distance: result?.distance || 0,
+          direction: result?.direction || "N",
+        })),
+        proteinGuesses: (unifiedResults?.phaseResults?.find((p: any) => p.phaseId === "protein")?.guesses || []).map((guess: any) => ({
+          guess: guess as number,
+          actualProtein: currentItem.proteinPerServing || 0,
+        })),
+        pasta: currentItem.name,
+        sauce: currentItem.sauceName || "",
+        region: currentItem.region || "",
+        streak,
+        pastaAcceptableGuesses: currentItem.acceptableGuesses || [],
+        sauceAcceptableGuesses: currentItem.sauceAcceptableGuesses || [],
+      })
+    : currentGameTypeId === "food-for-thought"
+      ? generateShareText({
+          dishGuesses: (unifiedResults?.phaseResults?.find((p: any) => p.phaseId === "dish")?.guesses || []) as string[],
+          countryGuesses: (phases["country"]?.guessResults || []).map((result: any, idx: number) => ({
+            name: (unifiedResults?.phaseResults?.find((p: any) => p.phaseId === "country")?.guesses[idx] || "") as string,
+            distance: result?.distance || 0,
+            direction: result?.direction || "",
+          })),
+          proteinGuesses: (unifiedResults?.phaseResults?.find((p: any) => p.phaseId === "protein")?.guesses || []).map((guess: any) => ({
+            guess: guess as number,
+            actualProtein: currentItem.proteinPerServing || 0,
+          })),
+          dish: currentItem.name,
+          country: currentItem.country,
+          streak,
+          acceptableGuesses: currentItem.acceptableGuesses || [],
+        })
+      : `I played ${gameConfig.name}!\n\nTotal Score: ${unifiedResults?.totalScore?.toFixed(1) || 0}/100\n\nPlay at ${typeof window !== "undefined" ? window.location.origin : ""}${gameConfig.urlPath}`;
 
   const handleCopyResults = async () => {
     posthog.capture("share_score_clicked", {
@@ -216,7 +248,7 @@ export const UnifiedResultModal: React.FC<UnifiedResultModalProps> = ({
   };
 
   // Show all phases (including sauce for pasta)
-  const displayPhases = gameResults.phaseResults;
+  const displayPhases = unifiedResults?.phaseResults || [];
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -235,7 +267,7 @@ export const UnifiedResultModal: React.FC<UnifiedResultModalProps> = ({
               ✕
             </button>
           </div>
-          {currentGameTypeId === "italian-pasta" && streak >= 1 && (
+          {(currentGameTypeId === "italian-pasta" || currentGameTypeId === "food-for-thought") && streak >= 1 && (
             <div className="text-orange-500 font-semibold text-sm mt-2 animate-streak-pop">
               🔥 You&apos;re on a {streak}-day streak!
             </div>
@@ -282,7 +314,7 @@ export const UnifiedResultModal: React.FC<UnifiedResultModalProps> = ({
 
         {/* Phase Summary */}
         <div className="space-y-2">
-          {displayPhases.map((phaseResult) => {
+          {displayPhases.map((phaseResult: any) => {
             const phaseConfig = gameConfig.phases.find((p) => p.id === phaseResult.phaseId);
             if (!phaseConfig) return null;
 
@@ -328,14 +360,12 @@ export const UnifiedResultModal: React.FC<UnifiedResultModalProps> = ({
           />
         )}
 
-        {/* Archive Status (for pasta) */}
-        {currentGameTypeId === "italian-pasta" && (
-          <ArchiveStatus
-            isUnlocked={archivesUnlocked}
-            gameRoute={archiveConfig.gameRoute}
-            apiPrefix={gameConfig.apiPrefix}
-          />
-        )}
+        {/* Archive Status */}
+        <ArchiveStatus
+          isUnlocked={archivesUnlocked}
+          gameRoute={archiveConfig.gameRoute}
+          apiPrefix={gameConfig.apiPrefix}
+        />
 
         {/* Action Buttons */}
         <div className="flex justify-between gap-2">

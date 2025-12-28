@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import { normalizeForComparison } from "@/utils/stringNormalization";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
-import { useGameStore } from "../../store";
 
 interface TextInputProps {
   value: string;
@@ -32,8 +31,6 @@ export const TextInput: React.FC<TextInputProps> = ({
 }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const { activePhase, isPhaseComplete } = useGameStore();
-  const isComplete = isPhaseComplete(activePhase);
 
   // Helper function to pluralize entity type for error messages
   const pluralize = (entityType: string): string => {
@@ -150,7 +147,7 @@ export const TextInput: React.FC<TextInputProps> = ({
         onBlur={handleBlur}
         placeholder={placeholder}
         className={cn("w-full", shake && "animate-shake")}
-        disabled={isComplete || disabled}
+        disabled={disabled}
         autoComplete="off"
       />
 

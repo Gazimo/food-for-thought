@@ -8,6 +8,7 @@
  */
 
 import { GameConfig } from "./types";
+import { fftScoreSubmitter } from "@/utils/api/fftScoreSubmitter";
 
 export const foodForThoughtConfig: GameConfig = {
   id: "food-for-thought",
@@ -16,8 +17,20 @@ export const foodForThoughtConfig: GameConfig = {
     "A daily global game about food and geography. Uncover the dish. Track it to its origin. Become a Chef.",
   urlPath: "/play",
   icon: "🍽️",
-  architecture: "legacy",
-  scoreAggregator: (scores) => Object.values(scores).reduce((sum, s) => sum + s, 0),
+  architecture: "unified",
+  scoreAggregator: (scores) => {
+    const WEIGHT_DISH = 0.35;
+    const WEIGHT_COUNTRY = 0.35;
+    const WEIGHT_PROTEIN = 0.3;
+
+    return Math.round(
+      ((scores.dish || 0) * WEIGHT_DISH +
+        (scores.country || 0) * WEIGHT_COUNTRY +
+        (scores.protein || 0) * WEIGHT_PROTEIN) *
+        100
+    ) / 100;
+  },
+  scoreSubmitter: fftScoreSubmitter,
   phases: [
     {
       id: "dish",
