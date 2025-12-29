@@ -57,7 +57,7 @@ const pastaScoreSubmitter: ScoreSubmitter = {
 
 export const italianPastaConfig: GameConfig = {
   id: "italian-pasta",
-  name: "Pasta Perfetto",
+  name: "Guess'é di Pasta",
   description:
     "A daily Italian pasta guessing game. Identify the pasta shape, its classic sauce, and where it comes from.",
   urlPath: "/pasta",
@@ -86,6 +86,7 @@ export const italianPastaConfig: GameConfig = {
       tileGrid: [3, 2],
       baseScore: 100,
       penaltyPerGuess: 15,
+      enforceClosedList: true,
       navigationLabel: "Guess the sauce",
     },
     {

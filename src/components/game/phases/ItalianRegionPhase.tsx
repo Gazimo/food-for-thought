@@ -4,10 +4,14 @@ import { ItalyMapVisualizer } from "@/components/pasta/ItalyMapVisualizer";
 import { MapGuessPhase } from "@/components/game/phases/MapGuessPhase";
 import { LocationGuessResult } from "@/components/game/LocationGuessFeedback";
 import { PhaseConfig } from "@/config/games/types";
-import { Pasta, RegionGuessResult, ITALIAN_REGION_LIST } from "@/types/pasta";
+import { Pasta, RegionGuessResult } from "@/types/pasta";
 import { getColorClassForItalyDistance } from "@/utils/italyColors";
 import { getDirectionArrow } from "@/utils/colors";
 import { memo } from "react";
+import italianRegionsData from "../../../../public/data/italian-regions.json";
+
+type ItalianRegionsData = Record<string, { lat: number; lng: number; capital: string; cities: string[] }>;
+const italianRegions = italianRegionsData as ItalianRegionsData;
 
 interface ItalianRegionPhaseProps {
   /** Phase configuration */
@@ -67,7 +71,7 @@ export const ItalianRegionPhase = memo(function ItalianRegionPhase({
     isCorrect: r.isCorrect,
   }));
 
-  const regions = [...ITALIAN_REGION_LIST];
+  const regions = Object.keys(italianRegions);
 
   return (
     <MapGuessPhase

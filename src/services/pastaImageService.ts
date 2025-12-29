@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { GoogleGenAI } from "@google/genai";
+import crypto from "crypto";
 
 interface PlainPastaImageData {
   pastaName: string;
@@ -175,10 +176,9 @@ class PastaImageService {
     pastaName: string
   ): Promise<{ filename: string; publicUrl: string }> {
     try {
-      // Generate filename with pasta name and type
-      const sanitizedName = pastaName.toLowerCase().replace(/\s+/g, "-");
-      const timestamp = Date.now();
-      const filename = `pasta-images/${sanitizedName}-${type}-${timestamp}.jpg`;
+      // Generate MD5 hash for filename (matching dish image obfuscation pattern)
+      const hash = crypto.createHash("md5").update(imageBuffer).digest("hex");
+      const filename = `pasta-images/${type}-${hash}.jpg`;
 
       // Upload to Supabase Storage (dish-images bucket - same as country game)
       const { error } = await this.supabase.storage

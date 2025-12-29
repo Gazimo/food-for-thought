@@ -6,12 +6,15 @@ import {
   RegionGuessResult,
   calculatePhaseScore,
   isGuessCorrect,
-  ITALIAN_REGIONS,
 } from "@/types/pasta";
 import { ProteinGuessResult } from "@/types/game";
 import { launchEmojiBurst, emojiThemes } from "@/utils/celebration";
 import { StateCreator } from "zustand";
 import { processLocationGuess } from "../utils/locationGuessLogic";
+import italianRegionsData from "../../../public/data/italian-regions.json";
+
+type ItalianRegionsData = Record<string, { lat: number; lng: number; capital: string; cities: string[] }>;
+const italianRegions = italianRegionsData as ItalianRegionsData;
 
 export interface PastaGameState {
   // Current pasta
@@ -312,7 +315,7 @@ export const createPastaGameSlice: StateCreator<PastaGameState> = (
 
     if (!currentPasta || state.currentPhase !== "region") return;
 
-    const guessCoords = ITALIAN_REGIONS[guess as keyof typeof ITALIAN_REGIONS];
+    const guessCoords = italianRegions[guess as keyof typeof italianRegions];
     const correctCoords = currentPasta.regionCoordinates;
 
     if (!guessCoords || !correctCoords) {

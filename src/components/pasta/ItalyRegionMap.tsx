@@ -1,7 +1,8 @@
 "use client";
 
-import italyData from "@/data/italy-regions.json";
-import { RegionGuessResult, ITALIAN_REGIONS } from "@/types/pasta";
+import italyData from "@/data/italy-regions-map.json";
+import italianRegionsData from "../../../public/data/italian-regions.json";
+import { RegionGuessResult } from "@/types/pasta";
 import {
   getColorForItalyDistance,
   normalizeTopoJsonRegionName,
@@ -14,6 +15,9 @@ import { feature } from "topojson-client";
 
 import type { Feature, FeatureCollection, Geometry } from "geojson";
 import type { GeometryCollection, Topology } from "topojson-specification";
+
+type ItalianRegionsData = Record<string, { lat: number; lng: number; capital: string; cities: string[] }>;
+const italianRegions = italianRegionsData as ItalianRegionsData;
 
 interface ItalyRegionMapProps {
   guessResults: RegionGuessResult[];
@@ -148,7 +152,7 @@ export const ItalyRegionMap = ({
   // Prepare guess data with coordinates for dots
   const enrichedGuesses = guessResults.map((result) => {
     // Find coordinates for this region
-    const regionEntry = Object.entries(ITALIAN_REGIONS).find(([regionName]) =>
+    const regionEntry = Object.entries(italianRegions).find(([regionName]) =>
       normalizeRegionForComparison(regionName) ===
       normalizeRegionForComparison(result.region)
     );

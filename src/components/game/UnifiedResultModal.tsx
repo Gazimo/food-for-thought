@@ -51,6 +51,7 @@ export const UnifiedResultModal: React.FC<UnifiedResultModalProps> = ({
   const gameResults = useGameStore((state) => state.gameResults);
   const phases = useGameStore((state) => state.phases);
   const markGameTracked = useGameStore((state) => state.markGameTracked);
+  const isArchiveMode = useGameStore((state) => state.isArchiveMode);
 
   // Derive archive config from game config
   const archiveConfig = getArchiveConfig(gameConfig);
@@ -78,7 +79,7 @@ export const UnifiedResultModal: React.FC<UnifiedResultModalProps> = ({
     }
   }, [currentGameTypeId]);
 
-  // Submit score when modal opens (only once)
+  // Submit score when modal opens (only once, and not for archive games)
   useEffect(() => {
     if (
       visible &&
@@ -86,11 +87,12 @@ export const UnifiedResultModal: React.FC<UnifiedResultModalProps> = ({
       gameResults &&
       !gameResults.tracked &&
       currentItem &&
-      gameConfig
+      gameConfig &&
+      !isArchiveMode  // Don't submit scores for archive games
     ) {
       submitScoreToLeaderboard();
     }
-  }, [visible, currentPhaseId, gameResults, currentItem, gameConfig]);
+  }, [visible, currentPhaseId, gameResults, currentItem, gameConfig, isArchiveMode]);
 
   const submitScoreToLeaderboard = async () => {
     if (!gameResults || !currentItem || !gameConfig || !currentGameTypeId) return;

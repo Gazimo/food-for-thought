@@ -5,7 +5,7 @@ import { GameContainer } from "@/components/game/GameContainer";
 import { redirect } from "next/navigation";
 
 /**
- * Pasta Perfetto Game Page
+ * Guess'é di Pasta Game Page
  *
  * Now using the unified game architecture via GameContainer.
  * All game logic is handled by the unified system (unifiedGameSlice, GamePhaseRenderer, etc.)

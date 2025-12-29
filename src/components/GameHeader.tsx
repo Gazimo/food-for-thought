@@ -11,7 +11,6 @@ interface GameHeaderProps {
 }
 
 export function GameHeader({ onShowRules }: GameHeaderProps) {
-  const { isPlayingArchive, archiveDate, exitArchiveMode } = useGameStore();
   const gameContext = useOptionalGameContext();
   const router = useRouter();
 
@@ -19,25 +18,30 @@ export function GameHeader({ onShowRules }: GameHeaderProps) {
   const gameName = gameContext?.gameConfig.name ?? "Food for Thought";
   const gameUrlPath = gameContext?.gameConfig.urlPath ?? "/play";
 
+  // Both games now use unified architecture - no legacy support needed
+  const isArchiveMode = useGameStore((state) => state.isArchiveMode);
+  const puzzleDate = useGameStore((state) => state.puzzleDate);
+  const exitUnifiedArchiveMode = useGameStore((state) => state.exitUnifiedArchiveMode);
+
   const handleBackToToday = () => {
-    exitArchiveMode();
+    exitUnifiedArchiveMode();
     router.push(gameUrlPath);
   };
 
   // Show Statistics button always (not just after completing game)
-  const showStatisticsButton = !isPlayingArchive;
+  const showStatisticsButton = !isArchiveMode;
 
   return (
     <header className="w-full flex justify-between items-center">
       <div className="flex flex-col">
         <h1 className="text-xl font-bold text-orange-600">{gameName}</h1>
-        {isPlayingArchive && archiveDate && (
+        {isArchiveMode && puzzleDate && (
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <div className="flex items-center gap-1">
               <Calendar className="h-3 w-3" />
               <span>
                 Archive:{" "}
-                {new Date(archiveDate).toLocaleDateString("en-US", {
+                {new Date(puzzleDate).toLocaleDateString("en-US", {
                   weekday: "short",
                   month: "short",
                   day: "numeric",

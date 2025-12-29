@@ -114,7 +114,7 @@ export function generatePastaShareText({
       : "";
 
   const archiveLabel = archiveDate ? " [Archive]" : "";
-  return `#PastaPerfetto ${dayNumber} (${displayDate})${archiveLabel}
+  return `#Guess'é di Pasta ${dayNumber} (${displayDate})${archiveLabel}
 🔥 Streak: ${streak} days
 
 🍝 ${pastaTiles}${pastaCorrect ? "🎉" : ""}  ${pastaGuesses.length}/6

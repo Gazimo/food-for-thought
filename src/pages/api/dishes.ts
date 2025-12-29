@@ -66,8 +66,8 @@ export default async function handler(
         return res.status(400).json({ error: "Cannot request future dates" });
       }
 
-      // Validate archive access token
-      const validation = validateArchiveAccess(req, requestedDate);
+      // Validate archive access token with correct F4T cookie name
+      const validation = validateArchiveAccess(req, requestedDate, "food_for_thought_archives_unlock");
       if (!validation.isValid) {
         console.log(`🚫 Archive validation failed: ${validation.error}`);
         return res.status(403).json({

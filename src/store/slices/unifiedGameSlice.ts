@@ -161,6 +161,10 @@ export const createUnifiedGameSlice: StateCreator<UnifiedGameState> = (set, get)
   gameError: null,
 
   initializeGame: (gameTypeId, gameConfig, item, puzzleDate) => {
+    // Preserve archive mode state if it was already set
+    const currentState = get();
+    const preserveArchiveMode = currentState.isArchiveMode;
+
     // Create initial state for all phases
     const phases: Record<string, PhaseState> = {};
     gameConfig.phases.forEach((phaseConfig) => {
@@ -192,14 +196,17 @@ export const createUnifiedGameSlice: StateCreator<UnifiedGameState> = (set, get)
       phases,
       gameResults,
       puzzleDate,
-      isArchiveMode: false,
+      isArchiveMode: preserveArchiveMode,
     });
 
-    // Try to load saved state
-    const loaded = get().loadGameState(gameTypeId, puzzleDate);
-    if (!loaded) {
-      // If no saved state, save initial state
-      get().saveGameState();
+    // Skip loading/saving state for archive games (always start fresh)
+    if (!preserveArchiveMode) {
+      // Try to load saved state for today's game only
+      const loaded = get().loadGameState(gameTypeId, puzzleDate);
+      if (!loaded) {
+        // If no saved state, save initial state
+        get().saveGameState();
+      }
     }
   },
 
@@ -492,9 +499,18 @@ export const createUnifiedGameSlice: StateCreator<UnifiedGameState> = (set, get)
 
   saveGameState: () => {
     const state = get();
-    const { currentGameTypeId, puzzleDate, gameConfig, currentPhaseId, phases, gameResults } = state;
+    const { currentGameTypeId, puzzleDate, gameConfig, currentPhaseId, phases, gameResults, isArchiveMode } = state;
 
     if (!currentGameTypeId || !puzzleDate || !gameConfig) return;
+
+    // Don't save state for archive games (they always start fresh)
+    if (isArchiveMode) {
+      debugLogger.persistence('⏭️ Skipping save for archive game', {
+        puzzleDate,
+        isArchiveMode: true,
+      });
+      return;
+    }
 
     const storageKey = `${gameConfig.storageKeyPrefix}-${puzzleDate}`;
 
@@ -712,9 +728,14 @@ export const createUnifiedGameSlice: StateCreator<UnifiedGameState> = (set, get)
       state.saveGameState();
     }
 
+    // Reset to first phase when entering archive mode
+    // This ensures the archive game starts from the beginning automatically
+    const firstPhaseId = state.gameConfig?.phases[0]?.id;
+
     set({
       isArchiveMode: true,
       puzzleDate: date,
+      currentPhaseId: firstPhaseId || state.currentPhaseId,
     });
   },
 

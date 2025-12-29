@@ -1,5 +1,5 @@
 /**
- * TypeScript type definitions for the Pasta Perfetto game
+ * TypeScript type definitions for the Guess'é di Pasta game
  * Corresponds to the database schema defined in migration: 20251219_create_pasta_tables.sql
  */
 
@@ -46,7 +46,6 @@ export interface PastaRow {
   fun_fact: string | null;
 
   // Metadata
-  tags: string[];
   release_date: string;
   created_at: string;
   updated_at: string;
@@ -76,7 +75,6 @@ export interface PastaInsert {
   protein_per_serving?: number;
   origin_story?: string | null;
   fun_fact?: string | null;
-  tags?: string[];
   release_date: string;
   created_at?: string;
   updated_at?: string;
@@ -106,7 +104,6 @@ export interface PastaUpdate {
   protein_per_serving?: number;
   origin_story?: string | null;
   fun_fact?: string | null;
-  tags?: string[];
   release_date?: string;
   created_at?: string;
   updated_at?: string;
@@ -152,7 +149,6 @@ export interface Pasta {
   funFact?: string;
 
   // Metadata
-  tags?: string[];
   releaseDate?: string;
 }
 
@@ -324,47 +320,6 @@ export interface PastaGameState {
 }
 
 // ============================================================================
-// ITALIAN REGIONS
-// ============================================================================
-
-/**
- * Italian region coordinates for distance calculation
- * Data source: country_metadata_20251219_184005.csv (verified December 19, 2024)
- */
-export const ITALIAN_REGIONS = {
-  'Abruzzo': { lat: 42.25, lng: 13.75 },
-  'Valle d\'Aosta': { lat: 45.75, lng: 7.25 },
-  'Puglia': { lat: 41.00164, lng: 16.73378 },
-  'Basilicata': { lat: 40.5041, lng: 16.11396 },
-  'Calabria': { lat: 39, lng: 16.5 },
-  'Campania': { lat: 40.91056, lng: 14.92053 },
-  'Emilia-Romagna': { lat: 44.5444, lng: 10.98361 },
-  'Friuli Venezia Giulia': { lat: 46, lng: 13 },
-  'Lazio': { lat: 42.07762, lng: 12.77878 },
-  'Liguria': { lat: 44.5, lng: 8.83333 },
-  'Lombardia': { lat: 45.66667, lng: 9.5 },
-  'Molise': { lat: 41.66667, lng: 14.5 },
-  'Piemonte': { lat: 45, lng: 8 },
-  'Sardegna': { lat: 40, lng: 9 },
-  'Sicilia': { lat: 37.75, lng: 14.25 },
-  'Marche': { lat: 43.5, lng: 13.25 },
-  'Trentino-Alto Adige': { lat: 46.5, lng: 11.33333 },
-  'Toscana': { lat: 43.41667, lng: 11 },
-  'Umbria': { lat: 43, lng: 12.5 },
-  'Veneto': { lat: 45.5, lng: 11.75 },
-} as const;
-
-/**
- * Type for Italian region names
- */
-export type ItalianRegion = keyof typeof ITALIAN_REGIONS;
-
-/**
- * List of all Italian regions
- */
-export const ITALIAN_REGION_LIST: ItalianRegion[] = Object.keys(ITALIAN_REGIONS) as ItalianRegion[];
-
-// ============================================================================
 // SCORING CONSTANTS
 // ============================================================================
 
@@ -432,7 +387,6 @@ export function pastaRowToPasta(row: PastaRow): Pasta {
     proteinPerServing: row.protein_per_serving,
     originStory: row.origin_story || undefined,
     funFact: row.fun_fact || undefined,
-    tags: row.tags,
     releaseDate: row.release_date,
   };
 }
@@ -458,7 +412,6 @@ export function pastaToInsert(pasta: Pasta): PastaInsert {
     protein_per_serving: pasta.proteinPerServing || 0,
     origin_story: pasta.originStory || null,
     fun_fact: pasta.funFact || null,
-    tags: pasta.tags || [],
     release_date: pasta.releaseDate || new Date().toISOString().split('T')[0],
   };
 }

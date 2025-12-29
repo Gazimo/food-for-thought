@@ -7,10 +7,14 @@
 
 import { PhaseConfig } from "@/config/games/types";
 import { GuessValidationResult } from "@/engine/PhaseEngine";
-import { Pasta, RegionGuessResult, ITALIAN_REGIONS } from "@/types/pasta";
+import { Pasta, RegionGuessResult } from "@/types/pasta";
 import { normalizeForComparison } from "@/utils/stringNormalization";
 import { normalizeRegionForComparison } from "@/utils/italyColors";
 import debugLogger from "@/utils/debugLogger";
+import italianRegionsData from "../../../public/data/italian-regions.json";
+
+type ItalianRegionsData = Record<string, { lat: number; lng: number; capital: string; cities: string[] }>;
+const italianRegions = italianRegionsData as ItalianRegionsData;
 
 /**
  * Calculate distance between two coordinates using Haversine formula
@@ -148,7 +152,7 @@ export function validateRegionGuess(
     normalizeForComparison(guessStr) === normalizeForComparison(correctRegion);
 
   // Get guess coordinates with normalized lookup
-  const guessRegionEntry = Object.entries(ITALIAN_REGIONS).find(
+  const guessRegionEntry = Object.entries(italianRegions).find(
     ([regionName]) =>
       normalizeRegionForComparison(regionName) ===
       normalizeRegionForComparison(guessStr)

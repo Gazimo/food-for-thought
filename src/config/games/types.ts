@@ -66,6 +66,8 @@ export interface PhaseConfig {
   navigationLabel?: string;
   /** Field name for acceptable guesses (for text input types) */
   acceptableGuessesField?: string;
+  /** Whether to enforce closed-list validation for text inputs (restricts to acceptableGuesses only) */
+  enforceClosedList?: boolean;
   /** Field name for the correct answer (for validation) */
   correctAnswerField?: string;
   /** Function to get correct answer and result for give-up functionality */

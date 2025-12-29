@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 
 interface EncryptedPastaResponse {
   id: number;
-  tags: string[];
   _encrypted: string;
   _salt: string;
   _checksum: string;
@@ -27,15 +26,18 @@ export function useDailyPasta(date?: string) {
       const encryptedData: EncryptedPastaResponse = await response.json();
 
       // Decrypt the sensitive data
-      const decryptedData = deobfuscateData(
+      const decryptedData = deobfuscateData<Pasta>(
         encryptedData._encrypted,
         encryptedData._salt
       );
 
+      if (!decryptedData) {
+        throw new Error("Failed to decrypt pasta data");
+      }
+
       // Combine public and decrypted data
       const pasta: Pasta = {
         id: encryptedData.id,
-        tags: encryptedData.tags,
         ...decryptedData,
       };
 

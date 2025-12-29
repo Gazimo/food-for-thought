@@ -1,10 +1,6 @@
 "use client";
 
-// V2 Components - Refactored with specialized inputs (F4T legacy)
-import { DishPhaseV2 } from "@/app/play/DishPhaseV2";
-import { CountryPhaseV2 } from "@/app/play/CountryPhaseV2";
-import { ProteinPhaseV2 } from "@/app/play/ProteinPhaseV2";
-// Unified Architecture Components (new props-based components)
+// Unified Architecture Components (props-based components)
 import { PastaTextGuessPhase } from "@/components/game/phases/PastaTextGuessPhase";
 import { ItalianRegionPhase } from "@/components/game/phases/ItalianRegionPhase";
 import { NumericGuessPhase } from "@/components/game/phases/NumericGuessPhase";
@@ -12,10 +8,8 @@ import { ProteinPhase } from "@/components/game/phases/ProteinPhase";
 import { DishPhase } from "@/components/game/phases/DishPhase";
 import { MapGuessPhase } from "@/components/game/phases/MapGuessPhase";
 import { PhaseRenderer } from "@/components/PhaseRenderer";
-import { getPhaseConfig } from "@/config/gamePhases";
-import { useTodaysDish } from "@/hooks/useDishes";
 import { useGameStore } from "@/store";
-import { useGameContext, useOptionalGameContext } from "@/contexts/GameContext";
+import { useGameContext } from "@/contexts/GameContext";
 import { PhaseConfig } from "@/config/games/types";
 import {
   validatePastaGuess,
@@ -30,30 +24,13 @@ import {
 } from "@/engine/validators/fftValidators";
 import debugLogger from "@/utils/debugLogger";
 
-// Feature flag to toggle between original and V2 components (F4T only)
-const USE_V2_COMPONENTS = true;
-
 /**
  * Unified Game Phase Renderer
  *
- * Supports two architectures:
- * 1. Legacy F4T: Uses old store slices with V2 components
- * 2. Unified: Uses unifiedGameSlice with props-based components
- *
- * The renderer detects which architecture to use by checking the GameContext.
+ * Uses unifiedGameSlice with props-based components for all games.
  */
 export function GamePhaseRenderer() {
-  const gameContext = useOptionalGameContext();
-
-  // Check if we're using unified architecture from game config
-  const isUsingUnifiedArchitecture =
-    gameContext?.gameConfig?.architecture === "unified";
-
-  if (isUsingUnifiedArchitecture) {
-    return <UnifiedArchitectureRenderer />;
-  } else {
-    return <LegacyFFTRenderer />;
-  }
+  return <UnifiedArchitectureRenderer />;
 }
 
 /**
@@ -303,91 +280,4 @@ function renderUnifiedPhase(
       </p>
     </div>
   );
-}
-
-/**
- * Legacy renderer for F4T game
- * Uses old store slices with V2 components
- */
-function LegacyFFTRenderer() {
-  const { activePhase, isPlayingArchive, archiveDate } = useGameStore();
-  const effectiveArchiveDate = isPlayingArchive ? archiveDate : null;
-  const { dish, isLoading } = useTodaysDish(effectiveArchiveDate || undefined);
-
-  const phaseConfig = getPhaseConfig(activePhase);
-  if (!phaseConfig) return null;
-
-  debugLogger.phase('Rendering F4T legacy phase', {
-    activePhase,
-    isLoading,
-    hasDish: !!dish,
-    isArchive: isPlayingArchive,
-  });
-
-  const commonProps = {
-    phaseKey: activePhase,
-    title: phaseConfig.title,
-  };
-
-  // Handle loading state with localStorage fallback
-  if (isLoading || !dish) {
-    let correctPhase = activePhase;
-
-    if (typeof window !== "undefined") {
-      try {
-        const saved = localStorage.getItem("fft-game-state");
-        if (saved) {
-          const parsedState = JSON.parse(saved);
-          const today = new Date().toISOString().split("T")[0];
-          const savedDate = parsedState.savedDate;
-
-          if (savedDate && savedDate === today) {
-            correctPhase = parsedState.activePhase || "dish";
-          } else {
-            correctPhase = "dish";
-          }
-        }
-      } catch (error) {
-        console.warn("Failed to read phase from localStorage:", error);
-      }
-    }
-
-    const correctPhaseConfig = getPhaseConfig(correctPhase);
-    const correctCommonProps = {
-      phaseKey: correctPhase,
-      title: correctPhaseConfig?.title || phaseConfig.title,
-    };
-
-    return (
-      <PhaseRenderer {...correctCommonProps}>
-        {correctPhase === "dish" && <DishPhaseV2 />}
-        {correctPhase === "country" && <CountryPhaseV2 />}
-        {correctPhase === "protein" && <ProteinPhaseV2 />}
-      </PhaseRenderer>
-    );
-  }
-
-  // Normal rendering
-  switch (activePhase) {
-    case "dish":
-      return (
-        <PhaseRenderer {...commonProps}>
-          <DishPhaseV2 />
-        </PhaseRenderer>
-      );
-    case "country":
-      return (
-        <PhaseRenderer {...commonProps}>
-          <CountryPhaseV2 />
-        </PhaseRenderer>
-      );
-    case "protein":
-      return (
-        <PhaseRenderer {...commonProps}>
-          <ProteinPhaseV2 />
-        </PhaseRenderer>
-      );
-    default:
-      return null;
-  }
 }

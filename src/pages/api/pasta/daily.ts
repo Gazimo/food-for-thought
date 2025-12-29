@@ -155,7 +155,6 @@ export default async function handler(
     const safePasta = {
       // Keep only non-sensitive visual data
       id: targetPastaRow.id, // Add database ID for tile APIs
-      tags: pasta.tags,
 
       // Add obfuscated sensitive data
       _encrypted: obfuscatedAnswers,

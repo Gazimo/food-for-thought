@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
+const TILE_VERSION = "v2";
+
 /**
  * Fetch pasta tiles for a specific phase (pasta or sauce)
  */
@@ -11,13 +13,12 @@ export function usePastaTiles(pastaId: string | undefined, phase: "pasta" | "sau
 
       // Generate tile URLs for all 6 tiles
       const tiles = Array.from({ length: 6 }, (_, index) =>
-        `/api/pasta/tiles?pastaId=${pastaId}&tileIndex=${index}&phase=${phase}`
+        `/api/pasta/tiles?pastaId=${pastaId}&tileIndex=${index}&phase=${phase}&v=${TILE_VERSION}`
       );
 
       return tiles;
     },
     enabled: !!pastaId,
-    staleTime: Infinity, // Tiles don't change
   });
 }
 
@@ -35,13 +36,12 @@ export function useBlurredPastaTiles(
 
       // Generate blurred tile URLs for all 6 tiles
       const tiles = Array.from({ length: 6 }, (_, index) =>
-        `/api/pasta/tiles?pastaId=${pastaId}&tileIndex=${index}&phase=${phase}&blur=true`
+        `/api/pasta/tiles?pastaId=${pastaId}&tileIndex=${index}&phase=${phase}&blur=true&v=${TILE_VERSION}`
       );
 
       return tiles;
     },
     enabled: !!pastaId,
-    staleTime: Infinity, // Tiles don't change
   });
 }
 

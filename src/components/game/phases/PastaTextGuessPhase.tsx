@@ -1,15 +1,13 @@
 "use client";
 
 import { TileGrid } from "@/components/dish-image/TileGrid";
-import { TextInput, GiveUpButton } from "@/components/inputs";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
+import { DishInput } from "@/components/inputs";
 import { HintsFeedback } from "@/components/game/HintsFeedback";
 import { PhaseConfig } from "@/config/games/types";
 import { Pasta } from "@/types/pasta";
 import { normalizeForComparison } from "@/utils/stringNormalization";
-import { getClosestGuess } from "@/utils/gameHelpers";
-import { memo, ReactNode, useState } from "react";
+import { getAllPastaNames } from "@/utils/pastaNames";
+import { memo, ReactNode } from "react";
 import { toast } from "react-hot-toast";
 
 interface PastaTextGuessPhaseProps {
@@ -57,9 +55,6 @@ export const PastaTextGuessPhase = memo(function PastaTextGuessPhase({
   onGiveUp,
   isSubmitting = false,
 }: PastaTextGuessPhaseProps) {
-  const [input, setInput] = useState("");
-  const [shake, setShake] = useState(false);
-
   const pastaId = pasta.id?.toString();
 
   // Generate tile URLs based on phase type
@@ -88,54 +83,22 @@ export const PastaTextGuessPhase = memo(function PastaTextGuessPhase({
       : "e.g. Carbonara, Bolognese, Pesto...";
   const entityType = phaseType === "pasta" ? "pasta type" : "sauce type";
 
-  const triggerShake = () => {
-    setShake(false);
-    requestAnimationFrame(() => {
-      setShake(true);
-      setTimeout(() => setShake(false), 300);
-    });
-  };
+  // Get autocomplete list for closed-list validation
+  // For pasta phase with enforceClosedList, use full pasta names list
+  // For sauce phase or when not enforcing, use acceptableGuesses
+  const autocompleteList =
+    phaseConfig.enforceClosedList && phaseType === "pasta"
+      ? getAllPastaNames()
+      : acceptableGuesses;
 
   const handleGuess = (guess: string) => {
-    const trimmed = guess.trim().toLowerCase();
+    onGuess(guess);
+
+    // Show success toast if correct
     const normalized = normalizeForComparison(guess);
-    if (!trimmed) return;
-
-    if (guesses.includes(trimmed)) {
-      triggerShake();
-      toast.error("You already guessed that!");
-      return;
-    }
-
     const isCorrect = acceptableGuesses.some(
       (acceptable) => normalizeForComparison(acceptable) === normalized
     );
-
-    if (!isCorrect) {
-      const suggestion = getClosestGuess(trimmed, acceptableGuesses);
-
-      if (suggestion) {
-        toast((t) => (
-          <span>
-            Did you mean{" "}
-            <button
-              className="text-blue-600 underline"
-              onClick={() => {
-                toast.dismiss(t.id);
-                handleGuess(suggestion);
-              }}
-            >
-              {suggestion}
-            </button>
-            ?
-          </span>
-        ));
-        return;
-      }
-    }
-
-    onGuess(trimmed);
-    setInput("");
 
     if (isCorrect) {
       toast.success(
@@ -150,6 +113,7 @@ export const PastaTextGuessPhase = memo(function PastaTextGuessPhase({
     <div className="flex flex-col gap-4">
       {/* Tile Grid */}
       <TileGrid
+        key={`pasta-${pastaId}-${phaseType}`}
         revealedTiles={revealedTiles}
         blurredTiles={blurredTiles}
         fullTiles={fullTiles}
@@ -165,33 +129,17 @@ export const PastaTextGuessPhase = memo(function PastaTextGuessPhase({
                 : "Identify the classic sauce that pairs with this pasta"}
             </div>
           )}
-          <div className="w-full flex gap-2 items-center">
-            {onGiveUp && <GiveUpButton onGiveUp={onGiveUp} />}
-            <TextInput
-              value={input}
-              onChange={setInput}
-              onSubmit={handleGuess}
-              placeholder={placeholder}
-              shake={shake}
-              disabled={isSubmitting}
-              entityType={entityType}
-            />
-            <Button
-              variant="primary"
-              onClick={() => handleGuess(input)}
-              disabled={!input.trim() || isSubmitting}
-              className="min-w-[100px]"
-            >
-              {isSubmitting ? (
-                <div className="flex items-center gap-2">
-                  <Spinner size="sm" />
-                  <span>Processing...</span>
-                </div>
-              ) : (
-                "Submit"
-              )}
-            </Button>
-          </div>
+          <DishInput
+            suggestions={[]}
+            previousGuesses={guesses}
+            acceptableGuesses={autocompleteList}
+            onGuess={handleGuess}
+            onGiveUp={onGiveUp}
+            isSubmitting={isSubmitting}
+            isComplete={isComplete}
+            placeholder={placeholder}
+            enforceClosedList={phaseConfig.enforceClosedList}
+          />
         </div>
       )}
 

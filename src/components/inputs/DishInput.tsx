@@ -28,6 +28,8 @@ interface DishInputProps {
   placeholder?: string;
   /** Whether to disable "Did you mean" suggestions */
   disableDidYouMean?: boolean;
+  /** Whether to enforce closed-list validation (restricts to acceptableGuesses only) */
+  enforceClosedList?: boolean;
 }
 
 /**
@@ -49,6 +51,7 @@ export const DishInput: React.FC<DishInputProps> = ({
   isComplete = false,
   placeholder = "Enter dish name...",
   disableDidYouMean = false,
+  enforceClosedList = false,
 }) => {
   const [input, setInput] = useState("");
   const [shake, setShake] = useState(false);
@@ -79,7 +82,7 @@ export const DishInput: React.FC<DishInputProps> = ({
     );
 
     // If incorrect and "Did you mean" is enabled, suggest close matches
-    if (!isCorrect && !disableDidYouMean) {
+    if (!isCorrect && !disableDidYouMean && !enforceClosedList) {
       const suggestion = getClosestGuess(trimmed, acceptableGuesses);
 
       if (suggestion) {
@@ -117,7 +120,7 @@ export const DishInput: React.FC<DishInputProps> = ({
         onChange={setInput}
         onSubmit={handleSubmit}
         placeholder={placeholder}
-        suggestions={suggestions}
+        suggestions={enforceClosedList ? acceptableGuesses : suggestions}
         previousGuesses={previousGuesses}
         shake={shake}
         disabled={isSubmitting}
