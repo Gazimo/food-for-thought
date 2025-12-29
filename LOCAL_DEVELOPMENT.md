@@ -1,147 +1,202 @@
-# Local Development Setup
+# Local Development Guide
 
-This guide helps you run the project with a local database instead of production.
+Step-by-step guide to run Food for Thought locally with a local database.
 
 ## Prerequisites
 
-- Docker Desktop installed and running
-- Node.js and pnpm installed
-- Supabase CLI installed (`npm install -g supabase`)
+Install these first:
+- **Docker Desktop** - Must be running
+- **Node.js** - v24 LTS recommended (v25 requires extra config, see below)
+- **Supabase CLI** - `npm install -g supabase`
+- **pnpm** or **npm**
 
-## Quick Start
+## First Time Setup
 
-### 1. Start Local Supabase
+### 1. Clone and Install
+```bash
+git clone <repo-url>
+cd food-for-thought
+npm install
+```
 
+### 2. Configure Environment
+
+Create `.env.local`:
+```bash
+# Database
+NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
+SUPABASE_SERVICE_ROLE_KEY=<get-from-supabase-start>
+
+# API Keys (for generation scripts)
+OPENAI_API_KEY=your-openai-key
+GEMINI_API_KEY=your-gemini-key
+
+# Optional: PostHog Analytics
+NEXT_PUBLIC_POSTHOG_KEY=your-key
+NEXT_PUBLIC_POSTHOG_HOST=https://app.posthog.com
+
+# Optional: Generation Config
+TARGET_BUFFER_DAYS=14
+DAILY_COST_CAP_USD=0.50
+```
+
+**Node.js v25 users:** Add this to `.env.local`:
+```bash
+NODE_OPTIONS="--no-experimental-webstorage"
+```
+
+### 3. Start Supabase
 ```bash
 supabase start
 ```
 
-This will start local Supabase containers and automatically apply migrations from `supabase/migrations/`. The first time will take a few minutes to download images.
+**First time takes 5-10 minutes** to download Docker images.
 
-### 2. Switch to Local Environment
+Copy the `service_role_key` from the output and paste it into your `.env.local`.
 
-```bash
-npm run use-local
-```
-
-This switches your `.env.local` to use the local database. Your production settings are backed up to `.env.local.production`.
-
-### 3. (Optional) Copy Production Data
-
-```bash
-npm run copy-prod-to-local
-```
-
-This syncs all dishes from production to your local database.
-
-### 4. Verify Setup
-
-```bash
-npm run verify-local-db
-```
-
-This checks that the database is accessible and properly configured.
-
-### 5. Run the Daily Generate Script
-
-```bash
-npm run daily-generate
-```
-
-This will generate dishes and save them to your **local** database.
-
-## Switching Between Environments
-
-### Use Local Database
-```bash
-npm run use-local
-npm run daily-generate  # Runs against local DB
-```
-
-### Use Production Database
-```bash
-npm run use-prod
-npm run daily-generate  # Runs against production DB ⚠️
-```
-
-## Accessing Local Services
-
-When Supabase is running locally:
-
-- **Supabase Studio** (Database UI): http://127.0.0.1:54323
-- **API**: http://127.0.0.1:54321
-- **Database Direct**: `postgresql://postgres:postgres@127.0.0.1:54322/postgres`
-
-## Environment Files
-
-- `.env.local` - Currently active environment (local or production)
-- `.env.local.development` - Local database configuration template
-- `.env.local.production` - Production database backup (auto-created)
-
-## Managing Local Database
-
-### View Database Contents
-Open Supabase Studio: http://127.0.0.1:54323
-
-### Reset Database
+### 4. Apply Migrations
 ```bash
 supabase db reset
 ```
 
-This will wipe all data and re-apply migrations from `supabase/migrations/`.
+This creates all tables and storage buckets.
 
-### Stop Local Supabase
+### 5. Verify Setup
 ```bash
-supabase stop
+npm run db:verify
 ```
 
-### Start Again
+Should show ✅ for all tables and storage buckets.
+
+### 6. (Optional) Copy Production Data
 ```bash
+npm run copy-prod-to-local
+```
+
+Syncs dishes from production to your local database.
+
+## Daily Workflow
+
+```bash
+# 1. Ensure Docker Desktop is running
+
+# 2. Start Supabase (if not already running)
 supabase start
+
+# 3. Verify you're on local environment
+npm run use-local
+
+# 4. Start dev server
+npm run dev
+
+# 5. Open browser
+# http://localhost:3000 - App
+# http://127.0.0.1:54323 - Supabase Studio
 ```
+
+## Common Tasks
+
+### Switch Environments
+```bash
+npm run use-local   # Switch to local DB
+npm run use-prod    # Switch to production DB ⚠️
+```
+
+### Database Operations
+```bash
+npm run db:verify              # Check database health
+npm run db:migrate             # Apply new migrations only
+supabase db reset              # Wipe + reapply all migrations
+npm run copy-prod-to-local     # Sync production data
+npm run cleanup                # Clean local database
+```
+
+### Generate Content
+```bash
+npm run generate:dishes   # Generate F4T dishes (local DB)
+npm run generate:pasta    # Generate pasta entries (local DB)
+```
+
+### View Database
+```bash
+# Supabase Studio
+open http://127.0.0.1:54323
+
+# Direct connection
+psql postgresql://postgres:postgres@127.0.0.1:54322/postgres
+```
+
+### Stop/Restart Supabase
+```bash
+supabase stop    # Stop all containers
+supabase start   # Start again
+supabase status  # Check status
+```
+
+## Database Schema
+
+### Food for Thought (F4T)
+- **Tables:** `dishes`, `game_scores`
+- **Storage:** `dish-images`, `dish-tiles`
+
+### Pasta Perfetto (Guess'é di Pasta)
+- **Tables:** `pasta`, `pasta_leaderboard`
+- **Storage:** `pasta-images`, `pasta-tiles`
+
+See `docs/DATABASE.md` for detailed schema documentation.
 
 ## Troubleshooting
 
 ### "Docker daemon not running"
-Start Docker Desktop and wait for it to fully start.
+Start Docker Desktop and wait for it to fully initialize.
 
 ### "Port already in use"
-Stop Supabase and try again:
 ```bash
 supabase stop
 supabase start
 ```
 
 ### Changes not appearing
-Make sure you're using the local environment:
+Verify you're on local environment:
 ```bash
 npm run use-local
-npm run verify-local-db
+npm run db:verify
 ```
 
-### Want to sync production data to local
+### Migrations not applying
 ```bash
-npm run copy-prod-to-local
+supabase db reset  # Fresh start with all migrations
 ```
 
-This script fetches all dishes from production and inserts them into your local database.
+### Images not loading
+1. Check bucket is public in Supabase Studio
+2. Verify environment variables are set
+3. Check `next.config.js` has correct `remotePatterns`
 
-## Database Schema
+### Node.js v25 localStorage errors
+Add to `.env.local`:
+```bash
+NODE_OPTIONS="--no-experimental-webstorage"
+```
 
-The local database schema is defined in `supabase/migrations/20231219_init_schema.sql`.
-
-Key tables:
-- `dishes` - Main dishes table with all dish data
-
-Key storage buckets:
-- `dish-images` - Full dish images
-- `dish-tiles` - Tiled/blurred dish images for the game
+Or downgrade to Node.js v24 LTS:
+```bash
+nvm use 24
+```
 
 ## Cost Savings
 
-When testing locally:
-- ✅ Database writes are FREE (local)
-- ✅ Storage is FREE (local)
-- ⚠️ OpenAI API calls still cost money (uses production API key)
+Running locally:
+- ✅ Database writes: **FREE**
+- ✅ Storage: **FREE**
+- ⚠️ OpenAI/Gemini API calls: **Still cost money**
 
-To avoid OpenAI costs during testing, you can modify the script to skip AI generation and work with backlog dishes only.
+To avoid API costs during testing, work with existing data only (don't run generation scripts).
+
+## Resources
+
+- **Supabase Studio:** http://127.0.0.1:54323
+- **API Endpoint:** http://127.0.0.1:54321
+- **Database Schema:** `docs/DATABASE.md`
+- **Migrations:** `supabase/migrations/`
+- **Type Definitions:** `src/types/database.ts`

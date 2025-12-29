@@ -116,7 +116,14 @@ function UnifiedArchitectureLayout() {
 
   return (
     <main className="p-4 sm:p-6 max-w-full sm:max-w-xl mx-auto flex flex-col min-h-screen">
-      <IntroModal isOpen={isIntroModalOpen} onClose={closeIntroModal} />
+      <IntroModal
+        isOpen={isIntroModalOpen}
+        onClose={closeIntroModal}
+        gameId={gameConfig?.id}
+        headerImage={gameConfig?.id === "italian-pasta" ? "/italianPasta.png" : undefined}
+        headerImageAlt={gameConfig?.id === "italian-pasta" ? "Italian Pasta" : undefined}
+        subtitle={gameConfig?.id === "italian-pasta" ? "Italian Pasta Guessing Game: Guess'é di Pasta!" : undefined}
+      />
       <GameHeader onShowRules={() => setIntroModalOpen(true)} />
 
       <PhaseContainer>

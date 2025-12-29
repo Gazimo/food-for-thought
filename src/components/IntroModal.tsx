@@ -12,12 +12,36 @@ import {
 interface IntroModalProps {
   isOpen: boolean;
   onClose: () => void;
+  gameId?: string;
+  headerImage?: string;
+  headerImageAlt?: string;
+  subtitle?: string;
 }
 
-export const IntroModal = ({ isOpen, onClose }: IntroModalProps) => {
+export const IntroModal = ({
+  isOpen,
+  onClose,
+  gameId,
+  headerImage,
+  headerImageAlt,
+  subtitle
+}: IntroModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md text-center">
+        {gameId === "italian-pasta" && (
+          <div className="mb-4 space-y-3">
+            <p className="text-sm font-bold">NEW In Food for Thought!</p>
+            {subtitle && <p className="text-base font-semibold">{subtitle}</p>}
+            {headerImage && (
+              <img
+                src={headerImage}
+                alt={headerImageAlt || "Game logo"}
+                className="w-[200px] mx-auto"
+              />
+            )}
+          </div>
+        )}
         <DialogHeader>
           <DialogTitle className="text-2xl">How to Play</DialogTitle>
           <DialogDescription asChild>
