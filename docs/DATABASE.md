@@ -1,6 +1,6 @@
 # Database Guide
 
-Complete guide for managing database migrations, schema, and verification for Food for Thought and Pasta Perfetto.
+Complete guide for managing database migrations, schema, and verification for Food for Thought and Guess'é di Pasta.
 
 ## Quick Start
 
@@ -24,14 +24,19 @@ supabase db reset
 - `dish-images` - Full dish images
 - `dish-tiles` - Tile-based reveal images
 
-### Pasta Perfetto Game
+### Guess'é di Pasta Game
 
 **Tables:**
-- `pasta` - Pasta entries (name, region, sauce, pasta_about, origin_story, release_date)
-- `pasta_leaderboard` - Player scores for pasta game
+- `pasta` - Pasta entries with 4 game phases:
+  - Phase 1: Pasta identification (name, acceptable_guesses, pasta_about[6], pasta_description, pasta_image_url)
+  - Phase 2: Sauce identification (sauce_name, sauce_acceptable_guesses, sauce_ingredients[6], sauce_instructions[], sauce_description, sauce_image_url)
+  - Phase 3: Region identification (region, region_coordinates)
+  - Phase 4: Protein estimation (protein_per_serving)
+  - Content: origin_story, fun_fact, tags, release_date
+- `pasta_leaderboard` - Player scores for pasta game (per-phase scoring, guess tracking, percentiles)
 
 **Storage:**
-- `pasta-images` - Pasta and sauce images
+- `pasta-images` - Pasta and sauce images (plain pasta + plated with sauce)
 
 ## Migrations
 
@@ -125,7 +130,7 @@ Use service role key: `export SUPABASE_SERVICE_ROLE_KEY="your-key"`
 npm run generate:dishes
 ```
 
-### Pasta Perfetto
+### Guess'é di Pasta
 ```bash
 # Generate new pasta entries
 npm run generate:pasta
@@ -143,7 +148,6 @@ Required in `.env.local`:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321  # or production URL
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 
 # For generation scripts

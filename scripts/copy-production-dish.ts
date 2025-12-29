@@ -11,13 +11,17 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
+import { config } from 'dotenv';
 
-// Production Supabase
-// Try to load from .env.local.production if not in environment
-const PROD_SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL_PROD ||
-  'https://ezzplfaajvjuttejxhwb.supabase.co';
-const PROD_SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY_PROD ||
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV6enBsZmFhanZqdXR0ZWp4aHdiIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0OTI5NTY1OSwiZXhwIjoyMDY0ODcxNjU5fQ.W5TZtc8Xj7vcc1kHhBJSv9IGeRK37hmT58-TlfQhdsQ';
+config({ path: '.env.local' });
+
+const PROD_SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const PROD_SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (PROD_SUPABASE_URL?.includes('127.0.0.1') || PROD_SUPABASE_URL?.includes('localhost')) {
+  console.error('❌ ERROR: Not pointing to production! Run: npm run use-prod');
+  process.exit(1);
+}
 
 // Local Supabase
 const LOCAL_SUPABASE_URL = 'http://127.0.0.1:54321';
@@ -30,7 +34,7 @@ async function copyProductionDish() {
   // Check if production credentials are set
   if (!PROD_SUPABASE_URL || !PROD_SUPABASE_SERVICE_ROLE_KEY) {
     console.error('❌ Production Supabase credentials not found!');
-    console.log('This script uses credentials from .env.local.production');
+    console.log('Make sure you have run: npm run use-prod');
     process.exit(1);
   }
 

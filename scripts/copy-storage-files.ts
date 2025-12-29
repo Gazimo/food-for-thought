@@ -13,7 +13,7 @@ import { createClient } from '@supabase/supabase-js';
 import { config } from 'dotenv';
 
 // Load production credentials
-config({ path: '.env.local.production', override: true });
+config({ path: '.env.local', override: true });
 
 const PROD_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const PROD_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -21,8 +21,13 @@ const PROD_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const LOCAL_URL = 'http://127.0.0.1:54321';
 const LOCAL_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU';
 
+if (PROD_URL?.includes('127.0.0.1') || PROD_URL?.includes('localhost')) {
+  console.error('❌ ERROR: Not pointing to production! Run: npm run use-prod');
+  process.exit(1);
+}
+
 if (!PROD_URL || !PROD_KEY) {
-  console.error('❌ Missing production credentials in .env.local.production');
+  console.error('❌ Missing production credentials in .env.local');
   process.exit(1);
 }
 

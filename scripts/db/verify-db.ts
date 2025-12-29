@@ -1,7 +1,7 @@
 /**
  * Unified Database Verification Script
  *
- * Verifies all tables and schemas for both Food for Thought and Pasta Perfetto games
+ * Verifies all tables and schemas for both Food for Thought and Guess'é di Pasta games
  *
  * Usage: npx tsx scripts/db/verify-db.ts
  */
@@ -102,7 +102,7 @@ async function verifyGameScoresTable() {
 }
 
 async function verifyPastaTable() {
-  console.log("\n🍝 Verifying Pasta Perfetto (pasta table)...");
+  console.log("\n🍝 Verifying Guess'é di Pasta (pasta table)...");
 
   const { data, error, count } = await supabase
     .from("pasta")

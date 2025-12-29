@@ -2,32 +2,43 @@ import { config } from "dotenv";
 import { createClient } from "@supabase/supabase-js";
 import { execSync } from "child_process";
 
-// Load production credentials from backup file
-config({ path: ".env.local.production", override: true });
+config({ path: ".env.local" });
 
 const prodUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const prodKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-// Local Supabase credentials
+if (prodUrl?.includes("127.0.0.1") || prodUrl?.includes("localhost")) {
+  console.error("❌ ERROR: .env.local is pointing to LOCAL database, not production!");
+  console.error("");
+  console.error("To fix this:");
+  console.error("  1. Run: npm run use-prod");
+  console.error("  2. Then run this script again");
+  console.error("");
+  console.error("If you don't have production credentials, update .env.local.production with:");
+  console.error("  - NEXT_PUBLIC_SUPABASE_URL (your Supabase project URL)");
+  console.error("  - SUPABASE_SERVICE_ROLE_KEY (your service role key)");
+  process.exit(1);
+}
+
 const localUrl = "http://127.0.0.1:54321";
 const localKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU";
 
 if (!prodUrl || !prodKey) {
-  console.error("❌ Missing production environment variables in .env.local.production");
-  console.error("Make sure you ran 'npm run use-local' first to create the backup.");
+  console.error("❌ Missing production environment variables in .env.local");
+  console.error("Make sure you have NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY set.");
   process.exit(1);
+}
+
+// Helper to clamp values within range
+function clamp(value: any, min: number, max: number): number {
+  const num = Number(value);
+  if (isNaN(num)) return min;
+  return Math.max(min, Math.min(max, Math.round(num)));
 }
 
 function transformGameScores(record: any): any {
   // Clamp values to satisfy constraints
   const transformed = { ...record };
-
-  // Helper to clamp values within range
-  const clamp = (value: any, min: number, max: number): number => {
-    const num = Number(value);
-    if (isNaN(num)) return min;
-    return Math.max(min, Math.min(max, Math.round(num)));
-  };
 
   // Round and clamp phase scores (0-100 each)
   const dishScore = clamp(transformed.dish_score ?? 0, 0, 100);
@@ -48,6 +59,37 @@ function transformGameScores(record: any): any {
   transformed.protein_guesses = proteinGuesses;
 
   // Keep total_score as-is from production (weighted average)
+
+  return transformed;
+}
+
+function transformPastaLeaderboard(record: any): any {
+  // Clamp values to satisfy constraints
+  const transformed = { ...record };
+
+  // Round and clamp phase scores (0-100 each)
+  const pastaScore = clamp(transformed.pasta_score ?? 0, 0, 100);
+  const sauceScore = clamp(transformed.sauce_score ?? 0, 0, 100);
+  const regionScore = clamp(transformed.region_score ?? 0, 0, 100);
+  const proteinScore = clamp(transformed.protein_score ?? 0, 0, 100);
+
+  // Clamp guess counts to their allowed ranges
+  const pastaGuesses = clamp(transformed.pasta_guesses ?? 0, 0, 6);
+  const sauceGuesses = clamp(transformed.sauce_guesses ?? 0, 0, 6);
+  const regionGuesses = Math.max(0, Math.round(Number(transformed.region_guesses ?? 0))); // No upper limit
+  const proteinGuesses = clamp(transformed.protein_guesses ?? 0, 0, 4);
+
+  // Assign transformed values
+  transformed.pasta_score = pastaScore;
+  transformed.sauce_score = sauceScore;
+  transformed.region_score = regionScore;
+  transformed.protein_score = proteinScore;
+  transformed.pasta_guesses = pastaGuesses;
+  transformed.sauce_guesses = sauceGuesses;
+  transformed.region_guesses = regionGuesses;
+  transformed.protein_guesses = proteinGuesses;
+
+  // Keep total_score as-is from production (weighted average 0-100)
 
   return transformed;
 }
@@ -94,10 +136,13 @@ async function copyTable(
   for (let i = 0; i < prodData.length; i += batchSize) {
     const batch = prodData.slice(i, i + batchSize);
 
-    // Transform data if needed (e.g., round scores for game_scores table)
-    const transformedBatch = tableName === 'game_scores'
-      ? batch.map(transformGameScores)
-      : batch;
+    // Transform data if needed (round scores for leaderboard tables)
+    let transformedBatch = batch;
+    if (tableName === 'game_scores') {
+      transformedBatch = batch.map(transformGameScores);
+    } else if (tableName === 'pasta_leaderboard') {
+      transformedBatch = batch.map(transformPastaLeaderboard);
+    }
 
     const { error: insertError } = await localClient
       .from(tableName)
@@ -141,8 +186,8 @@ async function copyData() {
   const prodClient = createClient(prodUrl!, prodKey!);
   const localClient = createClient(localUrl, localKey);
 
-  // Tables to copy
-  const tables = ["dishes", "game_scores"];
+  // Tables to copy (both F4T and Pasta games)
+  const tables = ["dishes", "game_scores", "pasta", "pasta_leaderboard"];
   const results: Record<string, number> = {};
 
   for (const table of tables) {
