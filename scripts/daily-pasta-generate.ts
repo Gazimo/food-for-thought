@@ -36,9 +36,9 @@ const ai = new GoogleGenAI({ apiKey: geminiApiKey });
 
 // Configuration
 // const TARGET_BUFFER_DAYS = parseInt(process.env.TARGET_BUFFER_DAYS || "14", 10);
-const TARGET_BUFFER_DAYS = 3;
+const TARGET_BUFFER_DAYS = 4;
 const MAX_PASTA_PER_RUN = 10;
-const DAILY_COST_CAP_USD = parseFloat(process.env.DAILY_COST_CAP_USD || "0.50");
+const PASTA_DAILY_COST_CAP_USD = parseFloat(process.env.PASTA_DAILY_COST_CAP_USD || "0.7");
 
 // Gemini model configuration
 const STEP_1_CONFIG = {
@@ -66,6 +66,14 @@ function normalize(s: string): string {
     .replace(/[^a-z0-9]+/g, "")
     .trim();
 }
+
+// --- UPDATED PRICING CONFIG (LATE 2025) ---
+const PRICING = {
+  G3_PRO: { in: 2.0 / 1_000_000, out: 12.0 / 1_000_000 },
+  G2_5_FLASH: { in: 0.3 / 1_000_000, out: 2.5 / 1_000_000 },
+  SEARCH_GROUNDING: 0.035,
+  NANO_BANANA_3: 0.134 // per image
+};
 
 const PREPOSITIONS_LOWERCASE_WORDS = [
   "il", "lo", "l'", "la", "i", "gli", "le", 
@@ -116,6 +124,54 @@ const ITALIAN_REGIONS = italianRegions as ItalianRegionsMap;
 function getRegionCoords(region: string): { lat: number; lng: number } | undefined {
   const data = ITALIAN_REGIONS[region];
   return data ? { lat: data.lat, lng: data.lng } : undefined;
+}
+
+/**
+ * Build a set of all Italian location names and their adjective forms
+ */
+function buildLocationSet(): Set<string> {
+  const locations = new Set<string>();
+
+  // Add region names
+  Object.keys(ITALIAN_REGIONS).forEach(region => {
+    locations.add(region.toLowerCase());
+  });
+
+  // Add cities and capitals
+  Object.values(ITALIAN_REGIONS).forEach(regionData => {
+    locations.add(regionData.capital.toLowerCase());
+    regionData.cities.forEach(city => locations.add(city.toLowerCase()));
+  });
+
+  // Generate adjective forms
+  const adjectives = new Set<string>();
+  for (const location of locations) {
+    // Pattern: -a → -ese (Genova → Genovese)
+    if (location.endsWith('a')) {
+      adjectives.add(location.slice(0, -1) + 'ese');
+    }
+    // Pattern: -o → -ese (Bologna → Bolognese)
+    if (location.endsWith('o')) {
+      adjectives.add(location.slice(0, -1) + 'ese');
+    }
+  }
+
+  // Special cases
+  adjectives.add('romano');
+  adjectives.add('romana');
+  adjectives.add('napoletano');
+  adjectives.add('napoletana');
+
+  return new Set([...locations, ...adjectives]);
+}
+
+const LOCATION_SET = buildLocationSet();
+
+/**
+ * Check if a word is an Italian location or location adjective
+ */
+function isItalianLocation(word: string): boolean {
+  return LOCATION_SET.has(word.toLowerCase().trim());
 }
 
 function fixRegionName(regionName: string): string {
@@ -169,6 +225,8 @@ type PastaRecord = {
 type EnrichedPastaContext = {
   pastaName: string;
   fullContext: string;
+  promptLength: number;
+  pdfBufferSize: number;
 };
 
 type CompletePastaData = {
@@ -766,6 +824,8 @@ Remember: You are documenting living heritage. Every detail you uncover helps pr
     return {
       pastaName: candidate.name,
       fullContext: content,
+      promptLength: prompt.length,
+      pdfBufferSize: pdfContext?.pdfBuffer.length || 0,
     };
   } catch (error) {
     console.error(`💥 Step #1 enrichment failed:`, error);
@@ -1139,6 +1199,51 @@ async function savePastaToDatabase(
     return false;
   }
 
+  /**
+   * Expand sauce acceptable guesses to include base name for location-qualified sauces
+   * Examples:
+   *   "Pesto alla Genovese" → adds "Pesto" (Genovese is a location)
+   *   "Ragu di Lepre" → no expansion (Lepre is not a location)
+   */
+  const expandSauceGuesses = (sauceName: string, guesses: string[]): string[] => {
+    const words = sauceName.toLowerCase().split(/\s+/);
+
+    // Find first preposition
+    const prepIndex = words.findIndex(word =>
+      PREPOSITIONS_LOWERCASE_WORDS.includes(word)
+    );
+
+    // No preposition found → single-word sauce, no expansion needed
+    if (prepIndex === -1) {
+      return guesses;
+    }
+
+    // Extract base (everything before preposition)
+    const baseName = words.slice(0, prepIndex).join(' ');
+
+    // Extract qualifier (everything after preposition)
+    const qualifier = words.slice(prepIndex + 1).join(' ');
+
+    // Check if qualifier is a location
+    // For multi-word qualifiers, check if ANY word is a location
+    const qualifierWords = qualifier.split(/\s+/);
+    const hasLocation = qualifierWords.some(word => isItalianLocation(word));
+
+    if (hasLocation) {
+      // Location qualifier → Add base name to guesses if not already present
+      const normalizedBase = baseName.trim();
+      const hasBase = guesses.some(g => g.toLowerCase().trim() === normalizedBase);
+
+      if (!hasBase) {
+        console.log(`  ℹ️  Adding base "${normalizedBase}" for location-qualified sauce "${sauceName}"`);
+        return [...guesses, normalizedBase];
+      }
+    }
+
+    // Not a location or base already present → return unchanged
+    return guesses;
+  };
+
   // Ensure the pasta name is always in acceptable_guesses (lowercase)
   const ensureNameInGuesses = (name: string, guesses: string[]): string[] => {
     const normalizedName = name.toLowerCase().trim();
@@ -1153,7 +1258,10 @@ async function savePastaToDatabase(
     pasta_description: pastaData.pastaDescription,
     pasta_image_url: plainImageUrl,
     sauce_name: titleCase(pastaData.sauceName),
-    sauce_acceptable_guesses: ensureNameInGuesses(pastaData.sauceName, pastaData.sauceAcceptableGuesses),
+    sauce_acceptable_guesses: ensureNameInGuesses(
+      pastaData.sauceName,
+      expandSauceGuesses(pastaData.sauceName, pastaData.sauceAcceptableGuesses)
+    ),
     sauce_ingredients: pastaData.sauceIngredients,
     sauce_instructions: pastaData.sauceInstructions,
     sauce_description: pastaData.sauceDescription,
@@ -1415,6 +1523,12 @@ async function main() {
         console.log(`❌ Step 1: Enrichment failed, skipping.`);
         continue;
       }
+      const step1InTokens = (enrichedContext.promptLength + enrichedContext.pdfBufferSize) / 4;
+      const step1OutTokens = enrichedContext.fullContext.length / 4;
+      const step1Cost = (step1InTokens * PRICING.G3_PRO.in) +
+                        (step1OutTokens * PRICING.G3_PRO.out) +
+                        PRICING.SEARCH_GROUNDING;
+      spent += step1Cost;
 
       // Step 2: JSON parsing
       pastaData = await parseToStructuredJSON(enrichedContext);
@@ -1422,6 +1536,10 @@ async function main() {
         console.log(`❌ Step 2: JSON parsing failed, skipping.`);
         continue;
       }
+      const step2InTokens = enrichedContext.fullContext.length / 4;
+      const step2OutTokens = JSON.stringify(pastaData).length / 4;
+      spent += (step2InTokens * PRICING.G2_5_FLASH.in) + 
+              (step2OutTokens * PRICING.G2_5_FLASH.out);
 
       // Step 3: Validation
       const validation = validatePastaData(pastaData, candidate, enrichedContext);
@@ -1435,7 +1553,8 @@ async function main() {
         pastaData,
         imageService
       );
-      spent += 0.10; // Gemini image generation cost (both images)
+      if (plainImageUrl) spent += PRICING.NANO_BANANA_3;
+      if (sauceImageUrl) spent += PRICING.NANO_BANANA_3;
 
       // Step 7: Save to database
       const releaseDateStr = nextReleaseDate.toISOString().split("T")[0];
