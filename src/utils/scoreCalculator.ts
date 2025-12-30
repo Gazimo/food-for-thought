@@ -10,6 +10,7 @@ const WEIGHT_DISH = 0.35;
 const WEIGHT_COUNTRY = 0.35;
 const WEIGHT_PROTEIN = 0.3;
 
+
 /**
  * Calculate score for dish or country phase based on number of guesses
  * Score decreases by 20 points per guess (100, 80, 60, 40, 20, 0)

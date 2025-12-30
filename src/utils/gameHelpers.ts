@@ -94,7 +94,9 @@ export function capitalizeFirst(str: string) {
 
 export async function loadDishes(date?: string): Promise<Dish[]> {
   const url = date ? `/api/dishes?date=${date}` : "/api/dishes";
-  const res = await fetch(url);
+  const res = await fetch(url, {
+    credentials: 'include',
+  });
   if (!res.ok) {
     if (res.status === 403) {
       const errorData = await res.json().catch(() => ({}));

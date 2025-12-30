@@ -66,8 +66,8 @@ export default async function handler(
         return res.status(400).json({ error: "Cannot request future dates" });
       }
 
-      // Validate archive access token
-      const validation = validateArchiveAccess(req, requestedDate);
+      // Validate archive access token with correct F4T cookie name
+      const validation = validateArchiveAccess(req, requestedDate, "food_for_thought_archives_unlock");
       if (!validation.isValid) {
         console.log(`🚫 Archive validation failed: ${validation.error}`);
         return res.status(403).json({
@@ -122,10 +122,18 @@ export default async function handler(
       });
     }
 
+    // Ensure dish name is always in acceptable guesses (lowercase, defensive fix for AI generation bugs)
+    const ensureNameInGuesses = (name: string, guesses: string[] | null): string[] => {
+      const guessesList = guesses || [];
+      const normalizedName = name.toLowerCase().trim();
+      const hasName = guessesList.some(guess => guess.toLowerCase().trim() === normalizedName);
+      return hasName ? guessesList : [normalizedName, ...guessesList];
+    };
+
     // Convert Supabase dish format to our Dish interface
     const dish: Dish = {
       name: targetDish.name,
-      acceptableGuesses: targetDish.acceptable_guesses || [],
+      acceptableGuesses: ensureNameInGuesses(targetDish.name, targetDish.acceptable_guesses),
       country: targetDish.country,
       imageUrl: targetDish.image_url, // This now has the randomized filename!
       ingredients: targetDish.ingredients || [],
@@ -192,18 +200,20 @@ export default async function handler(
     };
 
     const posthog = PostHogClient();
-    try {
-      await posthog.capture({
-        distinctId: req.headers.cookie || "anonymous",
-        event: "api_dishes_retrieved",
-        properties: {
-          method: req.method,
-          endpoint: req.url,
-          count: 1, // Always 1 dish now
-        },
-      });
-    } catch (error) {
-      console.error("PostHog capture error:", error);
+    if (posthog) {
+      try {
+        await posthog.capture({
+          distinctId: req.headers.cookie || "anonymous",
+          event: "api_dishes_retrieved",
+          properties: {
+            method: req.method,
+            endpoint: req.url,
+            count: 1, // Always 1 dish now
+          },
+        });
+      } catch (error) {
+        console.error("PostHog capture error:", error);
+      }
     }
 
     // Add additional security headers to prevent inspection

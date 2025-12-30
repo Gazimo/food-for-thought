@@ -18,7 +18,8 @@ export interface ArchiveValidationResult {
  */
 export function validateArchiveAccess(
   req: NextApiRequest,
-  requestedDate: string
+  requestedDate: string,
+  cookieName: string = "f4t_archives_unlock"
 ): ArchiveValidationResult {
   try {
     // Get the token from HTTP-only cookie
@@ -31,8 +32,8 @@ export function validateArchiveAccess(
       };
     }
 
-    // Parse cookies to find our token
-    const cookieMatch = cookies.match(/f4t_archives_unlock=([^;]+)/);
+    // Parse cookies to find our token (game-specific cookie name)
+    const cookieMatch = cookies.match(new RegExp(`${cookieName}=([^;]+)`));
     if (!cookieMatch) {
       return {
         isValid: false,

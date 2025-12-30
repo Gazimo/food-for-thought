@@ -1,5 +1,6 @@
 "use client";
 
+import { useOptionalGameContext } from "@/contexts";
 import { useGameStore } from "@/store";
 import { Calendar, HelpCircle, Home, Trophy } from "lucide-react";
 import Link from "next/link";
@@ -10,28 +11,37 @@ interface GameHeaderProps {
 }
 
 export function GameHeader({ onShowRules }: GameHeaderProps) {
-  const { isPlayingArchive, archiveDate, exitArchiveMode } = useGameStore();
+  const gameContext = useOptionalGameContext();
   const router = useRouter();
 
+  // Get game-specific info from context, with fallbacks for default game
+  const gameName = gameContext?.gameConfig.name ?? "Food for Thought";
+  const gameUrlPath = gameContext?.gameConfig.urlPath ?? "/play";
+
+  // Both games now use unified architecture - no legacy support needed
+  const isArchiveMode = useGameStore((state) => state.isArchiveMode);
+  const puzzleDate = useGameStore((state) => state.puzzleDate);
+  const exitUnifiedArchiveMode = useGameStore((state) => state.exitUnifiedArchiveMode);
+
   const handleBackToToday = () => {
-    exitArchiveMode();
-    router.push("/play");
+    exitUnifiedArchiveMode();
+    router.push(gameUrlPath);
   };
 
   // Show Statistics button always (not just after completing game)
-  const showStatisticsButton = !isPlayingArchive;
+  const showStatisticsButton = !isArchiveMode;
 
   return (
     <header className="w-full flex justify-between items-center">
       <div className="flex flex-col">
-        <h1 className="text-xl font-bold text-orange-600">Food for Thought</h1>
-        {isPlayingArchive && archiveDate && (
+        <h1 className="text-xl font-bold text-orange-600">{gameName}</h1>
+        {isArchiveMode && puzzleDate && (
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <div className="flex items-center gap-1">
               <Calendar className="h-3 w-3" />
               <span>
                 Archive:{" "}
-                {new Date(archiveDate).toLocaleDateString("en-US", {
+                {new Date(puzzleDate).toLocaleDateString("en-US", {
                   weekday: "short",
                   month: "short",
                   day: "numeric",

@@ -1,19 +1,32 @@
 import { create } from "zustand";
 import { createArchiveSlice } from "./slices/archiveSlice";
-import { createGameSlice } from "./slices/gameSlice";
-import { createGuessSlice } from "./slices/guessSlice";
 import { createLeaderboardSlice } from "./slices/leaderboardSlice";
 import { createPersistenceSlice } from "./slices/persistenceSlice";
 import { createStreakSlice } from "./slices/streakSlice";
 import { createUiSlice } from "./slices/uiSlice";
-import { GameStoreState } from "./types/slices";
+import { createUnifiedGameSlice, UnifiedGameState } from "./slices/unifiedGameSlice";
+import {
+  PersistenceSlice,
+  UiSlice,
+  ArchiveSlice,
+  StreakSlice,
+  LeaderboardSlice
+} from "./types/slices";
 
-export const useGameStore = create<GameStoreState>()((...a) => ({
+// Store state with only active slices (legacy GameSlice and GuessSlice removed)
+export interface ExtendedGameStoreState
+  extends PersistenceSlice,
+    UiSlice,
+    ArchiveSlice,
+    StreakSlice,
+    LeaderboardSlice,
+    UnifiedGameState {}
+
+export const useGameStore = create<ExtendedGameStoreState>()((...a) => ({
   ...createPersistenceSlice(...a),
-  ...createGameSlice(...a),
   ...createUiSlice(...a),
-  ...createGuessSlice(...a),
   ...createArchiveSlice(...a),
   ...createStreakSlice(...a),
   ...createLeaderboardSlice(...a),
+  ...createUnifiedGameSlice(...a),
 }));

@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-config({ path: ".env.local" });
+config({ path: ".env.local" }); // local development
 
 import { createClient } from "@supabase/supabase-js";
 import fs from "fs";
@@ -443,7 +443,7 @@ async function main() {
         name: textOnly.name,
         ingredients: sanitizedTopIngredients,
         country: countryTitle,
-        blurb: sanitizedBlurb,
+          blurb: sanitizedBlurb,
         tags: textOnly.tags,
       });
 
@@ -467,10 +467,18 @@ async function main() {
       }
       const coordinatesString = coords ? `(${coords.lng},${coords.lat})` : null;
 
+      // Ensure the dish name is always in acceptable_guesses (lowercase)
+      const ensureNameInGuesses = (name: string, guesses: string[] | undefined): string[] => {
+        const guessesList = guesses || [];
+        const normalizedName = name.toLowerCase().trim();
+        const hasName = guessesList.some(guess => guess.toLowerCase().trim() === normalizedName);
+        return hasName ? guessesList : [normalizedName, ...guessesList];
+      };
+
       // Insert to database
       const dishToInsert = {
         name: textOnly.name,
-        acceptable_guesses: textOnly.acceptableGuesses,
+        acceptable_guesses: ensureNameInGuesses(textOnly.name, textOnly.acceptableGuesses),
         country: countryTitle,
         image_url: imageResult.imageUrl || null,
         ingredients: sanitizedTopIngredients,

@@ -1,7 +1,7 @@
 import { GameSliceCreator, UiSlice } from "../types/slices";
 
 export const createUiSlice: GameSliceCreator<UiSlice> = (set, get) => ({
-  modalVisible: true,
+  modalVisible: false,
   activePhase: "dish",
   loading: {
     dishGuess: false,

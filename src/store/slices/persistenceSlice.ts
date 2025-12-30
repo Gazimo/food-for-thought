@@ -1,4 +1,5 @@
 import { GameSliceCreator, PersistenceSlice } from "../types/slices";
+import debugLogger from "@/utils/debugLogger";
 
 const getTodaysDate = () => new Date().toISOString().split("T")[0];
 
@@ -30,11 +31,19 @@ export const createPersistenceSlice: GameSliceCreator<PersistenceSlice> = (
       savedDate: today,
     };
 
+    debugLogger.persistence('Saving F4T game state', {
+      date: today,
+      gamePhase: state.gamePhase,
+      activePhase: state.activePhase,
+    });
+
     localStorage.setItem(
       `fft-game-state-${today}`,
       JSON.stringify(gameStateToSave)
     );
     localStorage.setItem("fft-game-state", JSON.stringify(gameStateToSave));
+
+    debugLogger.persistence('✅ F4T state saved', { date: today });
   },
 
   restoreGameStateFromStorage: (forceRestore?: boolean) => {
@@ -48,6 +57,12 @@ export const createPersistenceSlice: GameSliceCreator<PersistenceSlice> = (
       return false;
     }
 
+    const today = getTodaysDate();
+    debugLogger.persistence('Restoring F4T game state', {
+      date: today,
+      forceRestore,
+    });
+
     try {
       const archiveUnlock = localStorage.getItem("fft-archives-unlock");
       if (archiveUnlock) {
@@ -59,7 +74,6 @@ export const createPersistenceSlice: GameSliceCreator<PersistenceSlice> = (
     }
 
     try {
-      const today = getTodaysDate();
       const todayKey = `fft-game-state-${today}`;
 
       let saved = localStorage.getItem(todayKey);
@@ -69,6 +83,7 @@ export const createPersistenceSlice: GameSliceCreator<PersistenceSlice> = (
       }
 
       if (!saved) {
+        debugLogger.persistence('ℹ️ No F4T state to restore', { date: today });
         return false;
       }
 
@@ -77,6 +92,10 @@ export const createPersistenceSlice: GameSliceCreator<PersistenceSlice> = (
       const savedDate = parsedState.savedDate;
 
       if (!savedDate || savedDate !== today) {
+        debugLogger.persistence('⚠️ Saved state is from different date', {
+          savedDate,
+          today,
+        });
         if (saved === localStorage.getItem("fft-game-state")) {
           localStorage.removeItem("fft-game-state");
         }
@@ -84,6 +103,15 @@ export const createPersistenceSlice: GameSliceCreator<PersistenceSlice> = (
       }
 
       if (parsedState.gameResults) {
+        // Show modal if game is complete (so user can see results/share)
+        const shouldShowModal = parsedState.gamePhase === "complete";
+
+        debugLogger.persistence('✅ F4T state restored', {
+          date: today,
+          gamePhase: parsedState.gamePhase,
+          activePhase: parsedState.activePhase,
+        });
+
         set({
           gamePhase: parsedState.gamePhase || "dish",
           activePhase: parsedState.activePhase || "dish",
@@ -110,15 +138,16 @@ export const createPersistenceSlice: GameSliceCreator<PersistenceSlice> = (
           dishGuesses: parsedState.dishGuesses || [],
           countryGuesses: parsedState.countryGuesses || [],
           proteinGuesses: parsedState.proteinGuesses || [],
-          modalVisible: false,
+          modalVisible: shouldShowModal,
           hasRestoredState: true,
         });
         return true;
       } else {
+        debugLogger.persistence('⚠️ Saved state has no game results', { date: today });
         return false;
       }
     } catch (error) {
-      console.error("Error restoring game state:", error);
+      debugLogger.error("Error restoring F4T game state", error);
       localStorage.removeItem("fft-game-state");
       return false;
     }

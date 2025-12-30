@@ -7,9 +7,15 @@ import React, { useState } from "react";
 
 interface ArchiveStatusProps {
   isUnlocked: boolean;
+  gameRoute?: string;
+  apiPrefix?: string;
 }
 
-export const ArchiveStatus: React.FC<ArchiveStatusProps> = ({ isUnlocked }) => {
+export const ArchiveStatus: React.FC<ArchiveStatusProps> = ({
+  isUnlocked,
+  gameRoute = "/play",
+  apiPrefix = "/api",
+}) => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const { isPlayingArchive } = useGameStore();
 
@@ -43,6 +49,8 @@ export const ArchiveStatus: React.FC<ArchiveStatusProps> = ({ isUnlocked }) => {
         <ArchiveDatePicker
           isOpen={isDatePickerOpen}
           onClose={() => setIsDatePickerOpen(false)}
+          gameRoute={gameRoute}
+          apiPrefix={apiPrefix}
         />
       </>
     );

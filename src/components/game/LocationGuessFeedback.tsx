@@ -1,0 +1,104 @@
+"use client";
+
+import { motion } from "framer-motion";
+import React from "react";
+import { useCountUp } from "@/hooks/useCountUp";
+
+export interface LocationGuessResult {
+  location: string;
+  distance: number;
+  direction: string;
+  isCorrect: boolean;
+}
+
+interface LocationGuessFeedbackProps {
+  guessResults: LocationGuessResult[];
+  getColorForDistance: (distance: number) => string;
+  getDirectionArrow: (direction: string) => string;
+  locationType?: "country" | "region";
+  funFact?: string;
+}
+
+export const LocationGuessFeedback: React.FC<LocationGuessFeedbackProps> = ({
+  guessResults,
+  getColorForDistance,
+  getDirectionArrow,
+  funFact,
+}) => {
+  const lastGuess = guessResults[guessResults.length - 1] ?? { distance: 0 };
+  const animatedDistance = useCountUp(0, Math.round(lastGuess.distance), 1000);
+
+  if (guessResults.length === 0) return null;
+
+  const previousGuesses = [...guessResults.slice(0, -1)].sort((a, b) => {
+    if (isNaN(a.distance)) return 1;
+    if (isNaN(b.distance)) return -1;
+    return a.distance - b.distance;
+  });
+
+  const lastGuessIsCorrect = lastGuess && lastGuess.isCorrect;
+
+  const renderGuess = (
+    result: LocationGuessResult,
+    animated = false,
+    index: number
+  ) => {
+    const distanceValue =
+      animated && !result.isCorrect
+        ? animatedDistance
+        : Math.round(result.distance);
+
+    return (
+      <motion.div
+        key={result.location + result.distance + index}
+        initial={animated ? { opacity: 0, y: 10 } : false}
+        animate={animated ? { opacity: 1, y: 0 } : undefined}
+        transition={animated ? { duration: 0.3 } : undefined}
+        className={`p-3 rounded-lg border ${
+          result.isCorrect ? "border-green-500 bg-green-50" : "border-gray-200"
+        }`}
+      >
+        <div className="flex justify-between items-center">
+          <span className="font-medium">{result.location}</span>
+          {!result.isCorrect && (
+            <div className="flex items-center gap-2">
+              <span className="text-sm">
+                {distanceValue.toLocaleString()} km
+              </span>
+              <span className="text-sm flex items-center justify-center">
+                {getDirectionArrow(result.direction)}
+              </span>
+              <div
+                className={`w-4 h-4 rounded-full ${getColorForDistance(
+                  result.distance
+                )}`}
+              />
+            </div>
+          )}
+        </div>
+      </motion.div>
+    );
+  };
+
+  return (
+    <>
+      <h3 className="font-semibold text-lg mb-2">Previous Guesses:</h3>
+      <div className="space-y-2">
+        {renderGuess(lastGuess, true, -1)}
+        {previousGuesses.map((g, i) => renderGuess(g, false, i))}
+      </div>
+
+      {lastGuessIsCorrect && funFact && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg"
+        >
+          <h4 className="font-bold text-blue-800 mb-1">Did you know?</h4>
+          <p className="text-blue-700">{funFact}</p>
+        </motion.div>
+      )}
+    </>
+  );
+};

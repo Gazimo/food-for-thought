@@ -11,29 +11,50 @@ import {
 } from "@/components/ui/dialog";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface ArchiveDatePickerProps {
   isOpen: boolean;
   onClose: () => void;
+  gameRoute?: string;
+  apiPrefix?: string;
 }
 
 export const ArchiveDatePicker: React.FC<ArchiveDatePickerProps> = ({
   isOpen,
   onClose,
+  gameRoute = "/play",
+  apiPrefix = "/api",
 }) => {
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [availableDates, setAvailableDates] = useState<string[]>([]);
+  const [loadingDates, setLoadingDates] = useState(false);
 
   // Get today's date for validation
   const today = new Date();
   const todayString = today.toISOString().split("T")[0];
 
-  // Calculate the earliest available date (assuming game started 30 days ago for now)
-  const earliestDate = new Date();
-  earliestDate.setDate(today.getDate() - 30);
-  const earliestDateString = earliestDate.toISOString().split("T")[0];
+  // Fetch available dates when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setLoadingDates(true);
+      const endpoint = `${apiPrefix}/available-dates`;
+
+      fetch(endpoint)
+        .then((res) => res.json())
+        .then((data) => {
+          setAvailableDates(data.dates || []);
+          setLoadingDates(false);
+        })
+        .catch((error) => {
+          console.error("Failed to fetch available dates:", error);
+          setAvailableDates([]);
+          setLoadingDates(false);
+        });
+    }
+  }, [isOpen, apiPrefix]);
 
   const handleDateSelect = (date: string) => {
     setSelectedDate(date);
@@ -41,13 +62,14 @@ export const ArchiveDatePicker: React.FC<ArchiveDatePickerProps> = ({
 
   const handlePlayArchive = () => {
     if (selectedDate) {
-      router.push(`/play?date=${selectedDate}`);
+      router.push(`${gameRoute}?date=${selectedDate}`);
       onClose();
     }
   };
 
   const isDateDisabled = (date: string) => {
-    return date > todayString || date < earliestDateString;
+    // Disable if in the future or not in available dates
+    return date > todayString || !availableDates.includes(date);
   };
 
   const isDateToday = (date: string) => {
@@ -173,8 +195,26 @@ export const ArchiveDatePicker: React.FC<ArchiveDatePickerProps> = ({
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Month navigation */}
-          <div className="flex items-center justify-between">
+          {/* Loading state */}
+          {loadingDates && (
+            <div className="text-center text-sm text-muted-foreground py-4">
+              Loading available dates...
+            </div>
+          )}
+
+          {/* No dates available message */}
+          {!loadingDates && availableDates.length === 0 && (
+            <div className="text-center text-muted-foreground py-6">
+              <p className="text-sm">No archived games available yet.</p>
+              <p className="text-xs mt-2">Complete today&apos;s game to start building your archive!</p>
+            </div>
+          )}
+
+          {/* Calendar (only show if we have dates) */}
+          {!loadingDates && availableDates.length > 0 && (
+            <>
+              {/* Month navigation */}
+              <div className="flex items-center justify-between">
             <Button
               variant="outline"
               size="sm"
@@ -196,21 +236,23 @@ export const ArchiveDatePicker: React.FC<ArchiveDatePickerProps> = ({
             </Button>
           </div>
 
-          {/* Calendar */}
-          {renderCalendar()}
+              {/* Calendar */}
+              {renderCalendar()}
 
-          {selectedDate && (
-            <div className="bg-muted p-3 rounded-md">
-              <p className="text-sm text-muted-foreground">Selected date:</p>
-              <p className="font-medium">
-                {new Date(selectedDate).toLocaleDateString("en-US", {
-                  weekday: "long",
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </p>
-            </div>
+              {selectedDate && (
+                <div className="bg-muted p-3 rounded-md">
+                  <p className="text-sm text-muted-foreground">Selected date:</p>
+                  <p className="font-medium">
+                    {new Date(selectedDate).toLocaleDateString("en-US", {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </p>
+                </div>
+              )}
+            </>
           )}
         </div>
 
