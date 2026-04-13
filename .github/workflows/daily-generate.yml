@@ -30,11 +30,11 @@ jobs:
       - name: Create .env.local
         run: |
           cat > .env.local << 'EOF'
-          OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
-          NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          DAILY_COST_CAP_USD=${{ secrets.DAILY_COST_CAP_USD }}
-          TARGET_BUFFER_DAYS=${{ secrets.TARGET_BUFFER_DAYS }}
+OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+DAILY_COST_CAP_USD=${{ secrets.DAILY_COST_CAP_USD }}
+TARGET_BUFFER_DAYS=${{ secrets.TARGET_BUFFER_DAYS }}
           EOF
 
       - name: Run daily generator
