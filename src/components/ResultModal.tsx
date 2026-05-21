@@ -1,7 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useGameStore } from "@/store";
 import Image from "next/image";
 import posthog from "posthog-js";
@@ -147,15 +152,18 @@ export const ResultModal: React.FC = memo(function ResultModal() {
     >
       <DialogContent className="max-w-md w-full max-h-[90vh] overflow-y-auto gap-4 flex flex-col p-4 sm:p-6">
         <div className="flex flex-col gap-1">
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl sm:text-2xl font-bold">🎉 You did it!</h2>
-          </div>
+          <DialogTitle className="text-xl sm:text-2xl font-bold">
+            🎉 You did it!
+          </DialogTitle>
           {streak >= 1 && (
             <div className="text-orange-500 font-semibold text-sm mt-2 animate-streak-pop">
               🔥 You&apos;re on a {streak}-day streak!
             </div>
           )}
         </div>
+        <DialogDescription className="sr-only">
+          Game results for {currentDish.name} from {currentDish.country}.
+        </DialogDescription>
         {currentDish.imageUrl ? (
           <Image
             src={currentDish.imageUrl}
