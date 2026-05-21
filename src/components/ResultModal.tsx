@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useGameStore } from "@/store";
 import Image from "next/image";
 import posthog from "posthog-js";
@@ -55,7 +56,7 @@ export const ResultModal: React.FC = memo(function ResultModal() {
     gameResults,
   ]);
 
-  if (gamePhase !== "complete" || !currentDish || !modalVisible) return null;
+  if (gamePhase !== "complete" || !currentDish) return null;
 
   const shareText = generateShareText({
     dishGuesses: gameResults.dishGuesses,
@@ -135,21 +136,19 @@ export const ResultModal: React.FC = memo(function ResultModal() {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-4 sm:p-6 max-w-full sm:max-w-md w-full max-h-[90vh] overflow-y-auto gap-4 flex flex-col">
+    <Dialog
+      open={modalVisible}
+      onOpenChange={(open) => {
+        if (!open) {
+          toggleModal(false);
+          posthog.capture("toggle_recipe_modal", { opened: false });
+        }
+      }}
+    >
+      <DialogContent className="max-w-md w-full max-h-[90vh] overflow-y-auto gap-4 flex flex-col p-4 sm:p-6">
         <div className="flex flex-col gap-1">
           <div className="flex justify-between items-center">
             <h2 className="text-xl sm:text-2xl font-bold">🎉 You did it!</h2>
-            <button
-              onClick={() => {
-                toggleModal(false);
-                posthog.capture("toggle_recipe_modal", { opened: false });
-              }}
-              className="text-gray-500 hover:text-gray-700 text-2xl sm:text-xl px-2"
-              aria-label="Close"
-            >
-              ✕
-            </button>
           </div>
           {streak >= 1 && (
             <div className="text-orange-500 font-semibold text-sm mt-2 animate-streak-pop">
@@ -254,7 +253,7 @@ export const ResultModal: React.FC = memo(function ResultModal() {
         <p className="text-center text-gray-500 text-sm mt-4">
           Come back tomorrow for a new challenge!
         </p>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 });
