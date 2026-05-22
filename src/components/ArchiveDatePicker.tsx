@@ -31,8 +31,9 @@ export const ArchiveDatePicker: React.FC<ArchiveDatePickerProps> = ({
   const todayString = today.toISOString().split("T")[0];
 
   // Calculate the earliest available date (assuming game started 30 days ago for now)
+  const ARCHIVE_DAYS_BACK = 90;
   const earliestDate = new Date();
-  earliestDate.setDate(today.getDate() - 30);
+  earliestDate.setDate(today.getDate() - ARCHIVE_DAYS_BACK);
   const earliestDateString = earliestDate.toISOString().split("T")[0];
 
   const handleDateSelect = (date: string) => {
@@ -168,7 +169,7 @@ export const ArchiveDatePicker: React.FC<ArchiveDatePickerProps> = ({
           </DialogTitle>
           <DialogDescription>
             Select a date to play a previous game. You can only access games
-            from the last 30 days.
+            from the last 90 days.
           </DialogDescription>
         </DialogHeader>
 
