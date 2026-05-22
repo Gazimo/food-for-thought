@@ -2,17 +2,28 @@
 
 import { useGameStore } from "@/store";
 import { AnimatePresence, motion } from "framer-motion";
+import { getCuisineRegion } from "@/data/cuisineRegions";
+import { RegionHintChip } from "./RegionHintChip";
 
 export const GuessFeedback = () => {
-  const { currentDish, gamePhase, revealedIngredients } = useGameStore();
+  const { currentDish, gamePhase, revealedIngredients, dishGuesses } = useGameStore();
 
   if (!currentDish) return null;
 
-  if (gamePhase === "dish" && revealedIngredients <= 1) return null;
+  const showIngredientHints =
+    gamePhase !== "country" && revealedIngredients >= 1;
+
+  const isDishPhase = gamePhase === "dish";
+  const region = isDishPhase ? getCuisineRegion(currentDish.country) : null;
+  const showRegionHint =
+    isDishPhase && dishGuesses.length >= 3 && region !== null;
+
+  // Early return only when there's truly nothing to show.
+  if (!showIngredientHints && !showRegionHint) return null;
 
   return (
-    <>
-      {gamePhase !== "country" && revealedIngredients >= 1 && (
+    <div className="flex flex-col gap-2">
+      {showIngredientHints && revealedIngredients > 1 && (
         <div className="flex flex-col gap-1">
           <div className="text-sm text-gray-600">Revealed Ingredients:</div>
           <div className="flex flex-wrap gap-1">
@@ -35,6 +46,8 @@ export const GuessFeedback = () => {
           </div>
         </div>
       )}
-    </>
+
+      {showRegionHint && region && <RegionHintChip region={region} />}
+    </div>
   );
 };
