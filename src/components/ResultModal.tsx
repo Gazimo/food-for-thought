@@ -146,11 +146,16 @@ export const ResultModal: React.FC = memo(function ResultModal() {
       onOpenChange={(open) => {
         if (!open) {
           toggleModal(false);
+          setShowRecipe(false);
+          setShowSharePopover(false);
           posthog.capture("toggle_recipe_modal", { opened: false });
         }
       }}
     >
-      <DialogContent className="max-w-md w-full max-h-[90vh] overflow-y-auto gap-4 flex flex-col p-4 sm:p-6">
+      <DialogContent
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        className="max-w-md w-full max-h-[90vh] overflow-y-auto gap-4 flex flex-col p-4 sm:p-6"
+      >
         <div className="flex flex-col gap-1">
           <DialogTitle className="text-xl sm:text-2xl font-bold">
             🎉 You did it!
