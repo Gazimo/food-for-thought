@@ -80,85 +80,47 @@ class DishImageService {
     }
   }
 
-  /**
-   * Create an optimized prompt that matches your existing image style
-   */
   private createOptimizedPrompt(dishData: DishImageData): string {
     const { name, ingredients, country, blurb, tags } = dishData;
+    const text = [...tags, blurb].join(" ").toLowerCase();
+    const angle = this.getCameraAngle(text);
+    const surface = this.getSurface(text);
+    const cookingCue = this.getCookingCue(text);
+    const visibleIngredients = ingredients.slice(0, 3).join(", ");
 
-    // Base style that emphasizes centered composition
-    const baseStyle =
-      "professional food photography, centered composition with the dish as the main focal point, overhead or 45-degree elevated angle view, natural lighting, rustic wooden table or neutral background, high resolution, detailed textures, appetizing presentation, vibrant colors, perfectly centered in frame";
-
-    // Get dish-specific styling cues
-    const dishStyle = this.getDishStyle(tags, blurb);
-
-    // Focus on primary ingredients (first 3-4 for specificity)
-    const primaryIngredients = ingredients.slice(0, 4).join(", ");
-    const ingredientNote =
-      ingredients.length > 4
-        ? ` featuring ${primaryIngredients} among other ingredients`
-        : ` made with ${primaryIngredients}`;
-
-    return `A beautiful, appetizing photograph of ${name}, a traditional dish from ${country}${ingredientNote}. ${dishStyle}${baseStyle}. Restaurant-quality plating, mouth-watering presentation, dish positioned centrally in the frame. No text, watermarks, people, or artificial elements in the image.`;
+    return (
+      `${angle} photograph of ${name}, traditional dish from ${country}. ` +
+      `${cookingCue}, plated with ${visibleIngredients}. ` +
+      `Soft natural daylight from the left, ${surface} background, ` +
+      `shallow depth of field with the plate centered in frame. ` +
+      `Editorial food photography, 50mm lens, warm color grading, restaurant magazine quality.`
+    );
   }
 
-  /**
-   * Extract visual styling cues from tags and blurb
-   */
-  private getDishStyle(tags: string[], blurb: string): string {
-    const styles: string[] = [];
-    const allText = [...tags, blurb.toLowerCase()].join(" ").toLowerCase();
+  private getCameraAngle(text: string): string {
+    if (/(soup|stew|ramen|broth|curry)/.test(text)) return "45-degree close-up";
+    if (/(street food|handheld|sandwich|taco|burger|wrap)/.test(text)) return "Eye-level close-up";
+    return "Overhead";
+  }
 
-    // Cooking method styling
-    if (allText.includes("fried")) {
-      styles.push("golden brown crispy exterior with slight oil shine");
-    }
-    if (allText.includes("grilled")) {
-      styles.push("beautiful charred grill marks and smoky appearance");
-    }
-    if (allText.includes("steamed")) {
-      styles.push("moist tender texture with visible steam");
-    }
-    if (allText.includes("baked")) {
-      styles.push("golden brown crust from oven baking");
-    }
-    if (allText.includes("roasted")) {
-      styles.push("caramelized roasted exterior");
-    }
+  private getSurface(text: string): string {
+    if (/(fine dining|elegant|refined)/.test(text)) return "dark slate";
+    if (/(street food|market|casual)/.test(text)) return "weathered concrete";
+    return "rustic weathered wood";
+  }
 
-    // Texture and appearance
-    if (allText.includes("creamy") || allText.includes("rich")) {
-      styles.push("rich creamy sauce with smooth texture");
-    }
-    if (allText.includes("crispy") || allText.includes("crunchy")) {
-      styles.push("visible crispy crunchy textures");
-    }
-    if (allText.includes("fresh")) {
-      styles.push("bright fresh vibrant colors");
-    }
-    if (allText.includes("spicy") || allText.includes("hot")) {
-      styles.push("vibrant colors suggesting heat and spice");
-    }
-
-    // Presentation style
-    if (allText.includes("soup") || allText.includes("stew")) {
-      styles.push("served in a beautiful deep bowl with steam rising");
-    }
-    if (allText.includes("salad")) {
-      styles.push("fresh colorful vegetables with light glistening dressing");
-    }
-    if (allText.includes("noodles") || allText.includes("pasta")) {
-      styles.push("perfectly cooked noodles with visible texture");
-    }
-    if (allText.includes("rice")) {
-      styles.push("fluffy individual rice grains visible");
-    }
-    if (allText.includes("street food") || allText.includes("handheld")) {
-      styles.push("casual authentic street food presentation");
-    }
-
-    return styles.length > 0 ? styles.join(", ") + ". " : "";
+  private getCookingCue(text: string): string {
+    const cues: string[] = [];
+    if (/(grilled|bbq|charred)/.test(text)) cues.push("deep char marks, glossy marinade");
+    if (/fried/.test(text)) cues.push("golden brown crispy crust, light oil sheen");
+    if (/(baked|roasted)/.test(text)) cues.push("caramelized crust, deep golden tones");
+    if (/steamed/.test(text)) cues.push("tender moist surface, subtle steam rising");
+    if (/(creamy|rich)/.test(text)) cues.push("velvety sauce with glossy sheen");
+    if (/(noodles|pasta)/.test(text)) cues.push("perfectly twirled strands, sauce clinging to each");
+    if (/(soup|stew)/.test(text)) cues.push("rich broth catching the light, ingredients half-submerged");
+    if (/(spicy|hot)/.test(text)) cues.push("deep red and orange tones");
+    if (/(fresh|salad|raw)/.test(text)) cues.push("vibrant raw textures, glistening dressing");
+    return cues.length ? cues.join(", ") : "rich textures and natural colors";
   }
 
   /**
