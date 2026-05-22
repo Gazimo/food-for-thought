@@ -1,6 +1,5 @@
 import { GuessInput } from "@/components/GuessInput";
 import { IngredientProteinStrip } from "@/components/IngredientProteinStrip";
-import { Button } from "@/components/ui/button";
 import { useGameStore } from "@/store";
 import { ProteinSkeleton } from "../../components/GameSkeleton";
 import { ProteinGuessFeedback } from "../../components/ProteinGuessFeedback";
@@ -14,9 +13,6 @@ export function ProteinPhase() {
     currentDish,
     isProteinPhaseComplete,
     archiveDate,
-    gamePhase,
-    modalVisible,
-    toggleModal,
   } = useGameStore();
   const { isLoading } = useTodaysDish(archiveDate);
 
@@ -61,14 +57,6 @@ export function ProteinPhase() {
         guessResults={proteinGuessResults}
         actualProtein={currentDish.proteinPerServing}
       />
-
-      {gamePhase === "complete" && !modalVisible && (
-        <div className="flex justify-center mt-4">
-          <Button variant="cta" onClick={() => toggleModal(true)}>
-            📋 View Results
-          </Button>
-        </div>
-      )}
     </div>
   );
 }
