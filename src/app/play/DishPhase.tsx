@@ -2,6 +2,7 @@ import { GuessFeedback } from "@/components/GuessFeedback";
 import { GuessInput } from "@/components/GuessInput";
 import { useBlurredTiles, useDishTiles } from "@/hooks/useDishTiles";
 import { useGameStore } from "@/store";
+import { getStrongFuzzyMatch } from "@/utils/gameHelpers";
 import posthog from "posthog-js";
 import { memo } from "react";
 import { TileGrid } from "../../components/dish-image/TileGrid";
@@ -33,15 +34,22 @@ export const DishPhase = memo(() => {
   const isComplete = isDishPhaseComplete();
 
   const handleGuess = (guess: string) => {
-    const isCorrect =
-      currentDish?.acceptableGuesses?.includes(guess.toLowerCase()) ?? false;
+    const normalized = guess.toLowerCase().trim();
+    const acceptable = currentDish?.acceptableGuesses ?? [];
+
+    const exactMatch = acceptable.includes(normalized);
+    const fuzzyMatch = exactMatch ? null : getStrongFuzzyMatch(normalized, acceptable);
+
+    const isCorrect = exactMatch || !!fuzzyMatch;
+    const guessToRecord = fuzzyMatch ?? guess;
 
     posthog.capture("guess_dish", {
       guess,
       correct: isCorrect,
+      fuzzy_match: !!fuzzyMatch,
     });
 
-    guessDish(guess);
+    guessDish(guessToRecord);
   };
 
   return (
