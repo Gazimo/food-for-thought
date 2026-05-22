@@ -13,20 +13,15 @@ export class GoogleImagen4UltraGenerator implements ImageGenerator {
     this.ai = new GoogleGenAI({ apiKey: key });
   }
 
-  async generate(prompt: string, opts: ImageGenerationOpts): Promise<ImageGenerationResult> {
-    // Only 3:2 is supported by this generator right now (matches our tile aspect).
-    if (opts.width !== 1536 || opts.height !== 1024) {
-      throw new Error(
-        `GoogleImagen4UltraGenerator: unsupported size ${opts.width}x${opts.height}; expected 1536x1024 (3:2)`
-      );
-    }
-
+  async generate(prompt: string, _opts: ImageGenerationOpts): Promise<ImageGenerationResult> {
+    // Imagen 4 only supports 1:1, 9:16, 16:9, 4:3, 3:4. 4:3 is the closest to
+    // our 3:2 tile target; generateTiles cover-crops the small remainder.
     const result = await this.ai.models.generateImages({
       model: MODEL_ID,
       prompt,
       config: {
         numberOfImages: 1,
-        aspectRatio: "3:2",
+        aspectRatio: "4:3",
       },
     });
 
