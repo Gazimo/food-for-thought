@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import crypto from "crypto";
-import OpenAI from "openai";
+import { createDefaultImageGenerator, ImageGenerator } from "./imageGenerators";
 
 interface DishImageData {
   name: string;
@@ -12,20 +12,18 @@ interface DishImageData {
 
 interface ImageGenerationResult {
   imageUrl: string;
-  source: "dall-e-3";
+  source: string;
   cost: number;
   prompt: string;
   filename: string;
 }
 
 class DishImageService {
-  private openai: OpenAI;
+  private generator: ImageGenerator;
   private supabase: ReturnType<typeof createClient>;
 
   constructor() {
-    this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
+    this.generator = createDefaultImageGenerator();
 
     // Initialize Supabase client with service role key for storage operations
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -44,35 +42,19 @@ class DishImageService {
       console.log(`🎨 Generating image for: ${dishData.name}`);
 
       const prompt = this.createOptimizedPrompt(dishData);
-      console.log(`📝 Using prompt: ${prompt.substring(0, 100)}...`);
+      console.log(`📝 Using prompt: ${prompt.substring(0, 100)}…`);
 
-      const response = await this.openai.images.generate({
-        model: "dall-e-3",
-        prompt: prompt,
-        n: 1,
-        size: "1024x1024", // Keep 1024x1024 for good quality
-        quality: "standard", // Use standard instead of hd to reduce cost
-        style: "natural",
-      });
+      const result = await this.generator.generate(prompt, { width: 1536, height: 1024 });
 
-      const imageUrl = response.data?.[0]?.url;
-      if (!imageUrl) {
-        throw new Error("No image URL returned from DALL-E");
-      }
-
-      // Upload image to Supabase Storage
-      const { filename, publicUrl } = await this.uploadImageToSupabase(
-        imageUrl
-      );
-
+      const { filename, publicUrl } = await this.uploadImageToSupabase(result.url);
       console.log(`✅ Image generated and uploaded to Supabase: ${filename}`);
 
       return {
         imageUrl: publicUrl,
-        source: "dall-e-3",
-        cost: 0.04, // Current DALL-E 3 pricing for 1024x1024
-        prompt: prompt,
-        filename: filename,
+        source: result.source,
+        cost: result.cost,
+        prompt,
+        filename,
       };
     } catch (error) {
       console.error(`💥 Image generation failed for ${dishData.name}:`, error);
@@ -192,25 +174,14 @@ class DishImageService {
         ];
         const prompt = basePrompt + variations[i % variations.length];
 
-        const response = await this.openai.images.generate({
-          model: "dall-e-3",
-          prompt: prompt,
-          n: 1,
-          size: "1024x1024",
-          quality: "standard",
-          style: "natural",
-        });
+        const result = await this.generator.generate(prompt, { width: 1536, height: 1024 });
 
-        const imageUrl = response.data?.[0]?.url || "/images/404.png";
-
-        const { filename, publicUrl } = await this.uploadImageToSupabase(
-          imageUrl
-        );
+        const { filename, publicUrl } = await this.uploadImageToSupabase(result.url);
 
         results.push({
           imageUrl: publicUrl,
-          source: "dall-e-3",
-          cost: 0.04,
+          source: result.source,
+          cost: result.cost,
           prompt: prompt,
           filename: filename,
         });
