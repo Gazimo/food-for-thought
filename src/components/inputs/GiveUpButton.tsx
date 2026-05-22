@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -28,6 +29,9 @@ export const GiveUpButton: React.FC<GiveUpButtonProps> = ({ onGiveUp }) => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Are you sure you want to give up?</DialogTitle>
+            <DialogDescription className="sr-only">
+              Giving up reveals the answer for the current phase and ends your guesses for it.
+            </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="default" onClick={() => setGiveUpOpen(false)}>
