@@ -1,5 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
-import { ImageGenerator, ImageGenerationOpts, ImageGenerationResult } from "./types";
+import { ImageGenerator, ImageGenerationResult } from "./types";
 
 const MODEL_ID = "imagen-4.0-ultra-generate-001";
 const COST_PER_IMAGE_USD = 0.06;
@@ -13,7 +13,7 @@ export class GoogleImagen4UltraGenerator implements ImageGenerator {
     this.ai = new GoogleGenAI({ apiKey: key });
   }
 
-  async generate(prompt: string, _opts: ImageGenerationOpts): Promise<ImageGenerationResult> {
+  async generate(prompt: string): Promise<ImageGenerationResult> {
     // Imagen 4 only supports 1:1, 9:16, 16:9, 4:3, 3:4. 4:3 is the closest to
     // our 3:2 tile target; generateTiles cover-crops the small remainder.
     const result = await this.ai.models.generateImages({
