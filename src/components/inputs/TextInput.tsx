@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useGameStore } from "../../store";
 
@@ -31,6 +31,16 @@ export const TextInput: React.FC<TextInputProps> = ({
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const { activePhase, isPhaseComplete } = useGameStore();
   const isComplete = isPhaseComplete(activePhase);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const isDesktop = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    if (isDesktop && !isComplete && !disabled) {
+      inputRef.current?.focus();
+    }
+  }, [isComplete, disabled]);
 
   const filteredSuggestions = suggestions
     .filter((suggestion) =>
@@ -132,6 +142,7 @@ export const TextInput: React.FC<TextInputProps> = ({
   return (
     <div className="flex-1 relative">
       <Input
+        ref={inputRef}
         type="text"
         value={value}
         onChange={(e) => handleInputChange(e.target.value)}
