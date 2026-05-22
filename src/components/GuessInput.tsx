@@ -162,10 +162,6 @@ export const GuessInput: React.FC<GuessInputProps> = memo(
       ? !isNaN(parseInt(input)) && parseInt(input) >= 0
       : !!input.trim();
 
-    const shouldShowGiveUp = isProteinPhase
-      ? previousProteinGuesses.length >= 3
-      : false;
-
     return (
       <div className="w-full flex gap-2 items-center">
         <GiveUpButton onGiveUp={handleGiveUp} />
@@ -215,19 +211,6 @@ export const GuessInput: React.FC<GuessInputProps> = memo(
             "Submit"
           )}
         </Button>
-
-        {shouldShowGiveUp && !isComplete && (
-          <div className="absolute top-full left-0 right-0 text-center mt-2">
-            <Button
-              onClick={handleGiveUp}
-              variant="outline"
-              size="sm"
-              className="text-xs"
-            >
-              Give up and see results
-            </Button>
-          </div>
-        )}
       </div>
     );
   }

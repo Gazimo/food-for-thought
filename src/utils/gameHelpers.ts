@@ -262,6 +262,62 @@ export function getClosestGuess(
 }
 
 /**
+ * Returns the canonical match string when the input is a high-confidence match
+ * for one of the options. Used to auto-accept near-perfect fuzzy matches
+ * without showing a "did you mean?" prompt. Returns null when confidence is
+ * not high enough to auto-accept.
+ */
+export function getStrongFuzzyMatch(
+  input: string,
+  options: string[]
+): string | null {
+  const normalizedInput = input.toLowerCase().trim();
+  if (normalizedInput.length < 3) return null;
+
+  // Exact-substring containment: input is a substantial portion of an option,
+  // or an option is a substantial portion of input.
+  for (const option of options) {
+    const normalizedOption = option.toLowerCase();
+    if (
+      normalizedOption.includes(normalizedInput) &&
+      normalizedInput.length / normalizedOption.length >= 0.5
+    ) {
+      return option;
+    }
+    if (
+      normalizedInput.includes(normalizedOption) &&
+      normalizedOption.length / normalizedInput.length >= 0.5
+    ) {
+      return option;
+    }
+  }
+
+  // Very high-confidence fuzzy match (Fuse score <= 0.25 with a length-similarity
+  // guard catches near-perfect typos like "pirir piri chicken" → "piri-piri chicken"
+  // without letting short generic substrings like "chicken" through, because those
+  // have much lower length ratios to the target.
+  const fuse = new Fuse(options, {
+    threshold: 0.4,
+    includeScore: true,
+    ignoreLocation: false,
+    distance: 10,
+  });
+  const results = fuse.search(normalizedInput);
+  if (results.length === 0) return null;
+
+  const best = results[0];
+  const targetLen = best.item.length;
+  const lengthRatio =
+    Math.min(normalizedInput.length, targetLen) /
+    Math.max(normalizedInput.length, targetLen);
+  if ((best.score ?? 1) <= 0.25 && lengthRatio >= 0.7) {
+    return best.item;
+  }
+
+  return null;
+}
+
+/**
  * Intelligently reorders ingredients to avoid revealing dish name components early.
  * Moves ingredients that appear in acceptable guesses to positions 4-5.
  */

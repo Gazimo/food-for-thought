@@ -10,7 +10,7 @@ interface GameHeaderProps {
 }
 
 export function GameHeader({ onShowRules }: GameHeaderProps) {
-  const { isPlayingArchive, archiveDate, exitArchiveMode } = useGameStore();
+  const { isPlayingArchive, archiveDate, exitArchiveMode, streak } = useGameStore();
   const router = useRouter();
 
   const handleBackToToday = () => {
@@ -51,6 +51,17 @@ export function GameHeader({ onShowRules }: GameHeaderProps) {
         )}
       </div>
       <div className="flex items-center gap-3">
+        {streak >= 1 && !isPlayingArchive && (
+          <Link href="/statistics">
+            <div
+              className="flex items-center gap-1 px-2 py-1 bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-md text-sm font-semibold transition-colors"
+              title={`${streak}-day streak`}
+            >
+              <span>🔥</span>
+              <span>{streak}</span>
+            </div>
+          </Link>
+        )}
         {showStatisticsButton && (
           <Link href="/statistics">
             <button

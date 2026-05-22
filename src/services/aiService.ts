@@ -144,7 +144,12 @@ EXAMPLE 2:
 
 Requirements:
 1. name: Must be exactly "${dishName}" (the dish name provided above)
-2. acceptableGuesses: 2-4 smart variations/alternative names people might use for "${dishName}"
+2. acceptableGuesses: 6-10 smart variations and alternative names people might use for "${dishName}". Include:
+   - Shortened or common-misname forms (e.g. "piri piri" for "Piri-piri Chicken").
+   - English vs. native-language names where both are commonly used.
+   - Singular and plural forms.
+   - Common alternate spellings and regional variants.
+   All entries lowercase, no duplicates.
 3. country: Country of origin (Title Case)
 4. ingredients: Exactly 6 key ingredients that give hints without being too obvious
 5. blurb: Appealing 1-2 sentence description that makes the dish sound delicious
@@ -288,7 +293,7 @@ Return ONLY a valid JSON object with the complete dish data for "${dishName}". N
       dishData &&
       typeof dishData.name === "string" &&
       Array.isArray(dishData.acceptableGuesses) &&
-      dishData.acceptableGuesses.length >= 1 &&
+      dishData.acceptableGuesses.length >= 6 &&
       typeof dishData.country === "string" &&
       Array.isArray(dishData.ingredients) &&
       dishData.ingredients.length === 6 &&

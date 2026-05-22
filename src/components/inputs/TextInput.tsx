@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useGameStore } from "../../store";
 
@@ -31,6 +31,22 @@ export const TextInput: React.FC<TextInputProps> = ({
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const { activePhase, isPhaseComplete } = useGameStore();
   const isComplete = isPhaseComplete(activePhase);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  const didAutofocusRef = useRef(false);
+
+  useEffect(() => {
+    if (didAutofocusRef.current) return;
+    if (typeof window === "undefined") return;
+    // Skip touch-primary devices: avoids popping the soft keyboard before
+    // the player has seen the screen. Matches desktop + iPad-with-trackpad.
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    if (isComplete || disabled) return;
+    // Don't steal focus from a control the user has already engaged with.
+    if (document.activeElement && document.activeElement !== document.body) return;
+    inputRef.current?.focus();
+    didAutofocusRef.current = true;
+  }, [isComplete, disabled]);
 
   const filteredSuggestions = suggestions
     .filter((suggestion) =>
@@ -132,6 +148,7 @@ export const TextInput: React.FC<TextInputProps> = ({
   return (
     <div className="flex-1 relative">
       <Input
+        ref={inputRef}
         type="text"
         value={value}
         onChange={(e) => handleInputChange(e.target.value)}

@@ -143,9 +143,9 @@ export function ShowResultsButton({
           posthog.capture("toggle_recipe_modal", { opened: true });
         }}
         className="px-4 py-2"
-        variant="secondary"
+        variant="cta"
       >
-        Show Results
+        📋 View Results
       </Button>
     </div>
   );
