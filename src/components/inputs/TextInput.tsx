@@ -33,13 +33,19 @@ export const TextInput: React.FC<TextInputProps> = ({
   const isComplete = isPhaseComplete(activePhase);
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const didAutofocusRef = useRef(false);
 
   useEffect(() => {
+    if (didAutofocusRef.current) return;
     if (typeof window === "undefined") return;
-    const isDesktop = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-    if (isDesktop && !isComplete && !disabled) {
-      inputRef.current?.focus();
-    }
+    // Skip touch-primary devices: avoids popping the soft keyboard before
+    // the player has seen the screen. Matches desktop + iPad-with-trackpad.
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    if (isComplete || disabled) return;
+    // Don't steal focus from a control the user has already engaged with.
+    if (document.activeElement && document.activeElement !== document.body) return;
+    inputRef.current?.focus();
+    didAutofocusRef.current = true;
   }, [isComplete, disabled]);
 
   const filteredSuggestions = suggestions
