@@ -551,14 +551,30 @@ async function generateTiles(
 
   const targetAspectRatio = 3 / 2;
   const currentAspectRatio = metadata.width / metadata.height;
+  const aspectMatches = Math.abs(currentAspectRatio - targetAspectRatio) < 0.01;
+
+  let baseImage: any;
   let resizeWidth: number;
   let resizeHeight: number;
-  if (currentAspectRatio > targetAspectRatio) {
-    resizeHeight = metadata.height;
-    resizeWidth = Math.round(resizeHeight * targetAspectRatio);
-  } else {
+
+  if (aspectMatches) {
+    // Source is already 3:2 (Imagen 4 Ultra path) — tile directly, no resize.
     resizeWidth = metadata.width;
-    resizeHeight = Math.round(resizeWidth / targetAspectRatio);
+    resizeHeight = metadata.height;
+    baseImage = image;
+  } else {
+    // Source is square (DALL-E 3 fallback) — keep the historical fit-crop path.
+    if (currentAspectRatio > targetAspectRatio) {
+      resizeHeight = metadata.height;
+      resizeWidth = Math.round(resizeHeight * targetAspectRatio);
+    } else {
+      resizeWidth = metadata.width;
+      resizeHeight = Math.round(resizeWidth / targetAspectRatio);
+    }
+    baseImage = image.resize(resizeWidth, resizeHeight, {
+      fit: "cover",
+      position: "center",
+    });
   }
 
   const cols = 3;
@@ -573,10 +589,6 @@ async function generateTiles(
     const actualWidth = col === cols - 1 ? resizeWidth - left : tileWidth;
     const actualHeight = row === rows - 1 ? resizeHeight - top : tileHeight;
 
-    const baseImage = image.resize(resizeWidth, resizeHeight, {
-      fit: "cover",
-      position: "center",
-    });
     const regularTileBuffer = await baseImage
       .clone()
       .extract({ left, top, width: actualWidth, height: actualHeight })
