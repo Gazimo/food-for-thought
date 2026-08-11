@@ -10,7 +10,7 @@ Stay within Vercel's free tier limits without upgrading to a paid plan.
 - **Image Optimization - Cache Writes**: 60K/100K (approaching limit)
 - **Edge Requests**: 340K/1M (manageable)
 
-## 🚀 Optimization Strategy
+## Optimization Strategy
 
 ### Phase 1: Immediate Actions (Implemented)
 
