@@ -41,6 +41,7 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           DAILY_COST_CAP_USD=${{ secrets.DAILY_COST_CAP_USD }}
           TARGET_BUFFER_DAYS=${{ secrets.TARGET_BUFFER_DAYS }}
+          IMAGE_GENERATOR=dall-e-3
           EOF
 
       - name: Run daily generator
